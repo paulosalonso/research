@@ -21,8 +21,8 @@
 
 		<skip.unit.tests>false</skip.unit.tests>
 		<skip.it.tests>false</skip.it.tests>
-		<line.coverage>0</line.coverage>
-		<branch.coverage>0</branch.coverage>
+		<line.coverage>1.00</line.coverage>
+		<branch.coverage>1.00</branch.coverage>
 	</properties>
 
 	<dependencies>
@@ -108,10 +108,7 @@
 				<version>${jacoco.version}</version>
 				<configuration>
 					<excludes>
-						<exclude>**/*NotifierApplication.*</exclude>
-						<exclude>**/exceptionhandler/**</exclude>
-						<exclude>**/avro/**</exclude>
-						<exclude>**/SandboxConfiguration.*</exclude>
+						<exclude>**/*ResearchApplication.*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
