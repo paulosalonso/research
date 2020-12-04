@@ -26,8 +26,16 @@ public class QuestionUpdateTest {
     @Test
     public void givenAResearchIdAndAQuestionWhenUpdateThenCallPort() {
         var id = UUID.randomUUID();
-        var toUpdate = Question.builder().build();
-        var updated = Question.builder().build();
+
+        var toUpdate = Question.builder()
+                .description("description")
+                .multiSelect(true)
+                .build();
+
+        var updated = Question.builder()
+                .description("description")
+                .multiSelect(true)
+                .build();
 
         when(port.update(id, toUpdate)).thenReturn(updated);
 

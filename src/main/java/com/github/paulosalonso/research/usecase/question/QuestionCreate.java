@@ -12,6 +12,10 @@ public class QuestionCreate {
     private final QuestionPort questionPort;
 
     public Question create(UUID researchId, Question question) {
+        question = question.toBuilder()
+                .id(UUID.randomUUID())
+                .build();
+
         return questionPort.create(researchId, question);
     }
 }

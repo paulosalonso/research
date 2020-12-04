@@ -4,6 +4,7 @@ import com.github.paulosalonso.research.domain.Question;
 import com.github.paulosalonso.research.usecase.port.QuestionPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -11,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class QuestionCreateTest {
@@ -26,14 +27,20 @@ public class QuestionCreateTest {
     @Test
     public void givenAResearchIdAndAQuestionWhenCreateThenCallPort() {
         var id = UUID.randomUUID();
-        var toSave = Question.builder().build();
-        var saved = Question.builder().build();
 
-        when(port.create(id, toSave)).thenReturn(saved);
+        var toSave = Question.builder()
+                .description("description")
+                .multiSelect(true)
+                .build();
 
-        var result = questionCreate.create(id, toSave);
+        ArgumentCaptor<Question> questionCaptor = ArgumentCaptor.forClass(Question.class);
+        questionCreate.create(id, toSave);
 
-        assertThat(result).isSameAs(saved);
-        verify(port).create(id, toSave);
+        verify(port).create(eq(id), questionCaptor.capture());
+
+        var saved = questionCaptor.getValue();
+        assertThat(saved.getId()).isNotNull();
+        assertThat(saved.getDescription()).isEqualTo(toSave.getDescription());
+        assertThat(saved.getMultiSelect()).isEqualTo(toSave.getMultiSelect());
     }
 }

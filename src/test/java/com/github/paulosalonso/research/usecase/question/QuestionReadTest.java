@@ -29,7 +29,11 @@ public class QuestionReadTest {
     public void givenAResearchIdAndAQuestionIdWhenReadThenCallPort() {
         var researchId = UUID.randomUUID();
         var questionId = UUID.randomUUID();
-        var toRead = Question.builder().build();
+
+        var toRead = Question.builder()
+                .description("description")
+                .multiSelect(true)
+                .build();
 
         when(port.read(researchId, questionId)).thenReturn(toRead);
 
@@ -42,8 +46,16 @@ public class QuestionReadTest {
     @Test
     public void givenAResearchIdAndAQuestionCriteriaWhenSearchThenCallPort() {
         var id = UUID.randomUUID();
-        var criteria = QuestionCriteria.builder().build();
-        var toSearch = List.of(Question.builder().build());
+
+        var criteria = QuestionCriteria.builder()
+                .description("description")
+                .multiSelect(true)
+                .build();
+
+        var toSearch = List.of(Question.builder()
+                .description("description")
+                .multiSelect(true)
+                .build());
 
         when(port.search(id, criteria)).thenReturn(toSearch);
 

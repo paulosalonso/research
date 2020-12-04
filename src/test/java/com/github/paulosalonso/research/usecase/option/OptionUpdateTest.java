@@ -26,8 +26,14 @@ public class OptionUpdateTest {
     @Test
     public void givenAQuestionIdAndAnOptionWhenUpdateThenCallPort() {
         var id = UUID.randomUUID();
-        var toUpdate = Option.builder().build();
-        var updated = Option.builder().build();
+
+        var toUpdate = Option.builder()
+                .description("description")
+                .build();
+
+        var updated = Option.builder()
+                .description("description")
+                .build();
 
         when(port.update(id, toUpdate)).thenReturn(updated);
 

@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,7 +29,10 @@ public class ResearchReadTest {
     @Test
     public void givenAUUIDWhenReadThenCallPort() {
         var id = UUID.randomUUID();
-        var toRead = Research.builder().build();
+        var toRead = Research.builder()
+                .description("description")
+                .startsOn(LocalDateTime.now())
+                .build();
 
         when(port.read(id)).thenReturn(toRead);
 
@@ -41,7 +45,10 @@ public class ResearchReadTest {
     @Test
     public void givenAResearchCriteriaWhenSearchThenCallPort() {
         var criteria = ResearchCriteria.builder().build();
-        var toSearch = List.of(Research.builder().build());
+        var toSearch = List.of(Research.builder()
+                .description("description")
+                .startsOn(LocalDateTime.now())
+                .build());
 
         when(port.search(criteria)).thenReturn(toSearch);
 

@@ -12,6 +12,10 @@ public class OptionCreate {
     private final OptionPort optionPort;
 
     public Option create(UUID questionId, Option option) {
+        option = option.toBuilder()
+                .id(UUID.randomUUID())
+                .build();
+
         return optionPort.create(questionId, option);
     }
 }

@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,8 +25,15 @@ public class ResearchUpdateTest {
 
     @Test
     public void givenAResearchWhenUpdateThenCallPort() {
-        var toUpdate = Research.builder().build();
-        var updated = Research.builder().build();
+        var toUpdate = Research.builder()
+                .description("description")
+                .startsOn(LocalDateTime.now())
+                .build();
+
+        var updated = Research.builder()
+                .description("description")
+                .startsOn(LocalDateTime.now())
+                .build();
 
         when(port.update(toUpdate)).thenReturn(updated);
 

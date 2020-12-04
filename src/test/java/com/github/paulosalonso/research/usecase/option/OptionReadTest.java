@@ -29,7 +29,9 @@ public class OptionReadTest {
     public void givenAQuestionIdAndAnOptionIdIdWhenReadThenCallPort() {
         var questionId = UUID.randomUUID();
         var optionId = UUID.randomUUID();
-        var toRead = Option.builder().build();
+        var toRead = Option.builder()
+                .description("description")
+                .build();
 
         when(port.read(questionId, optionId)).thenReturn(toRead);
 
@@ -43,7 +45,9 @@ public class OptionReadTest {
     public void givenAQuestionIdAndAnOptionCriteriaWhenSearchThenCallPort() {
         var id = UUID.randomUUID();
         var criteria = OptionCriteria.builder().build();
-        var toSearch = List.of(Option.builder().build());
+        var toSearch = List.of(Option.builder()
+                .description("description")
+                .build());
 
         when(port.search(id, criteria)).thenReturn(toSearch);
 
