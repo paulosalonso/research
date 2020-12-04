@@ -8,7 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ResearchCreateTest {
@@ -21,10 +23,14 @@ public class ResearchCreateTest {
 
     @Test
     public void givenAResearchWhenCreateThenCallPort() {
-        var research = Research.builder().build();
+        var toSave = Research.builder().build();
+        var saved = Research.builder().build();
 
-        researchCreate.create(research);
+        when(port.create(toSave)).thenReturn(saved);
 
-        verify(port).create(research);
+        var result = researchCreate.create(toSave);
+
+        assertThat(result).isSameAs(saved);
+        verify(port).create(toSave);
     }
 }
