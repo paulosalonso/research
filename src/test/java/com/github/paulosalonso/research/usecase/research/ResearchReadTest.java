@@ -30,6 +30,7 @@ public class ResearchReadTest {
     public void givenAUUIDWhenReadThenCallPort() {
         var id = UUID.randomUUID();
         var toRead = Research.builder()
+                .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
                 .build();
@@ -46,6 +47,7 @@ public class ResearchReadTest {
     public void givenAResearchCriteriaWhenSearchThenCallPort() {
         var criteria = ResearchCriteria.builder().build();
         var toSearch = List.of(Research.builder()
+                .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
                 .build());

@@ -26,6 +26,7 @@ public class ResearchCreateTest {
     @Test
     public void givenAResearchWhenCreateThenCallPort() {
         var toSave = Research.builder()
+                .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
                 .build();
@@ -37,6 +38,7 @@ public class ResearchCreateTest {
 
         var saved = researchCaptor.getValue();
         assertThat(saved.getId()).isNotNull();
+        assertThat(saved.getTitle()).isEqualTo(toSave.getTitle());
         assertThat(saved.getDescription()).isEqualTo(toSave.getDescription());
         assertThat(saved.getStartsOn()).isEqualTo(toSave.getStartsOn());
         assertThat(saved.getEndsOn()).isEqualTo(toSave.getEndsOn());

@@ -17,6 +17,8 @@ public class Research {
     private UUID id;
 
     @NonNull
+    private final String title;
+
     private final String description;
 
     @NonNull
