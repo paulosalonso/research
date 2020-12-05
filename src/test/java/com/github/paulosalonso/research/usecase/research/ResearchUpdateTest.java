@@ -26,11 +26,13 @@ public class ResearchUpdateTest {
     @Test
     public void givenAResearchWhenUpdateThenCallPort() {
         var toUpdate = Research.builder()
+                .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
                 .build();
 
         var updated = Research.builder()
+                .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
                 .build();
