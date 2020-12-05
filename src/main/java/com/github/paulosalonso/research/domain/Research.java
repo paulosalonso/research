@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,9 +20,9 @@ public class Research {
     private final String description;
 
     @NonNull
-    private final LocalDateTime startsOn;
+    private final OffsetDateTime startsOn;
 
-    private final LocalDateTime endsOn;
+    private final OffsetDateTime endsOn;
     private Set<Question> questions;
 
 }
