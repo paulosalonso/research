@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -27,7 +27,7 @@ public class ResearchCreateTest {
     public void givenAResearchWhenCreateThenCallPort() {
         var toSave = Research.builder()
                 .description("description")
-                .startsOn(LocalDateTime.now())
+                .startsOn(OffsetDateTime.now())
                 .build();
 
         researchCreate.create(toSave);
