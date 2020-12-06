@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.adapter.jpa.model;
 
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,6 +15,7 @@ import java.time.OffsetDateTime;
 @Getter
 @Setter
 @Builder
+@FieldNameConstants
 @Entity(name = "Research")
 @Table(name = "research")
 public class ResearchEntity {

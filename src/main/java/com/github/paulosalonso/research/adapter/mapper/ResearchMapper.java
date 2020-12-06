@@ -9,6 +9,15 @@ import java.util.UUID;
 @Component
 public class ResearchMapper {
 
+    public ResearchEntity copy(Research from, ResearchEntity to) {
+        to.setTitle(from.getTitle());
+        to.setDescription(from.getDescription());
+        to.setStartsOn(from.getStartsOn());
+        to.setEndsOn(from.getEndsOn());
+
+        return to;
+    }
+
     public Research toDomain(ResearchEntity researchEntity) {
         UUID id = researchEntity.getId() != null ? UUID.fromString(researchEntity.getId()) : null;
 
