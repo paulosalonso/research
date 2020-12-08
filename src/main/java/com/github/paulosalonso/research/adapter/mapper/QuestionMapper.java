@@ -9,6 +9,13 @@ import java.util.UUID;
 @Component
 public class QuestionMapper {
 
+    public QuestionEntity copy(Question from, QuestionEntity to) {
+        to.setDescription(from.getDescription());
+        to.setMultiSelect(from.getMultiSelect());
+
+        return to;
+    }
+
     public Question toDomain(QuestionEntity questionEntity) {
         UUID id = questionEntity.getId() != null ? UUID.fromString(questionEntity.getId()) : null;
 

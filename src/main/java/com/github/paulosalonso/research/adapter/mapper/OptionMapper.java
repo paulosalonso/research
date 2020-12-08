@@ -9,6 +9,11 @@ import java.util.UUID;
 @Component
 public class OptionMapper {
 
+    public OptionEntity copy(Option from, OptionEntity to) {
+        to.setDescription(from.getDescription());
+        return to;
+    }
+
     public Option toDomain(OptionEntity optionEntity) {
         UUID id = optionEntity.getId() != null ? UUID.fromString(optionEntity.getId()) : null;
 

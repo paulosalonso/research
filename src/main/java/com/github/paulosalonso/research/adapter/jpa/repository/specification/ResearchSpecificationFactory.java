@@ -18,22 +18,22 @@ public class ResearchSpecificationFactory {
         List<Specification<ResearchEntity>> specifications = new ArrayList<>();
 
         ofNullable(researchCriteria.getTitle())
-                .ifPresent(title -> specifications.add(findBTitleLike(researchCriteria.getTitle())));
+                .ifPresent(title -> specifications.add(findByTitleLike(researchCriteria.getTitle())));
 
         ofNullable(researchCriteria.getDescription())
                 .ifPresent(description -> specifications.add(findByDescriptionLike(description)));
 
         ofNullable(researchCriteria.getStartsOnFrom())
-            .ifPresent(startsOn -> specifications.add(findByStartsOnFrom(startsOn)));
+                .ifPresent(startsOn -> specifications.add(findByStartsOnFrom(startsOn)));
 
         ofNullable(researchCriteria.getStartsOnTo())
-            .ifPresent(startsOn -> specifications.add(findByStartsOnTo(startsOn)));
+                .ifPresent(startsOn -> specifications.add(findByStartsOnTo(startsOn)));
 
         ofNullable(researchCriteria.getEndsOnFrom())
-            .ifPresent(endsOn -> specifications.add(findByEndsOnFrom(endsOn)));
+                .ifPresent(endsOn -> specifications.add(findByEndsOnFrom(endsOn)));
 
         ofNullable(researchCriteria.getEndsOnTo())
-            .ifPresent(endsOn -> specifications.add(findByEndsOnTo(endsOn)));
+                .ifPresent(endsOn -> specifications.add(findByEndsOnTo(endsOn)));
 
         return specifications.stream().reduce(identity(), Specification::and);
     }
@@ -42,7 +42,7 @@ public class ResearchSpecificationFactory {
         return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.isTrue(criteriaBuilder.literal(true));
     }
 
-    public Specification<ResearchEntity> findBTitleLike(String title) {
+    public Specification<ResearchEntity> findByTitleLike(String title) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.like(root.get(ResearchEntity.Fields.title), "%" + title + "%");
     }
