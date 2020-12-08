@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.adapter.jpa.model;
 
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @Setter
 @Builder
+@FieldNameConstants
 @Entity(name = "Option")
 @Table(name = "option")
 public class OptionEntity {

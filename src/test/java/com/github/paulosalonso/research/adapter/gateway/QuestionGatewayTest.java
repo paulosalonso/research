@@ -46,7 +46,7 @@ public class QuestionGatewayTest {
     private QuestionMapper mapper;
 
     @Test
-    public void givenAQuestionWhenCreateThenCallRepository() {
+    public void givenAQuestionWhenCreateThenMapAndSaveIt() {
         var researchId = UUID.randomUUID();
 
         var research = ResearchEntity.builder()
@@ -79,7 +79,7 @@ public class QuestionGatewayTest {
     }
 
     @Test
-    public void givenAnIdWhenReadThenReturnResearch() {
+    public void givenAResearchIdAndAQuestionIdWhenReadThenFindAndMapIt() {
         var researchId = UUID.randomUUID();
         var questionId = UUID.randomUUID();
 
@@ -106,7 +106,7 @@ public class QuestionGatewayTest {
     }
 
     @Test
-    public void givenANonexistentIdWhenReadThenThrowsNotFoundException() {
+    public void givenANonexistentCompositeIdWhenReadThenThrowsNotFoundException() {
         var researchId = UUID.randomUUID();
         var questionId = UUID.randomUUID();
 
@@ -125,7 +125,7 @@ public class QuestionGatewayTest {
     }
 
     @Test
-    public void givenAResearchCriteriaWhenSearchThenCallRepository() {
+    public void givenAResearchIdAndAQuestionCriteriaWhenSearchThenFindAndMapIt() {
         var researchId = UUID.randomUUID();
         var criteria = QuestionCriteria.builder().build();
         var entity = QuestionEntity.builder()
@@ -150,7 +150,7 @@ public class QuestionGatewayTest {
     }
 
     @Test
-    public void givenAResearchWhenUpdateThenFindAndCopy() {
+    public void givenAResearchIdAndAQuestionWhenUpdateThenFindAndCopyIt() {
         var researchId = UUID.randomUUID();
 
         var question = Question.builder()
@@ -185,7 +185,7 @@ public class QuestionGatewayTest {
     }
 
     @Test
-    public void givenAResearchWithNonexistentIdWhenUpdateThenThrowsNotFoundException() {
+    public void givenAResearchIdAndAQuestionWithNonexistentCompositeIdWhenUpdateThenThrowsNotFoundException() {
         var researchId = UUID.randomUUID();
 
         var question = Question.builder()
@@ -210,7 +210,7 @@ public class QuestionGatewayTest {
     }
 
     @Test
-    public void givenAnIdWhenDeleteThenCallRepository() {
+    public void givenAResearchIdAndAQuestionIdWhenDeleteThenFindAndDeleteIt() {
         var researchId = UUID.randomUUID();
         var questionId = UUID.randomUUID();
 
@@ -229,6 +229,31 @@ public class QuestionGatewayTest {
         verify(specificationFactory).findById(question.getId().toString());
         verifyNoMoreInteractions(specificationFactory);
         verify(questionRepository).delete(question);
+        verifyNoMoreInteractions(questionRepository);
+    }
+
+    @Test
+    public void givenANonexistentCompositeIdWhenDeleteThenThrowsNotFoundException() {
+        var researchId = UUID.randomUUID();
+        var questionId = UUID.randomUUID();
+
+        var question = QuestionEntity.builder()
+                .id(questionId.toString())
+                .description("description")
+                .multiSelect(false)
+                .build();
+
+        when(specificationFactory.findByResearchId(researchId.toString())).thenCallRealMethod();
+        when(specificationFactory.findById(questionId.toString())).thenCallRealMethod();
+        when(questionRepository.findOne(any(Specification.class))).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> gateway.delete(researchId, questionId))
+                .isExactlyInstanceOf(NotFoundException.class);
+
+        verify(specificationFactory).findByResearchId(researchId.toString());
+        verify(specificationFactory).findById(question.getId());
+        verifyNoMoreInteractions(specificationFactory);
+        verify(questionRepository, never()).delete(question);
         verifyNoMoreInteractions(questionRepository);
     }
 }
