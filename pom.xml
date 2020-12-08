@@ -65,6 +65,10 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -158,6 +162,36 @@
 					</execution>
 				</executions>
 			</plugin>
+
+<!--			<plugin>-->
+<!--				<groupId>org.pitest</groupId>-->
+<!--				<artifactId>pitest-maven</artifactId>-->
+<!--				<version>1.5.2</version>-->
+<!--				<dependencies>-->
+<!--					<dependency>-->
+<!--						<groupId>org.pitest</groupId>-->
+<!--						<artifactId>pitest-junit5-plugin</artifactId>-->
+<!--						<version>0.12</version>-->
+<!--					</dependency>-->
+<!--				</dependencies>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<phase>test</phase>-->
+<!--						<goals>-->
+<!--							<goal>mutationCoverage</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--				<configuration>-->
+<!--					<mutationThreshold>100</mutationThreshold>-->
+<!--					<targetClasses>-->
+<!--						<param>com.github.paulosalonso.research.*</param>-->
+<!--					</targetClasses>-->
+<!--					<targetTests>-->
+<!--						<param>com.github.paulosalonso.research.*</param>-->
+<!--					</targetTests>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 
