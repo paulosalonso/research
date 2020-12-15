@@ -2,13 +2,18 @@ package com.github.paulosalonso.research.application.controller;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT, properties = "spring.jpa.show-sql=true")
 public class BaseIT {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @LocalServerPort
     private int port;
@@ -16,5 +21,15 @@ public class BaseIT {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+    }
+
+    protected void truncateDatabase() {
+        truncateTable("option");
+        truncateTable("question");
+        truncateTable("research");
+    }
+
+    protected void truncateTable(String tableName) {
+        jdbcTemplate.execute("DELETE FROM " + tableName);
     }
 }
