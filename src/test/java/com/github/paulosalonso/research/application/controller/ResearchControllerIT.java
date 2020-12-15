@@ -5,11 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static io.restassured.http.ContentType.JSON;
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.notNullValue;
 
 public class ResearchControllerIT extends BaseIT {
 
@@ -35,7 +39,12 @@ public class ResearchControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{id}", id)
                 .then()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(id))
+                .body("title", equalTo(body.getTitle()))
+                .body("description", equalTo(body.getDescription()))
+                .body("startsOn", equalTo(ISO_DATE_TIME.format(body.getStartsOn().withOffsetSameInstant(ZoneOffset.UTC))))
+                .body("endsOn", equalTo(ISO_DATE_TIME.format(body.getEndsOn().withOffsetSameInstant(ZoneOffset.UTC))));
     }
 
     @Test
@@ -84,7 +93,12 @@ public class ResearchControllerIT extends BaseIT {
                 .when()
                 .post("/researches")
                 .then()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value())
+                .body("id", notNullValue())
+                .body("title", equalTo(body.getTitle()))
+                .body("description", equalTo(body.getDescription()))
+                .body("startsOn", equalTo(ISO_DATE_TIME.format(body.getStartsOn().withOffsetSameInstant(ZoneOffset.UTC))))
+                .body("endsOn", equalTo(ISO_DATE_TIME.format(body.getEndsOn().withOffsetSameInstant(ZoneOffset.UTC))));
     }
 
     @Test
@@ -116,14 +130,26 @@ public class ResearchControllerIT extends BaseIT {
                 .post("/researches")
                 .path("id");
 
+        var updateBody = ResearchInputDTO.builder()
+                .title("updated title")
+                .description("updated description")
+                .startsOn(OffsetDateTime.now())
+                .endsOn(OffsetDateTime.now().plusMonths(2))
+                .build();
+
         given()
                 .contentType(JSON)
                 .accept(JSON)
-                .body(body)
+                .body(updateBody)
                 .when()
                 .put("/researches/{id}", id)
                 .then()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(id))
+                .body("title", equalTo(updateBody.getTitle()))
+                .body("description", equalTo(updateBody.getDescription()))
+                .body("startsOn", equalTo(ISO_DATE_TIME.format(updateBody.getStartsOn().withOffsetSameInstant(ZoneOffset.UTC))))
+                .body("endsOn", equalTo(ISO_DATE_TIME.format(updateBody.getEndsOn().withOffsetSameInstant(ZoneOffset.UTC))));
     }
 
     @Test
