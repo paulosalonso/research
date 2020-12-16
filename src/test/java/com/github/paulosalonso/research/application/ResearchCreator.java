@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 
-public class ResearchHelper {
+public class ResearchCreator {
 
     public static ResearchDTO createResearch() {
         var body = ResearchInputDTO.builder()

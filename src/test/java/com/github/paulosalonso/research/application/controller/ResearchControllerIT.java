@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.application.ResearchHelper.createResearch;
+import static com.github.paulosalonso.research.application.ResearchCreator.createResearch;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static io.restassured.http.ContentType.JSON;

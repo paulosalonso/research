@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.application.QuestionHelper.createQuestion;
-import static com.github.paulosalonso.research.application.ResearchHelper.createResearch;
+import static com.github.paulosalonso.research.application.QuestionCreator.createQuestion;
+import static com.github.paulosalonso.research.application.ResearchCreator.createResearch;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -36,7 +36,7 @@ public class QuestionControllerIT extends BaseIT {
         given()
                 .accept(JSON)
                 .when()
-                .get("/researches/{researchId}/questions/{questionId}", UUID.fromString(research.getId()), questionId)
+                .get("/researches/{researchId}/questions/{questionId}", research.getId(), questionId)
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("id", equalTo(questionId))
@@ -52,7 +52,7 @@ public class QuestionControllerIT extends BaseIT {
         given()
                 .accept(JSON)
                 .when()
-                .get("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), UUID.fromString(question.getId()))
+                .get("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), question.getId())
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -64,7 +64,7 @@ public class QuestionControllerIT extends BaseIT {
         given()
                 .accept(JSON)
                 .when()
-                .get("/researches/{researchId}/questions/{questionId}", UUID.fromString(research.getId()), UUID.randomUUID())
+                .get("/researches/{researchId}/questions/{questionId}", research.getId(), UUID.randomUUID())
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -91,14 +91,14 @@ public class QuestionControllerIT extends BaseIT {
     public void whenSearchWithDescriptionParameterThenReturnFiltered() {
         truncateDatabase();
 
-        var researchId = UUID.fromString(createResearch().getId());
+        var research = createResearch();
 
-        createQuestion(researchId, QuestionInputDTO.builder()
+        createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
                 .description("description-a")
                 .multiSelect(true)
                 .build());
 
-        var questionB = createQuestion(researchId, QuestionInputDTO.builder()
+        var questionB = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
                 .description("description-b")
                 .multiSelect(true)
                 .build());
@@ -107,7 +107,7 @@ public class QuestionControllerIT extends BaseIT {
                 .accept(JSON)
                 .queryParam("description", questionB.getDescription())
                 .when()
-                .get("/researches/{researchId}/questions", researchId.toString())
+                .get("/researches/{researchId}/questions", research.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
@@ -118,14 +118,14 @@ public class QuestionControllerIT extends BaseIT {
     public void whenSearchWithMultiSelectParameterThenReturnFiltered() {
         truncateDatabase();
 
-        var researchId = UUID.fromString(createResearch().getId());
+        var research = createResearch();
 
-        createQuestion(researchId, QuestionInputDTO.builder()
+        createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
                 .description("description-a")
                 .multiSelect(false)
                 .build());
 
-        var questionB = createQuestion(researchId, QuestionInputDTO.builder()
+        var questionB = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
                 .description("description-b")
                 .multiSelect(true)
                 .build());
@@ -134,7 +134,7 @@ public class QuestionControllerIT extends BaseIT {
                 .accept(JSON)
                 .queryParam("multiSelect", questionB.getMultiSelect())
                 .when()
-                .get("/researches/{researchId}/questions", researchId.toString())
+                .get("/researches/{researchId}/questions", research.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
@@ -145,14 +145,14 @@ public class QuestionControllerIT extends BaseIT {
     public void whenSearchWithAllParametersThenReturnFiltered() {
         truncateDatabase();
 
-        var researchId = UUID.fromString(createResearch().getId());
+        var research = createResearch();
 
-        createQuestion(researchId, QuestionInputDTO.builder()
+        createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
                 .description("description-a")
                 .multiSelect(false)
                 .build());
 
-        var questionB = createQuestion(researchId, QuestionInputDTO.builder()
+        var questionB = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
                 .description("description-b")
                 .multiSelect(true)
                 .build());
@@ -162,7 +162,7 @@ public class QuestionControllerIT extends BaseIT {
                 .queryParam("description", questionB.getDescription())
                 .queryParam("multiSelect", questionB.getMultiSelect())
                 .when()
-                .get("/researches/{researchId}/questions", researchId.toString())
+                .get("/researches/{researchId}/questions", research.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
@@ -367,27 +367,22 @@ public class QuestionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidResearchUUIDWhenDeleteThenReturnBadRequest() {
-        var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-
         given()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
-                .delete("/researches/{researchId}/questions/{questionId}", "invalid-uuid", UUID.fromString(question.getId()))
+                .delete("/researches/{researchId}/questions/{questionId}", "invalid-uuid", UUID.randomUUID())
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenDeleteThenReturnBadRequest() {
-        var research = createResearch();
-
         given()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
-                .delete("/researches/{researchId}/questions/{questionId}", research.getId(), "invalid-uuid")
+                .delete("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), "invalid-uuid")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }

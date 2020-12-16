@@ -8,7 +8,7 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 
-public class QuestionHelper {
+public class QuestionCreator {
 
     public static QuestionDTO createQuestion(UUID researchId) {
         var body = QuestionInputDTO.builder()

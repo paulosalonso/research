@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.adapter.jpa.repository.specification;
 
 import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
+import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.domain.QuestionCriteria;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -36,7 +37,7 @@ public class QuestionSpecificationFactory {
 
     public Specification<QuestionEntity> findByResearchId(String researchId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(QuestionEntity.Fields.research).get(QuestionEntity.Fields.id), researchId);
+                criteriaBuilder.equal(root.get(QuestionEntity.Fields.research).get(ResearchEntity.Fields.id), researchId);
     }
 
     public Specification<QuestionEntity> findByDescriptionLike(String description) {
