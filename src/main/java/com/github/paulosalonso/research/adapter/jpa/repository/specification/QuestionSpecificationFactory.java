@@ -36,7 +36,7 @@ public class QuestionSpecificationFactory {
 
     public Specification<QuestionEntity> findByResearchId(String researchId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(QuestionEntity.Fields.research), researchId);
+                criteriaBuilder.equal(root.get(QuestionEntity.Fields.research).get(QuestionEntity.Fields.id), researchId);
     }
 
     public Specification<QuestionEntity> findByDescriptionLike(String description) {

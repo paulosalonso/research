@@ -117,7 +117,6 @@
 				<configuration>
 					<excludes>
 						<exclude>**/ResearchApplication.*</exclude>
-						<exclude>**/QuestionSpecificationFactory.*</exclude><!-- TODO - Cobrir com teste integrado -->
 						<exclude>**/OptionSpecificationFactory.*</exclude><!-- TODO - Cobrir com teste integrado -->
 					</excludes>
 				</configuration>

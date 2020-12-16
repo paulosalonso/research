@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT, properties = "spring.jpa.show-sql=true")
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 public class BaseIT {
 
     @Autowired
