@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.adapter.jpa.repository.specification;
 
 import com.github.paulosalonso.research.adapter.jpa.model.OptionEntity;
+import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
 import com.github.paulosalonso.research.domain.OptionCriteria;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,7 @@ public class OptionSpecificationFactory {
 
     public Specification<OptionEntity> findByQuestionId(String questionId) {
         return (root, criteriaQuery, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get(OptionEntity.Fields.question), questionId);
+                criteriaBuilder.equal(root.get(OptionEntity.Fields.question).get(QuestionEntity.Fields.id), questionId);
     }
 
     public Specification<OptionEntity> findByDescriptionLike(String description) {

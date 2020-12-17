@@ -8,6 +8,7 @@ import com.github.paulosalonso.research.domain.ResearchCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
 import com.github.paulosalonso.research.usecase.port.ResearchPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +59,10 @@ public class ResearchGateway implements ResearchPort {
 
     @Override
     public void delete(UUID id) {
-        repository.deleteById(id.toString());
+        try {
+            repository.deleteById(id.toString());
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException();
+        }
     }
 }
