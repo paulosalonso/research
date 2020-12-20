@@ -127,6 +127,7 @@
 				<configuration>
 					<excludes>
 						<exclude>**/ResearchApplication.*</exclude>
+						<exclude>**/OpenApiConfiguration.*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
