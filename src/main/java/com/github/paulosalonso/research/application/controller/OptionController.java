@@ -9,6 +9,7 @@ import com.github.paulosalonso.research.usecase.option.OptionCreate;
 import com.github.paulosalonso.research.usecase.option.OptionDelete;
 import com.github.paulosalonso.research.usecase.option.OptionRead;
 import com.github.paulosalonso.research.usecase.option.OptionUpdate;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
+@Api(tags = "Options")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/questions/{questionId}/options")
