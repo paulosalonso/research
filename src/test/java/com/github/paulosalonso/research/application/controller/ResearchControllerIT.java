@@ -15,8 +15,7 @@ import static io.restassured.http.ContentType.JSON;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 public class ResearchControllerIT extends BaseIT {
 
@@ -180,6 +179,54 @@ public class ResearchControllerIT extends BaseIT {
     }
 
     @Test
+    public void whenSearchWithStartsOnParametersWithPreviousPeriodThenReturnEmpty() {
+        truncateDatabase();
+
+        createResearch(ResearchInputDTO.builder()
+                .title("title")
+                .description("description")
+                .startsOn(OffsetDateTime.now())
+                .endsOn(OffsetDateTime.now().plusMonths(1))
+                .build());
+
+        var to = ISO_DATE_TIME.format(
+                OffsetDateTime.now().minusDays(1).withHour(23).withMinute(59).withSecond(59));
+
+        given()
+                .accept(JSON)
+                .queryParam("startsOnTo", to)
+                .when()
+                .get("/researches")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("$", empty());
+    }
+
+    @Test
+    public void whenSearchWithStartsOnParametersWithLaterPeriodThenReturnEmpty() {
+        truncateDatabase();
+
+        createResearch(ResearchInputDTO.builder()
+                .title("title")
+                .description("description")
+                .startsOn(OffsetDateTime.now())
+                .endsOn(OffsetDateTime.now().plusMonths(1))
+                .build());
+
+        var from = ISO_DATE_TIME.format(
+                OffsetDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0));
+
+        given()
+                .accept(JSON)
+                .queryParam("startsOnFrom", from)
+                .when()
+                .get("/researches")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("$", empty());
+    }
+
+    @Test
     public void whenSearchWithEndsOnParametersThenReturnFiltered() {
         truncateDatabase();
 
@@ -213,6 +260,54 @@ public class ResearchControllerIT extends BaseIT {
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
                 .body("id", contains(researchB.getId()));
+    }
+
+    @Test
+    public void whenSearchWithEndsOnParametersWithPreviousPeriodThenReturnEmpty() {
+        truncateDatabase();
+
+        createResearch(ResearchInputDTO.builder()
+                .title("title")
+                .description("description")
+                .startsOn(OffsetDateTime.now())
+                .endsOn(OffsetDateTime.now().plusMonths(1))
+                .build());
+
+        var to = ISO_DATE_TIME.format(
+                OffsetDateTime.now().plusMonths(1).minusDays(1).withHour(23).withMinute(59).withSecond(59));
+
+        given()
+                .accept(JSON)
+                .queryParam("endsOnTo", to)
+                .when()
+                .get("/researches")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("$", empty());
+    }
+
+    @Test
+    public void whenSearchWithEndsOnParametersWithLaterPeriodThenReturnEmpty() {
+        truncateDatabase();
+
+        createResearch(ResearchInputDTO.builder()
+                .title("title")
+                .description("description")
+                .startsOn(OffsetDateTime.now())
+                .endsOn(OffsetDateTime.now().plusMonths(1))
+                .build());
+
+        var from = ISO_DATE_TIME.format(
+                OffsetDateTime.now().plusMonths(1).plusDays(1).withHour(0).withMinute(0).withSecond(0));
+
+        given()
+                .accept(JSON)
+                .queryParam("endsOnFrom", from)
+                .when()
+                .get("/researches")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("$", empty());
     }
 
     @Test

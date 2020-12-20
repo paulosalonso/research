@@ -1,6 +1,6 @@
-name: Automated Testing
+name: Mutation Testing
 
-on:  [ push ]
+on:  [ pull_request ]
 
 jobs:
   maven-verify:
@@ -23,5 +23,5 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Run unit and integrated tests
-        run: mvn -B verify --file pom.xml -Dskip.mutation
+      - name: Run mutation tests
+        run: mvn -B verify --file pom.xml -Dskip.unit.tests -Dskip.it.tests

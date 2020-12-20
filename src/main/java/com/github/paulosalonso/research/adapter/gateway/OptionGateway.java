@@ -43,8 +43,8 @@ public class OptionGateway implements OptionPort {
     @Override
     public Option read(UUID questionId, UUID optionId) {
         var specification = specificationFactory
-                .findByQuestionId(questionId.toString())
-                .and(specificationFactory.findById(optionId.toString()));
+                .findById(optionId.toString())
+                .and(specificationFactory.findByQuestionId(questionId.toString()));
 
         return optionRepository.findOne(specification)
                 .map(mapper::toDomain)

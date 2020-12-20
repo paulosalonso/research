@@ -24,6 +24,8 @@ public class OptionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(UUID.fromString(research.getId()));
 
+        createOption(UUID.fromString(question.getId()));
+
         var body = OptionInputDTO.builder()
                 .description("description")
                 .build();

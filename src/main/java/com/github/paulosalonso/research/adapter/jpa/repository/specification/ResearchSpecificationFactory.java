@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.paulosalonso.research.adapter.jpa.repository.specification.NoFilterSpecificationFactory.findWithoutFilter;
 import static java.util.Optional.ofNullable;
 
 @Component
@@ -35,11 +36,7 @@ public class ResearchSpecificationFactory {
         ofNullable(researchCriteria.getEndsOnTo())
                 .ifPresent(endsOn -> specifications.add(findByEndsOnTo(endsOn)));
 
-        return specifications.stream().reduce(identity(), Specification::and);
-    }
-
-    private Specification<ResearchEntity> identity() {
-        return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+        return specifications.stream().reduce(findWithoutFilter(), Specification::and);
     }
 
     public Specification<ResearchEntity> findByTitleLike(String title) {
