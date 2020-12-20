@@ -120,7 +120,6 @@
 				<configuration>
 					<excludes>
 						<exclude>**/ResearchApplication.*</exclude>
-						<exclude>**/OptionSpecificationFactory.*</exclude><!-- TODO - Cobrir com teste integrado -->
 					</excludes>
 				</configuration>
 				<executions>
