@@ -1,6 +1,6 @@
 name: Mutation Testing
 
-on:  [ pull_request ]
+on:  [ push ]
 
 jobs:
   maven-verify:
