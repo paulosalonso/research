@@ -3,7 +3,7 @@ name: Automated Testing
 on:  [ push ]
 
 jobs:
-  maven-verify:
+  tests:
 
     runs-on: ubuntu-latest
 
