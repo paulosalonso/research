@@ -21,6 +21,7 @@ public class BaseIT {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        RestAssured.basePath = "/research/api";
     }
 
     protected void truncateDatabase() {

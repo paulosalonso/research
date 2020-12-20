@@ -8,6 +8,7 @@ import com.github.paulosalonso.research.usecase.question.QuestionCreate;
 import com.github.paulosalonso.research.usecase.question.QuestionDelete;
 import com.github.paulosalonso.research.usecase.question.QuestionRead;
 import com.github.paulosalonso.research.usecase.question.QuestionUpdate;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
+@Api(tags = "Questions")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/researches/{researchId}/questions")
