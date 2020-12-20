@@ -21,8 +21,11 @@
 
 		<skip.unit.tests>false</skip.unit.tests>
 		<skip.it.tests>false</skip.it.tests>
+		<skip.mutation>false</skip.mutation>
+
 		<line.coverage>1.00</line.coverage>
 		<branch.coverage>1.00</branch.coverage>
+		<mutation.threshold>100</mutation.threshold>
 	</properties>
 
 	<dependencies>
@@ -117,7 +120,6 @@
 				<configuration>
 					<excludes>
 						<exclude>**/ResearchApplication.*</exclude>
-						<exclude>**/OptionSpecificationFactory.*</exclude><!-- TODO - Cobrir com teste integrado -->
 					</excludes>
 				</configuration>
 				<executions>
@@ -161,35 +163,39 @@
 				</executions>
 			</plugin>
 
-<!--			<plugin>-->
-<!--				<groupId>org.pitest</groupId>-->
-<!--				<artifactId>pitest-maven</artifactId>-->
-<!--				<version>1.5.2</version>-->
-<!--				<dependencies>-->
-<!--					<dependency>-->
-<!--						<groupId>org.pitest</groupId>-->
-<!--						<artifactId>pitest-junit5-plugin</artifactId>-->
-<!--						<version>0.12</version>-->
-<!--					</dependency>-->
-<!--				</dependencies>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<phase>test</phase>-->
-<!--						<goals>-->
-<!--							<goal>mutationCoverage</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--				<configuration>-->
-<!--					<mutationThreshold>100</mutationThreshold>-->
-<!--					<targetClasses>-->
-<!--						<param>com.github.paulosalonso.research.*</param>-->
-<!--					</targetClasses>-->
-<!--					<targetTests>-->
-<!--						<param>com.github.paulosalonso.research.*</param>-->
-<!--					</targetTests>-->
-<!--				</configuration>-->
-<!--			</plugin>-->
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.5.2</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>0.12</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>mutationCoverage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<mutationThreshold>${mutation.threshold}</mutationThreshold>
+					<skip>${skip.mutation}</skip>
+					<targetClasses>
+						<param>com.github.paulosalonso.research.*</param>
+					</targetClasses>
+					<targetTests>
+						<param>com.github.paulosalonso.research.*</param>
+					</targetTests>
+					<excludedClasses>
+						<param>com.github.paulosalonso.research.application.*</param>
+					</excludedClasses>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
