@@ -3,15 +3,15 @@ package com.github.paulosalonso.research.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+@NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class Answer {
     private OffsetDateTime date;
     private UUID researchId;
