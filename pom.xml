@@ -128,6 +128,7 @@
 					<excludes>
 						<exclude>**/ResearchApplication.*</exclude>
 						<exclude>**/OpenApiConfiguration.*</exclude>
+						<exclude>**/AnswerSpecificationFactory.*</exclude> <!-- TODO - Removes on implementing integrated tests -->
 					</excludes>
 				</configuration>
 				<executions>
@@ -194,6 +195,7 @@
 					<mutationThreshold>${mutation.threshold}</mutationThreshold>
 					<skip>${skip.mutation}</skip>
 					<mutators>
+						<!-- DEFAULT LIST, WITHOUT NULL_RETURNS -->
 						<mutator>CONDITIONALS_BOUNDARY</mutator>
 						<mutator>INCREMENTS</mutator>
 						<mutator>INVERT_NEGS</mutator>
@@ -213,6 +215,7 @@
 					</targetTests>
 					<excludedClasses>
 						<param>com.github.paulosalonso.research.application.*</param>
+						<param>com.github.paulosalonso.research.adapter.jpa.repository.specification.AnswerSpecificationFactory</param> <!-- TODO - Removes on implementing integrated tests -->
 					</excludedClasses>
 				</configuration>
 			</plugin>
