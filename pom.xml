@@ -193,6 +193,18 @@
 				<configuration>
 					<mutationThreshold>${mutation.threshold}</mutationThreshold>
 					<skip>${skip.mutation}</skip>
+					<mutators>
+						<mutator>CONDITIONALS_BOUNDARY</mutator>
+						<mutator>INCREMENTS</mutator>
+						<mutator>INVERT_NEGS</mutator>
+						<mutator>MATH</mutator>
+						<mutator>NEGATE_CONDITIONALS</mutator>
+						<mutator>VOID_METHOD_CALLS</mutator>
+						<mutator>EMPTY_RETURNS</mutator>
+						<mutator>FALSE_RETURNS</mutator>
+						<mutator>TRUE_RETURNS</mutator>
+						<mutator>PRIMITIVE_RETURNS</mutator>
+					</mutators>
 					<targetClasses>
 						<param>com.github.paulosalonso.research.*</param>
 					</targetClasses>
