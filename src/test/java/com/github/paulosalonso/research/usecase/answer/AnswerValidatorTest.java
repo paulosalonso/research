@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.usecase.answer;
 
 import com.github.paulosalonso.research.domain.Answer;
+import com.github.paulosalonso.research.usecase.exception.InvalidAnswerException;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
 import com.github.paulosalonso.research.usecase.port.OptionPort;
 import com.github.paulosalonso.research.usecase.port.QuestionPort;
