@@ -4,6 +4,8 @@ import com.github.paulosalonso.research.domain.Answer;
 import com.github.paulosalonso.research.usecase.port.AnswerPort;
 import lombok.RequiredArgsConstructor;
 
+import java.time.OffsetDateTime;
+
 @RequiredArgsConstructor
 public class AnswerCreate {
 
@@ -11,6 +13,8 @@ public class AnswerCreate {
     private final AnswerValidator validator;
 
     public Answer create(Answer answer) {
-        return answerPort.create(validator.validate(answer));
+        validator.validate(answer);
+        answer.setDate(OffsetDateTime.now());
+        return answerPort.create(answer);
     }
 }

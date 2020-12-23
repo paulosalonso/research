@@ -42,7 +42,8 @@ public class OpenApiConfiguration implements WebMvcConfigurer {
         docket
                 .tags(new Tag("Researches", "Researches Operations", 1))
                 .tags(new Tag("Questions", "Questions Operations", 2))
-                .tags(new Tag("Options", "Options Operations", 3));
+                .tags(new Tag("Options", "Options Operations", 3))
+                .tags(new Tag("Answers", "Answers Operations"));
     }
 
     private ApiInfo buildApiInfo() {
