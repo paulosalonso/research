@@ -1,4 +1,4 @@
-package com.github.paulosalonso.research.domain;
+package com.github.paulosalonso.research.application.dto;
 
 import lombok.*;
 
@@ -8,9 +8,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder(toBuilder = true)
-public class Answer {
-    @Setter
+@Setter
+@Builder
+public class AnswerDTO {
     private OffsetDateTime date;
     private UUID researchId;
     private UUID questionId;

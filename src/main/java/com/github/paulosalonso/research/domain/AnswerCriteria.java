@@ -17,5 +17,4 @@ public class AnswerCriteria {
     private OffsetDateTime dateTo;
     private UUID researchId;
     private UUID questionId;
-    private UUID optionId;
 }

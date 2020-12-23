@@ -32,10 +32,9 @@ public class AnswerCreateTest {
 
     @Test
     public void givenAnAnswerWhenCreateThenCallPort() {
-        var date = OffsetDateTime.now();
+        var testInit = OffsetDateTime.now();
 
         var toSave = Answer.builder()
-                .date(date)
                 .researchId(UUID.randomUUID())
                 .questionId(UUID.randomUUID())
                 .optionId(UUID.randomUUID())
@@ -49,7 +48,7 @@ public class AnswerCreateTest {
         verify(port).create(answerCaptor.capture());
 
         var saved = answerCaptor.getValue();
-        assertThat(saved.getDate()).isEqualTo(date);
+        assertThat(saved.getDate()).isBetween(testInit, OffsetDateTime.now());
         assertThat(saved.getResearchId()).isEqualTo(toSave.getResearchId());
         assertThat(saved.getQuestionId()).isEqualTo(toSave.getQuestionId());
         assertThat(saved.getOptionId()).isEqualTo(toSave.getOptionId());

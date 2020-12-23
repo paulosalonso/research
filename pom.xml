@@ -128,7 +128,6 @@
 					<excludes>
 						<exclude>**/ResearchApplication.*</exclude>
 						<exclude>**/OpenApiConfiguration.*</exclude>
-						<exclude>**/AnswerSpecificationFactory.*</exclude> <!-- TODO - Removes on implementing integrated tests -->
 					</excludes>
 				</configuration>
 				<executions>
@@ -215,7 +214,6 @@
 					</targetTests>
 					<excludedClasses>
 						<param>com.github.paulosalonso.research.application.*</param>
-						<param>com.github.paulosalonso.research.adapter.jpa.repository.specification.AnswerSpecificationFactory</param> <!-- TODO - Removes on implementing integrated tests -->
 					</excludedClasses>
 				</configuration>
 			</plugin>
