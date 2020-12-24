@@ -15,11 +15,6 @@
 	<description>Research API</description>
 
 	<properties>
-		<java.version>11</java.version>
-
-		<jacoco.version>0.8.5</jacoco.version>
-		<springfox.version>3.0.0</springfox.version>
-
 		<skip.unit.tests>false</skip.unit.tests>
 		<skip.it.tests>false</skip.it.tests>
 		<skip.mutation>false</skip.mutation>
@@ -27,6 +22,12 @@
 		<line.coverage>1.00</line.coverage>
 		<branch.coverage>1.00</branch.coverage>
 		<mutation.threshold>100</mutation.threshold>
+
+		<java.version>11</java.version>
+
+		<jacoco.version>0.8.5</jacoco.version>
+		<springfox.version>3.0.0</springfox.version>
+		<flyway.version>7.3.2</flyway.version>
 	</properties>
 
 	<dependencies>
@@ -54,21 +55,31 @@
 			<version>${springfox.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>${flyway.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

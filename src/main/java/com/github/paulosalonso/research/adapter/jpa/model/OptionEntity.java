@@ -19,7 +19,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @FieldNameConstants
 @Entity(name = "Option")
-@Table(name = "option")
+@Table(name = "option") // TODO - Replace table name, because 'option' is a reserved word in MySQL
 public class OptionEntity {
 
     @Id
