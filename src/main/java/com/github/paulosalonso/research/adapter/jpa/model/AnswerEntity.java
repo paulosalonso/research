@@ -33,5 +33,6 @@ public class AnswerEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "`option_id`") // Column name escaped for MySQL compatibility, because "option" table name is quoted because is a reserved word
     private OptionEntity option;
 }

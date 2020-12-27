@@ -1,7 +1,7 @@
 create table answer (
     id bigint not null auto_increment,
     date datetime(6) not null,
-    option_id varchar(255) not null,
+    `option_id` varchar(255) not null,
     question_id varchar(255) not null,
     research_id varchar(255) not null,
     primary key (id)
@@ -31,7 +31,7 @@ create table research (
     primary key (id)
 ) engine=InnoDB charset=UTF8MB4;
 
-alter table answer add constraint FK_answer_option foreign key (option_id) references `option` (id);
+alter table answer add constraint FK_answer_option foreign key (`option_id`) references `option` (id);
 alter table answer add constraint FK_answer_question foreign key (question_id) references question (id);
 alter table answer add constraint FK_answer_research foreign key (research_id) references research (id);
 alter table `option` add constraint FK_option_question foreign key (question_id) references question (id);
