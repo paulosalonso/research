@@ -26,7 +26,7 @@ public class BaseIT {
 
     protected void truncateDatabase() {
         truncateTable("answer");
-        truncateTable("option");
+        truncateTable("\"option\"");
         truncateTable("question");
         truncateTable("research");
     }
