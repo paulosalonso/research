@@ -1,7 +1,7 @@
 package com.github.paulosalonso.research.application;
 
-import com.github.paulosalonso.research.application.dto.AnswerDTO;
-import com.github.paulosalonso.research.application.dto.AnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO.QuestionAnswerInputDTO;
 
 import java.util.UUID;
 
@@ -10,17 +10,18 @@ import static io.restassured.http.ContentType.JSON;
 
 public class AnswerCreator {
 
-    public static AnswerDTO createAnswer(UUID researchId, UUID questionId, UUID optionId) {
-        var answer = AnswerInputDTO.builder()
-                .questionId(questionId)
-                .optionId(optionId)
+    public static void createAnswer(UUID researchId, UUID questionId, UUID optionId) {
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(questionId)
+                        .optionId(optionId)
+                        .build())
                 .build();
 
-        return given()
+        given()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
-                .post("/researches/{researchId}/answers", researchId)
-                .as(AnswerDTO.class);
+                .post("/researches/{researchId}/answers", researchId);
     }
 }

@@ -2,7 +2,7 @@ package com.github.paulosalonso.research.application.controller;
 
 import com.github.paulosalonso.research.application.dto.AnswerCriteriaInputDTO;
 import com.github.paulosalonso.research.application.dto.AnswerDTO;
-import com.github.paulosalonso.research.application.dto.AnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.application.mapper.AnswerDTOMapper;
 import com.github.paulosalonso.research.usecase.answer.AnswerCreate;
 import com.github.paulosalonso.research.usecase.answer.AnswerRead;
@@ -38,10 +38,10 @@ public class AnswerController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public AnswerDTO create(@PathVariable UUID researchId, @RequestBody @Valid AnswerInputDTO answerInputDTO) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void create(@PathVariable UUID researchId, @RequestBody @Valid ResearchAnswerInputDTO researchAnswerInputDTO) {
         try {
-            return mapper.toDTO(answerCreate.create(mapper.toDomain(researchId, answerInputDTO)));
+            mapper.toDomain(researchId, researchAnswerInputDTO).forEach(answerCreate::create);
         } catch (InvalidAnswerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

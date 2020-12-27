@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.application.controller;
 
-import com.github.paulosalonso.research.application.dto.AnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO.QuestionAnswerInputDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -14,7 +15,7 @@ import static com.github.paulosalonso.research.application.ResearchCreator.creat
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -28,9 +29,11 @@ public class AnswerControllerIT extends BaseIT {
         var question = createQuestion(UUID.fromString(research.getId()));
         var option = createOption(UUID.fromString(question.getId()));
 
-        var answer = AnswerInputDTO.builder()
-                .questionId(UUID.fromString(question.getId()))
-                .optionId(UUID.fromString(option.getId()))
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(option.getId()))
+                        .build())
                 .build();
 
         given()
@@ -40,11 +43,7 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.CREATED.value())
-                .body("date", notNullValue())
-                .body("researchId", equalTo(research.getId()))
-                .body("questionId", equalTo(question.getId()))
-                .body("optionId", equalTo(option.getId()));
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -55,9 +54,11 @@ public class AnswerControllerIT extends BaseIT {
         var question = createQuestion(UUID.fromString(research.getId()));
         var option = createOption(UUID.fromString(question.getId()));
 
-        var answer = AnswerInputDTO.builder()
-                .questionId(UUID.fromString(question.getId()))
-                .optionId(UUID.fromString(option.getId()))
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(option.getId()))
+                        .build())
                 .build();
 
         given()
@@ -78,9 +79,11 @@ public class AnswerControllerIT extends BaseIT {
         var question = createQuestion(UUID.fromString(research.getId()));
         var option = createOption(UUID.fromString(question.getId()));
 
-        var answer = AnswerInputDTO.builder()
-                .questionId(UUID.randomUUID())
-                .optionId(UUID.fromString(option.getId()))
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.randomUUID())
+                        .optionId(UUID.fromString(option.getId()))
+                        .build())
                 .build();
 
         given()
@@ -100,9 +103,11 @@ public class AnswerControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(UUID.fromString(research.getId()));
 
-        var answer = AnswerInputDTO.builder()
-                .questionId(UUID.fromString(question.getId()))
-                .optionId(UUID.randomUUID())
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.randomUUID())
+                        .build())
                 .build();
 
         given()

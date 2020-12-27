@@ -2,22 +2,27 @@ package com.github.paulosalonso.research.application.mapper;
 
 import com.github.paulosalonso.research.application.dto.AnswerCriteriaInputDTO;
 import com.github.paulosalonso.research.application.dto.AnswerDTO;
-import com.github.paulosalonso.research.application.dto.AnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.domain.Answer;
 import com.github.paulosalonso.research.domain.AnswerCriteria;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class AnswerDTOMapper {
 
-    public Answer toDomain(UUID researchId, AnswerInputDTO dto) {
-        return Answer.builder()
-                .researchId(researchId)
-                .questionId(dto.getQuestionId())
-                .optionId(dto.getOptionId())
-                .build();
+    public List<Answer> toDomain(UUID researchId, ResearchAnswerInputDTO dto) {
+        return dto.getAnswers().stream()
+                .map(answer -> Answer.builder()
+                        .researchId(researchId)
+                        .questionId(answer.getQuestionId())
+                        .optionId(answer.getOptionId())
+                        .build())
+                .collect(toList());
     }
 
     public AnswerCriteria toDomain(UUID researchId, AnswerCriteriaInputDTO dto) {
