@@ -1,8 +1,8 @@
 package com.github.paulosalonso.research.application.controller;
 
 import com.github.paulosalonso.research.application.dto.AnswerCriteriaInputDTO;
-import com.github.paulosalonso.research.application.dto.AnswerDTO;
 import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchSummaryDTO;
 import com.github.paulosalonso.research.application.mapper.AnswerDTOMapper;
 import com.github.paulosalonso.research.usecase.answer.AnswerCreate;
 import com.github.paulosalonso.research.usecase.answer.AnswerRead;
@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
-
-import static java.util.stream.Collectors.toList;
 
 @Api(tags = "Answers")
 @RequiredArgsConstructor
@@ -30,11 +27,9 @@ public class AnswerController {
     private final AnswerDTOMapper mapper;
 
     @GetMapping
-    public List<AnswerDTO> search(@PathVariable UUID researchId, AnswerCriteriaInputDTO answerCriteriaInputDTO) {
-        return answerRead.search(mapper.toDomain(researchId, answerCriteriaInputDTO))
-                .stream()
-                .map(mapper::toDTO)
-                .collect(toList());
+    public ResearchSummaryDTO search(@PathVariable UUID researchId, AnswerCriteriaInputDTO answerCriteriaInputDTO) {
+        var result = answerRead.search(mapper.toDomain(researchId, answerCriteriaInputDTO));
+        return mapper.toDTO(result, answerCriteriaInputDTO);
     }
 
     @PostMapping
