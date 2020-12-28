@@ -1,13 +1,18 @@
 package com.github.paulosalonso.research.adapter.mapper;
 
-import com.github.paulosalonso.research.adapter.jpa.model.AnswerEntity;
-import com.github.paulosalonso.research.adapter.jpa.model.OptionEntity;
-import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
-import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
+import com.github.paulosalonso.research.adapter.jpa.model.*;
 import com.github.paulosalonso.research.domain.Answer;
+import com.github.paulosalonso.research.domain.ResearchSummary;
+import com.github.paulosalonso.research.domain.ResearchSummary.OptionSummary;
+import com.github.paulosalonso.research.domain.ResearchSummary.QuestionSummary;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class AnswerMapper {
@@ -19,6 +24,34 @@ public class AnswerMapper {
                 .questionId(UUID.fromString(answerEntity.getQuestion().getId()))
                 .optionId(UUID.fromString(answerEntity.getOption().getId()))
                 .build();
+    }
+
+    public ResearchSummary toDomain(UUID researchId, List<ResearchSummaryModel> researchSummary) {
+        var groupedByQuestionSummary = researchSummary.stream()
+                .collect(groupingBy(ResearchSummaryModel::getQuestionId));
+
+        return ResearchSummary.builder()
+                .id(researchId)
+                .questions(fillQuestionSummary(groupedByQuestionSummary))
+                .build();
+    }
+
+    private List<QuestionSummary> fillQuestionSummary(Map<String, List<ResearchSummaryModel>> groupedByQuestionSummary) {
+        return groupedByQuestionSummary.keySet().stream()
+                .map(questionId -> QuestionSummary.builder()
+                        .id(UUID.fromString(questionId))
+                        .options(fillOptionSummary(groupedByQuestionSummary.get(questionId)))
+                        .build())
+                .collect(toList());
+    }
+
+    private List<OptionSummary> fillOptionSummary(List<ResearchSummaryModel> questionSummary) {
+        return questionSummary.stream()
+                .map(summaryEntry -> OptionSummary.builder()
+                        .id(UUID.fromString(summaryEntry.getOptionId()))
+                        .amount(summaryEntry.getAmount())
+                        .build())
+                .collect(toList());
     }
 
     public AnswerEntity toEntity(Answer answer) {

@@ -1,10 +1,15 @@
 package com.github.paulosalonso.research.application.mapper;
 
 import com.github.paulosalonso.research.application.dto.AnswerCriteriaInputDTO;
-import com.github.paulosalonso.research.application.dto.AnswerDTO;
 import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchSummaryDTO;
+import com.github.paulosalonso.research.application.dto.ResearchSummaryDTO.OptionSummaryDTO;
+import com.github.paulosalonso.research.application.dto.ResearchSummaryDTO.QuestionSummaryDTO;
 import com.github.paulosalonso.research.domain.Answer;
 import com.github.paulosalonso.research.domain.AnswerCriteria;
+import com.github.paulosalonso.research.domain.ResearchSummary;
+import com.github.paulosalonso.research.domain.ResearchSummary.OptionSummary;
+import com.github.paulosalonso.research.domain.ResearchSummary.QuestionSummary;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,12 +39,32 @@ public class AnswerDTOMapper {
                 .build();
     }
 
-    public AnswerDTO toDTO(Answer answer) {
-        return AnswerDTO.builder()
-                .date(answer.getDate())
-                .researchId(answer.getResearchId())
-                .questionId(answer.getQuestionId())
-                .optionId(answer.getOptionId())
+    public ResearchSummaryDTO toDTO(ResearchSummary researchSummary, AnswerCriteriaInputDTO answerCriteriaInputDTO) {
+        return ResearchSummaryDTO.builder()
+                .id(researchSummary.getId())
+                .title(researchSummary.getTitle())
+                .criteria(answerCriteriaInputDTO)
+                .questions(researchSummary.getQuestions().stream()
+                        .map(this::toDTO)
+                        .collect(toList()))
+                .build();
+    }
+
+    private QuestionSummaryDTO toDTO(QuestionSummary questionSummary) {
+        return QuestionSummaryDTO.builder()
+                .id(questionSummary.getId())
+                .description(questionSummary.getDescription())
+                .options(questionSummary.getOptions().stream()
+                        .map(this::toDTO)
+                        .collect(toList()))
+                .build();
+    }
+
+    private OptionSummaryDTO toDTO(OptionSummary optionSummary) {
+        return OptionSummaryDTO.builder()
+                .id(optionSummary.getId())
+                .description(optionSummary.getDescription())
+                .amount(optionSummary.getAmount())
                 .build();
     }
 }
