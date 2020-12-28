@@ -5,6 +5,8 @@ import com.github.paulosalonso.research.usecase.port.AnswerPort;
 import lombok.RequiredArgsConstructor;
 
 import java.time.OffsetDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class AnswerCreate {
@@ -12,9 +14,11 @@ public class AnswerCreate {
     private final AnswerPort answerPort;
     private final AnswerValidator validator;
 
-    public Answer create(Answer answer) {
-        validator.validate(answer);
-        answer.setDate(OffsetDateTime.now());
-        return answerPort.create(answer);
+    public void create(UUID researchId, List<Answer> answers) {
+        validator.validate(researchId, answers);
+
+        answers.stream()
+                .peek(answer -> answer.setDate(OffsetDateTime.now()))
+                .forEach(answerPort::create);
     }
 }

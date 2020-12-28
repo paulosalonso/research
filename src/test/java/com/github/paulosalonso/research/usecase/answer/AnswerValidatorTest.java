@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.usecase.answer;
 
 import com.github.paulosalonso.research.domain.Answer;
+import com.github.paulosalonso.research.domain.QuestionCriteria;
 import com.github.paulosalonso.research.usecase.exception.InvalidAnswerException;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
 import com.github.paulosalonso.research.usecase.port.OptionPort;
@@ -8,10 +9,12 @@ import com.github.paulosalonso.research.usecase.port.QuestionPort;
 import com.github.paulosalonso.research.usecase.port.ResearchPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,9 +40,7 @@ public class AnswerValidatorTest {
     public void givenAnAnswerWhenValidatingThenReturnIt() {
         var answer = buildAnswer();
 
-        var validated = validator.validate(answer);
-
-        assertThat(validated).isSameAs(answer);
+        validator.validate(answer.getResearchId(), List.of(answer));
 
         verify(researchPort).read(answer.getResearchId());
         verify(questionPort).read(answer.getResearchId(), answer.getQuestionId());
@@ -52,12 +53,17 @@ public class AnswerValidatorTest {
 
         when(researchPort.read(answer.getResearchId())).thenThrow(NotFoundException.class);
 
-        assertThatThrownBy(() -> validator.validate(answer))
+        assertThatThrownBy(() -> validator.validate(answer.getResearchId(), List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("Research not found: " + answer.getResearchId());
 
+        var criteriaCaptor = ArgumentCaptor.forClass(QuestionCriteria.class);
+        verify(questionPort).search(eq(answer.getResearchId()), criteriaCaptor.capture());
+        var criteria = criteriaCaptor.getValue();
+        assertThat(criteria.getDescription()).isNull();
+        assertThat(criteria.getMultiSelect()).isNull();
+
         verify(researchPort).read(answer.getResearchId());
-        verifyNoInteractions(questionPort);
         verifyNoInteractions(optionPort);
     }
 
@@ -67,7 +73,7 @@ public class AnswerValidatorTest {
 
         when(questionPort.read(answer.getResearchId(), answer.getQuestionId())).thenThrow(NotFoundException.class);
 
-        assertThatThrownBy(() -> validator.validate(answer))
+        assertThatThrownBy(() -> validator.validate(answer.getResearchId(), List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("Question not found: " + answer.getQuestionId());
 
@@ -82,7 +88,7 @@ public class AnswerValidatorTest {
 
         when(optionPort.read(answer.getQuestionId(), answer.getOptionId())).thenThrow(NotFoundException.class);
 
-        assertThatThrownBy(() -> validator.validate(answer))
+        assertThatThrownBy(() -> validator.validate(answer.getResearchId(), List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("Option not found: " + answer.getOptionId());
 

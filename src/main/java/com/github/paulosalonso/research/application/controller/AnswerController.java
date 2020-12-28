@@ -41,7 +41,8 @@ public class AnswerController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void create(@PathVariable UUID researchId, @RequestBody @Valid ResearchAnswerInputDTO researchAnswerInputDTO) {
         try {
-            mapper.toDomain(researchId, researchAnswerInputDTO).forEach(answerCreate::create);
+            var answers = mapper.toDomain(researchId, researchAnswerInputDTO);
+            answerCreate.create(researchId, answers);
         } catch (InvalidAnswerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
