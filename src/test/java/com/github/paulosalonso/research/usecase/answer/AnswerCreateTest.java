@@ -11,12 +11,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AnswerCreateTest {
@@ -40,9 +40,7 @@ public class AnswerCreateTest {
                 .optionId(UUID.randomUUID())
                 .build();
 
-        when(validator.validate(toSave)).thenReturn(toSave);
-
-        answerCreate.create(toSave);
+        answerCreate.create(toSave.getResearchId(), List.of(toSave));
 
         ArgumentCaptor<Answer> answerCaptor = ArgumentCaptor.forClass(Answer.class);
         verify(port).create(answerCaptor.capture());
@@ -53,19 +51,19 @@ public class AnswerCreateTest {
         assertThat(saved.getQuestionId()).isEqualTo(toSave.getQuestionId());
         assertThat(saved.getOptionId()).isEqualTo(toSave.getOptionId());
 
-        verify(validator).validate(toSave);
+        verify(validator).validate(toSave.getResearchId(), List.of(toSave));
     }
 
     @Test
-    public void givenAnAnswerWhenValidationThrowsExceptionThenRethrowsIt() {
+    public void givenAnAnswerWhenIndividualValidationThrowsExceptionThenRethrowsIt() {
         var answer = Answer.builder().build();
         var exception = new InvalidAnswerException("test exception");
 
-        when(validator.validate(answer)).thenThrow(exception);
+        doThrow(exception).when(validator).validate(any(UUID.class), eq(List.of(answer)));
 
-        assertThatThrownBy(() -> answerCreate.create(answer))
+        assertThatThrownBy(() -> answerCreate.create(UUID.randomUUID(), List.of(answer)))
                 .isSameAs(exception);
 
-        verify(validator).validate(answer);
+        verify(validator).validate(any(UUID.class), eq(List.of(answer)));
     }
 }

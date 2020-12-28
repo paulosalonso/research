@@ -1,7 +1,8 @@
 package com.github.paulosalonso.research.application.mapper;
 
 import com.github.paulosalonso.research.application.dto.AnswerCriteriaInputDTO;
-import com.github.paulosalonso.research.application.dto.AnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO.QuestionAnswerInputDTO;
 import com.github.paulosalonso.research.domain.Answer;
 import org.junit.jupiter.api.Test;
 
@@ -17,16 +18,23 @@ public class AnswerDTOMapperTest {
     @Test
     public void givenAnAnswerInputDTOWhenMapThenReturnDomain() {
         var researchId = UUID.randomUUID();
-        var answerInputDTO = AnswerInputDTO.builder()
-                .questionId(UUID.randomUUID())
-                .optionId(UUID.randomUUID())
+        var answerInputDTO = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.randomUUID())
+                        .optionId(UUID.randomUUID())
+                        .build())
                 .build();
 
-        var answer = mapper.toDomain(researchId, answerInputDTO);
+        var result = mapper.toDomain(researchId, answerInputDTO);
 
-        assertThat(answer.getResearchId()).isEqualTo(researchId);
-        assertThat(answer.getQuestionId()).isEqualTo(answerInputDTO.getQuestionId());
-        assertThat(answer.getOptionId()).isEqualTo(answerInputDTO.getOptionId());
+        assertThat(result)
+                .hasSize(1)
+                .first()
+                .satisfies(answer -> {
+                    assertThat(answer.getResearchId()).isEqualTo(researchId);
+                    assertThat(answer.getQuestionId()).isEqualTo(answerInputDTO.getAnswers().get(0).getQuestionId());
+                    assertThat(answer.getOptionId()).isEqualTo(answerInputDTO.getAnswers().get(0).getOptionId());
+                });
     }
 
     @Test

@@ -1,8 +1,9 @@
 package com.github.paulosalonso.research.application;
 
-import com.github.paulosalonso.research.application.dto.AnswerDTO;
-import com.github.paulosalonso.research.application.dto.AnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO;
+import com.github.paulosalonso.research.application.dto.ResearchAnswerInputDTO.QuestionAnswerInputDTO;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -10,17 +11,19 @@ import static io.restassured.http.ContentType.JSON;
 
 public class AnswerCreator {
 
-    public static AnswerDTO createAnswer(UUID researchId, UUID questionId, UUID optionId) {
-        var answer = AnswerInputDTO.builder()
-                .questionId(questionId)
-                .optionId(optionId)
-                .build();
+    public static void createAnswer(UUID researchId, Map<UUID, UUID> answers) {
+        var builder = ResearchAnswerInputDTO.builder();
 
-        return given()
+        answers.keySet()
+                .forEach(questionId -> builder.answer(QuestionAnswerInputDTO.builder()
+                        .questionId(questionId)
+                        .optionId(answers.get(questionId))
+                        .build()));
+
+        given()
                 .contentType(JSON)
                 .accept(JSON)
-                .body(answer)
-                .post("/researches/{researchId}/answers", researchId)
-                .as(AnswerDTO.class);
+                .body(builder.build())
+                .post("/researches/{researchId}/answers", researchId);
     }
 }
