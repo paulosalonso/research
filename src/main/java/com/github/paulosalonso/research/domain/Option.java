@@ -14,6 +14,8 @@ public class Option {
 
     private UUID id;
 
+    private Integer sequence;
+
     @NonNull
     private final String description;
 

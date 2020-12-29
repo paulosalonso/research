@@ -27,8 +27,8 @@ public class AnswerRepositoryImpl implements AnswerRepositoryCustom {
         var root = criteriaQuery.from(AnswerEntity.class);
 
         var selection = criteriaBuilder.construct(ResearchSummaryModel.class,
-                root.get(AnswerEntity.Fields.question).get(QuestionEntity.Fields.id),
-                root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.id),
+                root.get(AnswerEntity.Fields.question),
+                root.get(AnswerEntity.Fields.option),
                 criteriaBuilder.count(root));
 
         var predicate = answerSpecificationFactory
@@ -37,8 +37,11 @@ public class AnswerRepositoryImpl implements AnswerRepositoryCustom {
         criteriaQuery
                 .select(selection)
                 .where(predicate)
+                .orderBy(criteriaBuilder.asc(root.get(AnswerEntity.Fields.question).get(QuestionEntity.Fields.id)), // TODO - Alterar para ordenar pela sequência quando for implementado
+                        criteriaBuilder.asc(root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.sequence)))
                 .groupBy(root.get(AnswerEntity.Fields.question).get(QuestionEntity.Fields.id),
-                        root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.id));
+                        root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.id),
+                        root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.sequence));
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }

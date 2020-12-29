@@ -87,4 +87,11 @@ public class QuestionGateway implements QuestionPort {
 
         questionRepository.delete(question);
     }
+
+    @Override
+    public Integer getNextOptionSequence(UUID questionId) {
+        return questionRepository.findLastOptionSequence(questionId.toString())
+                .map(sequence -> sequence + 1)
+                .orElse(1);
+    }
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.adapter.jpa.repository.specification.NoFilterSpecificationFactory.findWithoutFilter;
+import static com.github.paulosalonso.research.adapter.jpa.repository.specification.GeneralSpecificationFactory.findWithoutFilter;
 import static java.util.Optional.ofNullable;
 
 @Component

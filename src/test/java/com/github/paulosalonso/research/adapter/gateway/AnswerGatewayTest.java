@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
 import com.github.paulosalonso.research.adapter.jpa.model.AnswerEntity;
+import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.AnswerRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.ResearchRepository;
 import com.github.paulosalonso.research.adapter.mapper.AnswerMapper;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Collections.emptyList;
@@ -67,15 +69,19 @@ public class AnswerGatewayTest {
                 .questionId(UUID.randomUUID())
                 .build();
 
-        when(researchRepository.existsById(criteria.getResearchId().toString())).thenReturn(true);
+        var research = ResearchEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .build();
+
+        when(researchRepository.findById(criteria.getResearchId().toString())).thenReturn(Optional.of(research));
         when(answerRepository.search(criteria)).thenReturn(emptyList());
-        when(mapper.toDomain(criteria.getResearchId(), emptyList())).thenCallRealMethod();
+        when(mapper.toDomain(research, emptyList())).thenCallRealMethod();
 
         gateway.search(criteria);
 
-        verify(researchRepository).existsById(criteria.getResearchId().toString());
+        verify(researchRepository).findById(criteria.getResearchId().toString());
         verify(answerRepository).search(criteria);
-        verify(mapper).toDomain(criteria.getResearchId(), emptyList());
+        verify(mapper).toDomain(research, emptyList());
     }
 
     @Test
@@ -87,12 +93,12 @@ public class AnswerGatewayTest {
                 .questionId(UUID.randomUUID())
                 .build();
 
-        when(researchRepository.existsById(criteria.getResearchId().toString())).thenReturn(false);
+        when(researchRepository.findById(criteria.getResearchId().toString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> gateway.search(criteria))
                 .isExactlyInstanceOf(NotFoundException.class);
 
-        verify(researchRepository).existsById(criteria.getResearchId().toString());
+        verify(researchRepository).findById(criteria.getResearchId().toString());
         verifyNoInteractions(answerRepository);
         verifyNoInteractions(mapper);
     }

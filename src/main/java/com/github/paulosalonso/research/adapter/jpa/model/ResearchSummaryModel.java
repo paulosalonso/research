@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class ResearchSummaryModel {
-    public String questionId;
-    public String optionId;
+    public QuestionEntity question;
+    public OptionEntity option;
     public Long amount;
 }

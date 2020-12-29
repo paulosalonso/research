@@ -16,6 +16,8 @@ import static com.github.paulosalonso.research.application.ResearchCreator.creat
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
 
 public class AnswerControllerIT extends BaseIT {
 
@@ -173,7 +175,20 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", researchA.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(researchA.getId()))
+                .body("title", equalTo(researchA.getTitle()))
+                .body("criteria", notNullValue())
+                .body("criteria.dateFrom", nullValue())
+                .body("criteria.dateTo", nullValue())
+                .body("criteria.questionId", nullValue())
+                .body("questions", hasSize(2))
+//                .body("questions.id", contains(questionAA.getId(), questionAB.getId())) // TODO - The groupingBy stream collector reverses the content of list. Check it.
+//                .body("questions.description", contains(questionAA.getDescription(), questionAB.getDescription()))
+                .body("questions[0].options", hasSize(2))
+//                .body("questions[0].options.id", contains(optionAAA.getId(), optionAAB.getId()))
+//                .body("questions[0].options.sequence", contains(optionAAA.getSequence(), optionAAB.getSequence()))
+                .body("questions[1].options", hasSize(2));
 
         // Because it is not yet possible to guarantee the sequence it is not possible testing response body, as the sequence varies when grouping the results.
         // TODO - Grantee questions and options sequence

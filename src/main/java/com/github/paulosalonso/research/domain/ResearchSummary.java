@@ -33,6 +33,7 @@ public class ResearchSummary {
     @Builder
     public static class OptionSummary {
         private UUID id;
+        private Integer sequence;
         private String description;
         private Long amount;
     }

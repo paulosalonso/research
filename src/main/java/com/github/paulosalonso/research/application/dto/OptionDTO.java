@@ -10,5 +10,6 @@ import lombok.*;
 public class OptionDTO {
 
     private String id;
+    private Integer sequence;
     private String description;
 }

@@ -26,21 +26,23 @@ public class AnswerMapper {
                 .build();
     }
 
-    public ResearchSummary toDomain(UUID researchId, List<ResearchSummaryModel> researchSummary) {
+    public ResearchSummary toDomain(ResearchEntity research, List<ResearchSummaryModel> researchSummary) {
         var groupedByQuestionSummary = researchSummary.stream()
-                .collect(groupingBy(ResearchSummaryModel::getQuestionId));
+                .collect(groupingBy(ResearchSummaryModel::getQuestion, toList()));
 
         return ResearchSummary.builder()
-                .id(researchId)
+                .id(UUID.fromString(research.getId()))
+                .title(research.getTitle())
                 .questions(fillQuestionSummary(groupedByQuestionSummary))
                 .build();
     }
 
-    private List<QuestionSummary> fillQuestionSummary(Map<String, List<ResearchSummaryModel>> groupedByQuestionSummary) {
+    private List<QuestionSummary> fillQuestionSummary(Map<QuestionEntity, List<ResearchSummaryModel>> groupedByQuestionSummary) {
         return groupedByQuestionSummary.keySet().stream()
-                .map(questionId -> QuestionSummary.builder()
-                        .id(UUID.fromString(questionId))
-                        .options(fillOptionSummary(groupedByQuestionSummary.get(questionId)))
+                .map(question -> QuestionSummary.builder()
+                        .id(UUID.fromString(question.getId()))
+                        .description(question.getDescription())
+                        .options(fillOptionSummary(groupedByQuestionSummary.get(question)))
                         .build())
                 .collect(toList());
     }
@@ -48,7 +50,9 @@ public class AnswerMapper {
     private List<OptionSummary> fillOptionSummary(List<ResearchSummaryModel> questionSummary) {
         return questionSummary.stream()
                 .map(summaryEntry -> OptionSummary.builder()
-                        .id(UUID.fromString(summaryEntry.getOptionId()))
+                        .id(UUID.fromString(summaryEntry.getOption().getId()))
+                        .sequence(summaryEntry.getOption().getSequence())
+                        .description(summaryEntry.getOption().getDescription())
                         .amount(summaryEntry.getAmount())
                         .build())
                 .collect(toList());

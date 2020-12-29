@@ -19,6 +19,7 @@ public class OptionMapper {
 
         return Option.builder()
                 .id(id)
+                .sequence(optionEntity.getSequence())
                 .description(optionEntity.getDescription())
                 .build();
     }
@@ -28,6 +29,7 @@ public class OptionMapper {
 
         return OptionEntity.builder()
                 .id(id)
+                .sequence(option.getSequence())
                 .description(option.getDescription())
                 .build();
     }

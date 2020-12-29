@@ -63,6 +63,7 @@ public class AnswerDTOMapper {
     private OptionSummaryDTO toDTO(OptionSummary optionSummary) {
         return OptionSummaryDTO.builder()
                 .id(optionSummary.getId())
+                .sequence(optionSummary.getSequence())
                 .description(optionSummary.getDescription())
                 .amount(optionSummary.getAmount())
                 .build();
