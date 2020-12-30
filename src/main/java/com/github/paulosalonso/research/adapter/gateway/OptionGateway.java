@@ -1,10 +1,10 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
+import com.github.paulosalonso.research.adapter.jpa.mapper.OptionMapper;
 import com.github.paulosalonso.research.adapter.jpa.model.OptionEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.OptionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.QuestionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.specification.OptionSpecificationFactory;
-import com.github.paulosalonso.research.adapter.mapper.OptionMapper;
 import com.github.paulosalonso.research.domain.Option;
 import com.github.paulosalonso.research.domain.OptionCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;

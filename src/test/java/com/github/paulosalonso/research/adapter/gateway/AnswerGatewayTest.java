@@ -1,10 +1,10 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
+import com.github.paulosalonso.research.adapter.jpa.mapper.AnswerMapper;
 import com.github.paulosalonso.research.adapter.jpa.model.AnswerEntity;
 import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.AnswerRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.ResearchRepository;
-import com.github.paulosalonso.research.adapter.mapper.AnswerMapper;
 import com.github.paulosalonso.research.domain.Answer;
 import com.github.paulosalonso.research.domain.AnswerCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;

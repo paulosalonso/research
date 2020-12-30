@@ -1,9 +1,9 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
+import com.github.paulosalonso.research.adapter.jpa.mapper.ResearchMapper;
 import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.ResearchRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.specification.ResearchSpecificationFactory;
-import com.github.paulosalonso.research.adapter.mapper.ResearchMapper;
 import com.github.paulosalonso.research.domain.Research;
 import com.github.paulosalonso.research.domain.ResearchCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;

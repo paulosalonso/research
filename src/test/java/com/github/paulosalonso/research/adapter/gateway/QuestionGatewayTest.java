@@ -1,11 +1,11 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
+import com.github.paulosalonso.research.adapter.jpa.mapper.QuestionMapper;
 import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
 import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.QuestionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.ResearchRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.specification.QuestionSpecificationFactory;
-import com.github.paulosalonso.research.adapter.mapper.QuestionMapper;
 import com.github.paulosalonso.research.domain.Question;
 import com.github.paulosalonso.research.domain.QuestionCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
