@@ -65,4 +65,9 @@ public class ResearchGateway implements ResearchPort {
             throw new NotFoundException();
         }
     }
+
+    @Override
+    public Integer getNextQuestionSequence(UUID researchId) {
+        return 1; // TODO - Implements real logic
+    }
 }

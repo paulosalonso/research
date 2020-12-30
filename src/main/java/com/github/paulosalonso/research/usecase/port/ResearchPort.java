@@ -13,4 +13,5 @@ public interface ResearchPort {
     List<Research> search(ResearchCriteria criteria);
     Research update(Research research);
     void delete(UUID id);
+    Integer getNextQuestionSequence(UUID researchId);
 }
