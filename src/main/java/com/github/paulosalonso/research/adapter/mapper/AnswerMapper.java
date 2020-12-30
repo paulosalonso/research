@@ -44,6 +44,7 @@ public class AnswerMapper {
         return research.getQuestions().stream()
                 .map(question -> QuestionSummary.builder()
                         .id(UUID.fromString(question.getId()))
+                        .sequence(question.getSequence())
                         .description(question.getDescription())
                         .options(fillOptions(question, groupedByQuestionSummary.getOrDefault(question, emptyList())))
                         .build())

@@ -17,6 +17,7 @@ public class QuestionDTOMapperTest {
     public void givenAQuestionWhenMapThenReturnDTO() {
         var question = Question.builder()
                 .id(UUID.randomUUID())
+                .sequence(1)
                 .description("description")
                 .multiSelect(true)
                 .build();
@@ -24,6 +25,7 @@ public class QuestionDTOMapperTest {
         var dto = mapper.toDTO(question);
 
         assertThat(dto.getId()).isEqualTo(question.getId().toString());
+        assertThat(dto.getSequence()).isEqualTo(question.getSequence());
         assertThat(dto.getDescription()).isEqualTo(question.getDescription());
         assertThat(dto.getMultiSelect()).isEqualTo(question.getMultiSelect());
     }

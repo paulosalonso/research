@@ -96,42 +96,49 @@ public class AnswerMapperTest {
         var summary = mapper.toDomain(research, summaryModel);
 
         assertThat(summary.getId()).isEqualTo(UUID.fromString(research.getId()));
+        assertThat(summary.getTitle()).isEqualTo(research.getTitle());
         assertThat(summary.getQuestions()).hasSize(2)
                 .satisfies(questions -> {
-                    var mappedQuestionA = questions.get(0); // TODO - The groupingBy stream collector reverses the content of list. Check it.
-//                    assertThat(mappedQuestionA.getId()).isEqualTo(UUID.fromString(questionA.getId()));
+                    var mappedQuestionA = questions.get(0);
+                    assertThat(mappedQuestionA.getId()).isEqualTo(UUID.fromString(questionA.getId()));
+                    assertThat(mappedQuestionA.getSequence()).isEqualTo(questionA.getSequence());
+                    assertThat(mappedQuestionA.getDescription()).isEqualTo(questionA.getDescription());
                     assertThat(mappedQuestionA.getOptions())
-                            .hasSize(2);
-//                            .satisfies(options -> {
-//                                var mappedOptionAA = options.get(0);
-//                                assertThat(mappedOptionAA.getId()).isEqualTo(UUID.fromString(optionAA.getId()));
-//                                assertThat(mappedOptionAA.getAmount()).isEqualTo(5L);
-//
-//                                var mappedOptionAB = options.get(1);
-//                                assertThat(mappedOptionAB.getId()).isEqualTo(UUID.fromString(optionAB.getId()));
-//                                assertThat(mappedOptionAB.getAmount()).isEqualTo(10L);
-//                            });
+                            .hasSize(2)
+                            .satisfies(options -> {
+                                var mappedOptionAA = options.get(0);
+                                assertThat(mappedOptionAA.getId()).isEqualTo(UUID.fromString(optionAA.getId()));
+                                assertThat(mappedOptionAA.getSequence()).isEqualTo(optionAA.getSequence());
+                                assertThat(mappedOptionAA.getDescription()).isEqualTo(optionAA.getDescription());
+                                assertThat(mappedOptionAA.getAmount()).isEqualTo(5L);
 
-                    var mappedQuestionB = questions.get(1); // TODO - The groupingBy stream collector reverses the content of list. Check it.
-//                    assertThat(mappedQuestionB.getId()).isEqualTo(UUID.fromString(questionB.getId()));
+                                var mappedOptionAB = options.get(1);
+                                assertThat(mappedOptionAB.getId()).isEqualTo(UUID.fromString(optionAB.getId()));
+                                assertThat(mappedOptionAB.getSequence()).isEqualTo(optionAB.getSequence());
+                                assertThat(mappedOptionAB.getDescription()).isEqualTo(optionAB.getDescription());
+                                assertThat(mappedOptionAB.getAmount()).isEqualTo(10L);
+                            });
+
+                    var mappedQuestionB = questions.get(1);
+                    assertThat(mappedQuestionB.getId()).isEqualTo(UUID.fromString(questionB.getId()));
+                    assertThat(mappedQuestionB.getSequence()).isEqualTo(questionB.getSequence());
+                    assertThat(mappedQuestionB.getDescription()).isEqualTo(questionB.getDescription());
                     assertThat(mappedQuestionB.getOptions())
-                            .hasSize(2);
-//                            .satisfies(options -> {
-//                                var mappedOptionBA = options.get(0);
-//                                assertThat(mappedOptionBA.getId()).isEqualTo(UUID.fromString(optionBA.getId()));
-//                                assertThat(mappedOptionBA.getSequence()).isEqualTo(optionBA.getSequence());
-//                                assertThat(mappedOptionBA.getDescription()).isEqualTo(optionBA.getDescription());
-//                                assertThat(mappedOptionBA.getAmount()).isEqualTo(7L);
-//
-//                                var mappedOptionBB = options.get(1);
-//                                assertThat(mappedOptionBB.getId()).isEqualTo(UUID.fromString(optionBB.getId()));
-//                                assertThat(mappedOptionBB.getSequence()).isEqualTo(optionBB.getSequence());
-//                                assertThat(mappedOptionBB.getDescription()).isEqualTo(optionBB.getDescription());
-//                                assertThat(mappedOptionBB.getAmount()).isEqualTo(14L);
-//                            });
-                });
+                            .hasSize(2)
+                            .satisfies(options -> {
+                                var mappedOptionBA = options.get(0);
+                                assertThat(mappedOptionBA.getId()).isEqualTo(UUID.fromString(optionBA.getId()));
+                                assertThat(mappedOptionBA.getSequence()).isEqualTo(optionBA.getSequence());
+                                assertThat(mappedOptionBA.getDescription()).isEqualTo(optionBA.getDescription());
+                                assertThat(mappedOptionBA.getAmount()).isEqualTo(7L);
 
-        // TODO - Grantee questions sequence
+                                var mappedOptionBB = options.get(1);
+                                assertThat(mappedOptionBB.getId()).isEqualTo(UUID.fromString(optionBB.getId()));
+                                assertThat(mappedOptionBB.getSequence()).isEqualTo(optionBB.getSequence());
+                                assertThat(mappedOptionBB.getDescription()).isEqualTo(optionBB.getDescription());
+                                assertThat(mappedOptionBB.getAmount()).isEqualTo(14L);
+                            });
+                });
     }
 
     private QuestionEntity buildQuestion(UUID id) {

@@ -12,7 +12,7 @@ public class OptionCreator {
 
     public static OptionDTO createOption(UUID questionId) {
         var body = OptionInputDTO.builder()
-                .description("description")
+                .description("description " + questionId)
                 .build();
 
         return createOption(questionId, body);

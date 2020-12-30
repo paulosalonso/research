@@ -10,6 +10,7 @@ import lombok.*;
 public class QuestionDTO {
 
     private String id;
+    private Integer sequence;
     private String description;
     private Boolean multiSelect;
 
