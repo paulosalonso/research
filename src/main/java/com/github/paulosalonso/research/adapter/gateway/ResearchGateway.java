@@ -68,6 +68,8 @@ public class ResearchGateway implements ResearchPort {
 
     @Override
     public Integer getNextQuestionSequence(UUID researchId) {
-        return 1; // TODO - Implements real logic
+        return repository.findLastQuestionSequence(researchId.toString())
+                .map(sequence -> sequence + 1)
+                .orElse(1);
     }
 }
