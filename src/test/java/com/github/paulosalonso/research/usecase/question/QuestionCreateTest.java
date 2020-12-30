@@ -2,6 +2,7 @@ package com.github.paulosalonso.research.usecase.question;
 
 import com.github.paulosalonso.research.domain.Question;
 import com.github.paulosalonso.research.usecase.port.QuestionPort;
+import com.github.paulosalonso.research.usecase.port.ResearchPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,6 +15,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class QuestionCreateTest {
@@ -22,7 +24,10 @@ public class QuestionCreateTest {
     private QuestionCreate questionCreate;
 
     @Mock
-    private QuestionPort port;
+    private QuestionPort questionPort;
+
+    @Mock
+    private ResearchPort researchPort;
 
     @Test
     public void givenAResearchIdAndAQuestionWhenCreateThenCallPort() {
@@ -33,13 +38,17 @@ public class QuestionCreateTest {
                 .multiSelect(true)
                 .build();
 
+        when(researchPort.getNextQuestionSequence(id)).thenReturn(1);
+
         ArgumentCaptor<Question> questionCaptor = ArgumentCaptor.forClass(Question.class);
         questionCreate.create(id, toSave);
 
-        verify(port).create(eq(id), questionCaptor.capture());
+        verify(researchPort).getNextQuestionSequence(id);
+        verify(questionPort).create(eq(id), questionCaptor.capture());
 
         var saved = questionCaptor.getValue();
         assertThat(saved.getId()).isNotNull();
+        assertThat(saved.getSequence()).isEqualTo(1);
         assertThat(saved.getDescription()).isEqualTo(toSave.getDescription());
         assertThat(saved.getMultiSelect()).isEqualTo(toSave.getMultiSelect());
     }

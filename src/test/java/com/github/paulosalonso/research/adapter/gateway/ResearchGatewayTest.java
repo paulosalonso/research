@@ -172,4 +172,10 @@ public class ResearchGatewayTest {
         verify(repository).deleteById(id.toString());
         verifyNoMoreInteractions(repository);
     }
+
+    @Test
+    public void givenAResearchWithoutQuestionsWhenGetNextQuestionSequenceThenReturnOne() {
+        var sequence = gateway.getNextQuestionSequence(UUID.randomUUID());
+        assertThat(sequence).isEqualTo(1);
+    }
 }
