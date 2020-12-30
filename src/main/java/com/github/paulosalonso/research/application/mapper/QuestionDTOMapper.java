@@ -13,6 +13,7 @@ public class QuestionDTOMapper {
     public QuestionDTO toDTO(Question question) {
         return QuestionDTO.builder()
                 .id(question.getId().toString())
+                .sequence(question.getSequence())
                 .description(question.getDescription())
                 .multiSelect(question.getMultiSelect())
                 .build();

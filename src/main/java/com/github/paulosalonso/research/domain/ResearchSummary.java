@@ -22,6 +22,7 @@ public class ResearchSummary {
     @Builder
     public static class QuestionSummary {
         private UUID id;
+        private Integer sequence;
         private String description;
         private List<OptionSummary> options;
     }
