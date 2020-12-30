@@ -23,6 +23,9 @@ public class QuestionEntity {
     @Id
     private String id;
 
+    @NotNull
+    private Integer sequence;
+
     @NotBlank
     private String description;
 

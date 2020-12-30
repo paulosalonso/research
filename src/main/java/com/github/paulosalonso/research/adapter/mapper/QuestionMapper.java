@@ -21,6 +21,7 @@ public class QuestionMapper {
 
         return Question.builder()
                 .id(id)
+                .sequence(questionEntity.getSequence())
                 .description(questionEntity.getDescription())
                 .multiSelect(questionEntity.getMultiSelect())
                 .build();
@@ -31,6 +32,7 @@ public class QuestionMapper {
 
         return QuestionEntity.builder()
                 .id(id)
+                .sequence(question.getSequence())
                 .description(question.getDescription())
                 .multiSelect(question.getMultiSelect())
                 .build();
