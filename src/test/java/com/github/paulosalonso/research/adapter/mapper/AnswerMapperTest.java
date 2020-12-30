@@ -62,10 +62,14 @@ public class AnswerMapperTest {
         var questionA = buildQuestion(UUID.randomUUID());
         var optionAA = buildOption(UUID.randomUUID(), 1);
         var optionAB = buildOption(UUID.randomUUID(), 2);
+        questionA.setOptions(List.of(optionAA, optionAB));
 
         var questionB = buildQuestion(UUID.randomUUID());
         var optionBA = buildOption(UUID.randomUUID(), 1);
         var optionBB = buildOption(UUID.randomUUID(), 2);
+        questionB.setOptions(List.of(optionBA, optionBB));
+
+        research.setQuestions(List.of(questionA, questionB));
 
         var summaryModel = List.of(
                 ResearchSummaryModel.builder()

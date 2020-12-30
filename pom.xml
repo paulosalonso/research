@@ -19,9 +19,9 @@
 		<skip.it.tests>false</skip.it.tests>
 		<skip.mutation>false</skip.mutation>
 
-		<line.coverage>0.97</line.coverage> <!-- TODO - Returns to 100 after implementing questions and options sequence -->
+		<line.coverage>1.00</line.coverage>
 		<branch.coverage>1.00</branch.coverage>
-		<mutation.threshold>92</mutation.threshold> <!-- TODO - Returns to 100 after implementing questions and options sequence -->
+		<mutation.threshold>100</mutation.threshold>
 
 		<java.version>11</java.version>
 

@@ -256,4 +256,28 @@ public class QuestionGatewayTest {
         verify(questionRepository, never()).delete(question);
         verifyNoMoreInteractions(questionRepository);
     }
+
+    @Test
+    public void givenAQuestionWithoutOptionsWhenGetNextOptionSequenceThenReturnOne() {
+        var id = UUID.randomUUID();
+
+        when(questionRepository.findLastOptionSequence(id.toString())).thenReturn(Optional.empty());
+
+        var sequence = gateway.getNextOptionSequence(id);
+
+        assertThat(sequence).isEqualTo(1);
+        verify(questionRepository).findLastOptionSequence(id.toString());
+    }
+
+    @Test
+    public void givenAQuestionWithOptionsWhenGetNextOptionSequenceThenReturnNextSequence() {
+        var id = UUID.randomUUID();
+
+        when(questionRepository.findLastOptionSequence(id.toString())).thenReturn(Optional.of(1));
+
+        var sequence = gateway.getNextOptionSequence(id);
+
+        assertThat(sequence).isEqualTo(2);
+        verify(questionRepository).findLastOptionSequence(id.toString());
+    }
 }

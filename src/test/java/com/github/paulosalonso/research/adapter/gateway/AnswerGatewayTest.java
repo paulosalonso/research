@@ -71,6 +71,7 @@ public class AnswerGatewayTest {
 
         var research = ResearchEntity.builder()
                 .id(UUID.randomUUID().toString())
+                .questions(emptyList())
                 .build();
 
         when(researchRepository.findById(criteria.getResearchId().toString())).thenReturn(Optional.of(research));
