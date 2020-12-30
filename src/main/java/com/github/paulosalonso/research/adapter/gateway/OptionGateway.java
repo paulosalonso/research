@@ -1,5 +1,6 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
+import com.github.paulosalonso.research.adapter.jpa.model.OptionEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.OptionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.QuestionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.specification.OptionSpecificationFactory;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.adapter.jpa.repository.specification.GeneralSpecificationFactory.orderByAsc;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -54,7 +56,8 @@ public class OptionGateway implements OptionPort {
     @Override
     public List<Option> search(UUID questionId, OptionCriteria criteria) {
         var specification = specificationFactory.findByQuestionId(questionId.toString())
-                .and(specificationFactory.findByOptionCriteria(criteria));
+                .and(specificationFactory.findByOptionCriteria(criteria))
+                .and(orderByAsc(OptionEntity.Fields.sequence));
 
         return optionRepository.findAll(specification)
                 .stream()

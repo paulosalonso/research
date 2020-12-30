@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
@@ -26,30 +27,40 @@ public class AnswerMapper {
                 .build();
     }
 
-    public ResearchSummary toDomain(UUID researchId, List<ResearchSummaryModel> researchSummary) {
+    public ResearchSummary toDomain(ResearchEntity research, List<ResearchSummaryModel> researchSummary) {
         var groupedByQuestionSummary = researchSummary.stream()
-                .collect(groupingBy(ResearchSummaryModel::getQuestionId));
+                .collect(groupingBy(ResearchSummaryModel::getQuestion, toList()));
 
         return ResearchSummary.builder()
-                .id(researchId)
-                .questions(fillQuestionSummary(groupedByQuestionSummary))
+                .id(UUID.fromString(research.getId()))
+                .title(research.getTitle())
+                .questions(fillQuestions(research, groupedByQuestionSummary))
                 .build();
     }
 
-    private List<QuestionSummary> fillQuestionSummary(Map<String, List<ResearchSummaryModel>> groupedByQuestionSummary) {
-        return groupedByQuestionSummary.keySet().stream()
-                .map(questionId -> QuestionSummary.builder()
-                        .id(UUID.fromString(questionId))
-                        .options(fillOptionSummary(groupedByQuestionSummary.get(questionId)))
+    private List<QuestionSummary> fillQuestions(ResearchEntity research,
+                                            Map<QuestionEntity, List<ResearchSummaryModel>> groupedByQuestionSummary) {
+
+        return research.getQuestions().stream()
+                .map(question -> QuestionSummary.builder()
+                        .id(UUID.fromString(question.getId()))
+                        .description(question.getDescription())
+                        .options(fillOptions(question, groupedByQuestionSummary.getOrDefault(question, emptyList())))
                         .build())
                 .collect(toList());
     }
 
-    private List<OptionSummary> fillOptionSummary(List<ResearchSummaryModel> questionSummary) {
-        return questionSummary.stream()
-                .map(summaryEntry -> OptionSummary.builder()
-                        .id(UUID.fromString(summaryEntry.getOptionId()))
-                        .amount(summaryEntry.getAmount())
+    private List<OptionSummary> fillOptions(QuestionEntity question, List<ResearchSummaryModel> questionSummary) {
+        return question.getOptions().stream()
+                .map(option -> OptionSummary.builder()
+                        .id(UUID.fromString(option.getId()))
+                        .sequence(option.getSequence())
+                        .description(option.getDescription())
+                        .amount(questionSummary.stream()
+                                .filter(optionSummary -> optionSummary.getOption().equals(option))
+                                .findFirst()
+                                .map(ResearchSummaryModel::getAmount)
+                                .orElse(0L))
                         .build())
                 .collect(toList());
     }

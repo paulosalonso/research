@@ -2,7 +2,7 @@ package com.github.paulosalonso.research.application.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class OptionInputDTO {
 
-    @NotNull
+    @NotBlank
     private String description;
 
 }

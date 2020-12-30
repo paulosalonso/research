@@ -26,10 +26,10 @@ public class AnswerGateway implements AnswerPort {
 
     @Override
     public ResearchSummary search(AnswerCriteria answerCriteria) {
-        if (!researchRepository.existsById(answerCriteria.getResearchId().toString())) {
-            throw new NotFoundException();
-        }
+        var research = researchRepository
+                .findById(answerCriteria.getResearchId().toString())
+                .orElseThrow(NotFoundException::new);
 
-        return mapper.toDomain(answerCriteria.getResearchId(), answerRepository.search(answerCriteria));
+        return mapper.toDomain(research, answerRepository.search(answerCriteria));
     }
 }

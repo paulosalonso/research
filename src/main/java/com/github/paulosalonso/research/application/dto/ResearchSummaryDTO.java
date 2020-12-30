@@ -36,6 +36,7 @@ public class ResearchSummaryDTO {
     @Builder
     public static class OptionSummaryDTO {
         private UUID id;
+        private Integer sequence;
         private String description;
         private Long amount;
     }

@@ -16,6 +16,8 @@ import static com.github.paulosalonso.research.application.ResearchCreator.creat
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
 
 public class AnswerControllerIT extends BaseIT {
 
@@ -173,10 +175,23 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", researchA.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(researchA.getId()))
+                .body("title", equalTo(researchA.getTitle()))
+                .body("criteria", notNullValue())
+                .body("criteria.dateFrom", nullValue())
+                .body("criteria.dateTo", nullValue())
+                .body("criteria.questionId", nullValue())
+                .body("questions", hasSize(2))
+//                .body("questions.id", contains(questionAA.getId(), questionAB.getId())) // TODO - The groupingBy stream collector reverses the content of list. Check it.
+//                .body("questions.description", contains(questionAA.getDescription(), questionAB.getDescription()))
+                .body("questions[0].options", hasSize(2))
+//                .body("questions[0].options.id", contains(optionAAA.getId(), optionAAB.getId()))
+//                .body("questions[0].options.sequence", contains(optionAAA.getSequence(), optionAAB.getSequence()))
+                .body("questions[1].options", hasSize(2));
 
-        // Because it is not yet possible to guarantee the sequence it is not possible testing response body, as the sequence varies when grouping the results.
-        // TODO - Grantee questions and options sequence
+        // Because it is not yet possible to ensure the sequence it is not possible testing response body, as the sequence varies when grouping the results.
+        // TODO - Ensure questions and options sequence
     }
 
     @Test
@@ -185,13 +200,14 @@ public class AnswerControllerIT extends BaseIT {
 
         var research = createResearch();
         var questionA = createQuestion(UUID.fromString(research.getId()));
-        var optionA = createOption(UUID.fromString(questionA.getId()));
+        var optionAA = createOption(UUID.fromString(questionA.getId()));
+        createOption(UUID.fromString(questionA.getId()));
         var questionB = createQuestion(UUID.fromString(research.getId()));
-        var optionB = createOption(UUID.fromString(questionB.getId()));
+        var optionBA = createOption(UUID.fromString(questionB.getId()));
 
         createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(questionA.getId()), UUID.fromString(optionA.getId()),
-                UUID.fromString(questionB.getId()), UUID.fromString(optionB.getId())));
+                UUID.fromString(questionA.getId()), UUID.fromString(optionAA.getId()),
+                UUID.fromString(questionB.getId()), UUID.fromString(optionBA.getId())));
 
         given()
                 .accept(JSON)
@@ -199,9 +215,10 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
-
-        // TODO - Implements body assertions after grantee questions and options sequence
+                .statusCode(HttpStatus.OK.value())
+                .body("questions[0].options[0].amount", equalTo(1))
+                .body("questions[0].options[1].amount", equalTo(0))
+                .body("questions[1].options[0].amount", equalTo(0));
     }
 
     @Test
@@ -209,7 +226,8 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(UUID.fromString(research.getId()));
+        createOption(UUID.fromString(question.getId()));
 
         given()
                 .accept(JSON)
@@ -217,9 +235,8 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
-
-        // TODO - Implements body assertions after grantee questions and options sequence
+                .statusCode(HttpStatus.OK.value())
+                .body("questions[0].options[0].amount", equalTo(0));
     }
 
     @Test
@@ -249,9 +266,8 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
-
-        // TODO - Implements body assertions after grantee questions and options sequence
+                .statusCode(HttpStatus.OK.value())
+                .body("questions[0].options[0].amount", equalTo(1));
     }
 
     @Test
@@ -273,9 +289,8 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
-
-        // TODO - Implements body assertions after grantee questions and options sequence
+                .statusCode(HttpStatus.OK.value())
+                .body("questions[0].options[0].amount", equalTo(0));
     }
 
     @Test
@@ -297,9 +312,8 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.OK.value());
-
-        // TODO - Implements body assertions after grantee questions and options sequence
+                .statusCode(HttpStatus.OK.value())
+                .body("questions[0].options[0].amount", equalTo(0));
     }
 
     @Test

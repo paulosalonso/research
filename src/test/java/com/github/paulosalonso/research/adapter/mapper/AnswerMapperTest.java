@@ -54,73 +54,98 @@ public class AnswerMapperTest {
 
     @Test
     public void givenAResearchSummaryModelListWhenMapThenReturnResearchSummary() {
-        var researchId = UUID.randomUUID();
+        var research = ResearchEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .title("title")
+                .build();
 
-        var questionAId = UUID.randomUUID();
-        var optionAAId = UUID.randomUUID();
-        var optionABId = UUID.randomUUID();
+        var questionA = buildQuestion(UUID.randomUUID());
+        var optionAA = buildOption(UUID.randomUUID(), 1);
+        var optionAB = buildOption(UUID.randomUUID(), 2);
+        questionA.setOptions(List.of(optionAA, optionAB));
 
-        var questionBId = UUID.randomUUID();
-        var optionBAId = UUID.randomUUID();
-        var optionBBId = UUID.randomUUID();
+        var questionB = buildQuestion(UUID.randomUUID());
+        var optionBA = buildOption(UUID.randomUUID(), 1);
+        var optionBB = buildOption(UUID.randomUUID(), 2);
+        questionB.setOptions(List.of(optionBA, optionBB));
+
+        research.setQuestions(List.of(questionA, questionB));
 
         var summaryModel = List.of(
                 ResearchSummaryModel.builder()
-                        .questionId(questionAId.toString())
-                        .optionId(optionAAId.toString())
+                        .question(questionA)
+                        .option(optionAA)
                         .amount(5L)
                         .build(),
                 ResearchSummaryModel.builder()
-                        .questionId(questionAId.toString())
-                        .optionId(optionABId.toString())
+                        .question(questionA)
+                        .option(optionAB)
                         .amount(10L)
                         .build(),
                 ResearchSummaryModel.builder()
-                        .questionId(questionBId.toString())
-                        .optionId(optionBAId.toString())
+                        .question(questionB)
+                        .option(optionBA)
                         .amount(7L)
                         .build(),
                 ResearchSummaryModel.builder()
-                        .questionId(questionBId.toString())
-                        .optionId(optionBBId.toString())
+                        .question(questionB)
+                        .option(optionBB)
                         .amount(14L)
                         .build());
 
-        var summary = mapper.toDomain(researchId, summaryModel);
+        var summary = mapper.toDomain(research, summaryModel);
 
-        assertThat(summary.getId()).isEqualTo(researchId);
+        assertThat(summary.getId()).isEqualTo(UUID.fromString(research.getId()));
         assertThat(summary.getQuestions()).hasSize(2)
                 .satisfies(questions -> {
-                    var questionA = questions.get(0);
-//                    assertThat(questionA.getId()).isIn(questionAId);
-                    assertThat(questionA.getOptions())
+                    var mappedQuestionA = questions.get(0); // TODO - The groupingBy stream collector reverses the content of list. Check it.
+//                    assertThat(mappedQuestionA.getId()).isEqualTo(UUID.fromString(questionA.getId()));
+                    assertThat(mappedQuestionA.getOptions())
                             .hasSize(2);
 //                            .satisfies(options -> {
-//                                var optionAA = options.get(0);
-//                                assertThat(optionAA.getId()).isEqualTo(optionAAId);
-//                                assertThat(optionAA.getAmount()).isEqualTo(5L);
+//                                var mappedOptionAA = options.get(0);
+//                                assertThat(mappedOptionAA.getId()).isEqualTo(UUID.fromString(optionAA.getId()));
+//                                assertThat(mappedOptionAA.getAmount()).isEqualTo(5L);
 //
-//                                var optionAB = options.get(1);
-//                                assertThat(optionAB.getId()).isEqualTo(optionABId);
-//                                assertThat(optionAB.getAmount()).isEqualTo(10L);
+//                                var mappedOptionAB = options.get(1);
+//                                assertThat(mappedOptionAB.getId()).isEqualTo(UUID.fromString(optionAB.getId()));
+//                                assertThat(mappedOptionAB.getAmount()).isEqualTo(10L);
 //                            });
 
-                    var questionB = questions.get(1);
-//                    assertThat(questionB.getId()).isIn(questionBId);
-                    assertThat(questionB.getOptions())
+                    var mappedQuestionB = questions.get(1); // TODO - The groupingBy stream collector reverses the content of list. Check it.
+//                    assertThat(mappedQuestionB.getId()).isEqualTo(UUID.fromString(questionB.getId()));
+                    assertThat(mappedQuestionB.getOptions())
                             .hasSize(2);
 //                            .satisfies(options -> {
-//                                var optionBA = options.get(0);
-//                                assertThat(optionBA.getId()).isEqualTo(optionBAId);
-//                                assertThat(optionBA.getAmount()).isEqualTo(7L);
+//                                var mappedOptionBA = options.get(0);
+//                                assertThat(mappedOptionBA.getId()).isEqualTo(UUID.fromString(optionBA.getId()));
+//                                assertThat(mappedOptionBA.getSequence()).isEqualTo(optionBA.getSequence());
+//                                assertThat(mappedOptionBA.getDescription()).isEqualTo(optionBA.getDescription());
+//                                assertThat(mappedOptionBA.getAmount()).isEqualTo(7L);
 //
-//                                var optionBB = options.get(1);
-//                                assertThat(optionBB.getId()).isEqualTo(optionBBId);
-//                                assertThat(optionBB.getAmount()).isEqualTo(14L);
+//                                var mappedOptionBB = options.get(1);
+//                                assertThat(mappedOptionBB.getId()).isEqualTo(UUID.fromString(optionBB.getId()));
+//                                assertThat(mappedOptionBB.getSequence()).isEqualTo(optionBB.getSequence());
+//                                assertThat(mappedOptionBB.getDescription()).isEqualTo(optionBB.getDescription());
+//                                assertThat(mappedOptionBB.getAmount()).isEqualTo(14L);
 //                            });
                 });
 
-        // Because it is not yet possible to guarantee the sequence, the commented tests pass and fail intermittently, as the sequence varies when grouping the results.
-        // TODO - Grantee questions and options sequence
+        // TODO - Grantee questions sequence
+    }
+
+    private QuestionEntity buildQuestion(UUID id) {
+        return QuestionEntity.builder()
+                .id(id.toString())
+                .description("description " + id)
+                .build();
+    }
+
+    private OptionEntity buildOption(UUID id, Integer sequence) {
+        return OptionEntity.builder()
+                .id(id.toString())
+                .sequence(sequence)
+                .description("description " + id)
+                .build();
     }
 }

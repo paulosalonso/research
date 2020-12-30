@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.paulosalonso.research.adapter.jpa.repository.specification.NoFilterSpecificationFactory.findWithoutFilter;
+import static com.github.paulosalonso.research.adapter.jpa.repository.specification.GeneralSpecificationFactory.findWithoutFilter;
 import static java.util.Optional.ofNullable;
 
 @Component

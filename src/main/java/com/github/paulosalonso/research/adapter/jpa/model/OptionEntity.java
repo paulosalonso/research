@@ -25,6 +25,9 @@ public class OptionEntity {
     @Id
     private String id;
 
+    @NotNull
+    private Integer sequence;
+
     @NotBlank
     private String description;
 

@@ -13,4 +13,5 @@ public interface QuestionPort {
     List<Question> search(UUID researchId, QuestionCriteria criteria);
     Question update(UUID researchId, Question question);
     void delete(UUID researchId, UUID questionId);
+    Integer getNextOptionSequence(UUID questionId);
 }
