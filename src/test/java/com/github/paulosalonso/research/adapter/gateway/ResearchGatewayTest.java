@@ -175,7 +175,25 @@ public class ResearchGatewayTest {
 
     @Test
     public void givenAResearchWithoutQuestionsWhenGetNextQuestionSequenceThenReturnOne() {
-        var sequence = gateway.getNextQuestionSequence(UUID.randomUUID());
+        var id = UUID.randomUUID();
+
+        when(repository.findLastQuestionSequence(id.toString())).thenReturn(Optional.empty());
+
+        var sequence = gateway.getNextQuestionSequence(id);
+
         assertThat(sequence).isEqualTo(1);
+        verify(repository).findLastQuestionSequence(id.toString());
+    }
+
+    @Test
+    public void givenAResearchWithOptionsWhenGetNextQuestionSequenceThenReturnNextSequence() {
+        var id = UUID.randomUUID();
+
+        when(repository.findLastQuestionSequence(id.toString())).thenReturn(Optional.of(1));
+
+        var sequence = gateway.getNextQuestionSequence(id);
+
+        assertThat(sequence).isEqualTo(2);
+        verify(repository).findLastQuestionSequence(id.toString());
     }
 }
