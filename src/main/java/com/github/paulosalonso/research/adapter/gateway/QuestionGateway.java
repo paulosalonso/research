@@ -1,5 +1,6 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
+import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.QuestionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.ResearchRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.specification.QuestionSpecificationFactory;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.adapter.jpa.repository.specification.GeneralSpecificationFactory.orderByAsc;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -54,7 +56,8 @@ public class QuestionGateway implements QuestionPort {
     @Override
     public List<Question> search(UUID researchId, QuestionCriteria criteria) {
         var specification = specificationFactory.findByResearchId(researchId.toString())
-                .and(specificationFactory.findByQuestionCriteria(criteria));
+                .and(specificationFactory.findByQuestionCriteria(criteria))
+                .and(orderByAsc(QuestionEntity.Fields.sequence));
 
         return questionRepository.findAll(specification)
                 .stream()
