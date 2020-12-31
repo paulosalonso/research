@@ -16,7 +16,7 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.function.Predicate;
+import static java.util.function.Predicate.not;
 
 @Configuration
 @EnableWebMvc
@@ -29,7 +29,9 @@ public class OpenApiConfiguration implements WebMvcConfigurer {
                 .ignoredParameterTypes(ServletWebRequest.class)
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any().and(Predicate.not(PathSelectors.ant("/research/api/error"))))
+                .paths(PathSelectors.any()
+                        .and(not(PathSelectors.ant("/research/api/error")))
+                        .and(not(PathSelectors.ant("/research/api/actuator/**"))))
                 .build()
                 .apiInfo(buildApiInfo());
 

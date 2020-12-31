@@ -15,7 +15,12 @@ import java.util.List;
 public class WebConfigurer implements WebMvcConfigurer {
 
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+
+        converters.stream()
+                .filter(converter -> converter instanceof MappingJackson2HttpMessageConverter)
+                .findFirst()
+                .ifPresent(converters::remove);
 
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Springfox enables this feature
