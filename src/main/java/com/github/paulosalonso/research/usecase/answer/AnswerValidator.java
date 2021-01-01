@@ -27,11 +27,7 @@ public class AnswerValidator {
     private final OptionPort optionPort;
 
     public void validate(UUID researchId, List<Answer> answers) {
-        try {
-            validate(researchPort.read(researchId), answers);
-        } catch (NotFoundException e) {
-            throw new InvalidAnswerException("Research not found");
-        }
+        validate(researchPort.read(researchId), answers);
     }
 
     private void validate(Research research, List<Answer> answers) {
@@ -42,7 +38,7 @@ public class AnswerValidator {
 
     private void validateResearchDatetimeRange(Research research) {
         if (research.getStartsOn().isAfter(OffsetDateTime.now())) {
-            throw new InvalidAnswerException("Research is not initialized");
+            throw new InvalidAnswerException("Research is not started");
         }
 
         var finalized = ofNullable(research.getEndsOn())
