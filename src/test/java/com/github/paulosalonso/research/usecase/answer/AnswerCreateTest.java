@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.usecase.answer;
 
 import com.github.paulosalonso.research.domain.Answer;
+import com.github.paulosalonso.research.domain.Research;
 import com.github.paulosalonso.research.usecase.exception.InvalidAnswerException;
 import com.github.paulosalonso.research.usecase.port.AnswerPort;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,8 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AnswerCreateTest {
@@ -25,7 +27,7 @@ public class AnswerCreateTest {
     private AnswerCreate answerCreate;
 
     @Mock
-    private AnswerPort port;
+    private AnswerPort answerPort;
 
     @Mock
     private AnswerValidator validator;
@@ -43,7 +45,7 @@ public class AnswerCreateTest {
         answerCreate.create(toSave.getResearchId(), List.of(toSave));
 
         ArgumentCaptor<Answer> answerCaptor = ArgumentCaptor.forClass(Answer.class);
-        verify(port).create(answerCaptor.capture());
+        verify(answerPort).create(answerCaptor.capture());
 
         var saved = answerCaptor.getValue();
         assertThat(saved.getDate()).isBetween(testInit, OffsetDateTime.now());
@@ -56,14 +58,25 @@ public class AnswerCreateTest {
 
     @Test
     public void givenAnAnswerWhenIndividualValidationThrowsExceptionThenRethrowsIt() {
-        var answer = Answer.builder().build();
+        var answer = Answer.builder()
+                .researchId(UUID.randomUUID())
+                .build();
+
         var exception = new InvalidAnswerException("test exception");
 
-        doThrow(exception).when(validator).validate(any(UUID.class), eq(List.of(answer)));
+        doThrow(exception).when(validator).validate(answer.getResearchId(), List.of(answer));
 
-        assertThatThrownBy(() -> answerCreate.create(UUID.randomUUID(), List.of(answer)))
+        assertThatThrownBy(() -> answerCreate.create(answer.getResearchId(), List.of(answer)))
                 .isSameAs(exception);
 
-        verify(validator).validate(any(UUID.class), eq(List.of(answer)));
+        verify(validator).validate(answer.getResearchId(), List.of(answer));
+    }
+
+    private Research buildResearch(Answer toSave) {
+        return Research.builder()
+                .id(toSave.getResearchId())
+                .title("title")
+                .startsOn(OffsetDateTime.now().minusDays(1))
+                .build();
     }
 }
