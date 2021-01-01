@@ -1,5 +1,6 @@
 package com.github.paulosalonso.research.application.configuration;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-public class WebConfigurer implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -24,6 +25,8 @@ public class WebConfigurer implements WebMvcConfigurer {
 
         Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
         builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Springfox enables this feature
+        builder.serializationInclusion(JsonInclude.Include.NON_NULL);
+        builder.serializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         converters.add(new MappingJackson2HttpMessageConverter(builder.build()));
 
