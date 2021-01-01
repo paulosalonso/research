@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
@@ -24,6 +25,18 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return handleExceptionInternal(e, error, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
+        HttpStatus status = ex.getStatus();
+
+        var error = Error.builder()
+                .status(status.value())
+                .message(ex.getReason())
+                .build();
+
+        return handleExceptionInternal(ex, error, new HttpHeaders(), status, request);
     }
 
     @Override
