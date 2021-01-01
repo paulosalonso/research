@@ -1,7 +1,9 @@
 package com.github.paulosalonso.research.adapter.controller;
 
+import com.github.paulosalonso.research.adapter.controller.dto.QuestionInputDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO.QuestionAnswerInputDTO;
+import com.github.paulosalonso.research.adapter.controller.dto.ResearchInputDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -134,6 +136,127 @@ public class AnswerControllerIT extends BaseIT {
                 .answer(QuestionAnswerInputDTO.builder()
                         .questionId(UUID.fromString(question.getId()))
                         .optionId(UUID.randomUUID())
+                        .build())
+                .build();
+
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .body(answer)
+                .when()
+                .post("/researches/{researchId}/answers", research.getId())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void whenCreateForNotStartedResearchThenReturnBadRequest() {
+        truncateDatabase();
+
+        var research = createResearch(ResearchInputDTO.builder()
+                .title("title")
+                .startsOn(OffsetDateTime.now().plusHours(1))
+                .build());
+
+        var question = createQuestion(UUID.fromString(research.getId()));
+        var option = createOption(UUID.fromString(question.getId()));
+
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(option.getId()))
+                        .build())
+                .build();
+
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .body(answer)
+                .when()
+                .post("/researches/{researchId}/answers", research.getId())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void whenCreateForFinalizedResearchThenReturnBadRequest() {
+        truncateDatabase();
+
+        var research = createResearch(ResearchInputDTO.builder()
+                .title("title")
+                .startsOn(OffsetDateTime.now().minusHours(2))
+                .endsOn(OffsetDateTime.now().minusHours(1))
+                .build());
+
+        var question = createQuestion(UUID.fromString(research.getId()));
+        var option = createOption(UUID.fromString(question.getId()));
+
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(option.getId()))
+                        .build())
+                .build();
+
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .body(answer)
+                .when()
+                .post("/researches/{researchId}/answers", research.getId())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void givenAQuestionMultipleSelectableWhenCreateWithMultipleOptionsSelectionThenReturnOk() {
+        var research = createResearch();
+        var question = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+                .description("description")
+                .multiSelect(true)
+                .build());
+        var optionA = createOption(UUID.fromString(question.getId()));
+        var optionB = createOption(UUID.fromString(question.getId()));
+
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(optionA.getId()))
+                        .build())
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(optionB.getId()))
+                        .build())
+                .build();
+
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .body(answer)
+                .when()
+                .post("/researches/{researchId}/answers", research.getId())
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void givenAQuestionNotMultipleSelectableWhenCreateWithMultipleOptionsSelectionThenReturnBadRequest() {
+        var research = createResearch();
+        var question = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+                .description("description")
+                .multiSelect(false)
+                .build());
+        var optionA = createOption(UUID.fromString(question.getId()));
+        var optionB = createOption(UUID.fromString(question.getId()));
+
+        var answer = ResearchAnswerInputDTO.builder()
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(optionA.getId()))
+                        .build())
+                .answer(QuestionAnswerInputDTO.builder()
+                        .questionId(UUID.fromString(question.getId()))
+                        .optionId(UUID.fromString(optionB.getId()))
                         .build())
                 .build();
 
