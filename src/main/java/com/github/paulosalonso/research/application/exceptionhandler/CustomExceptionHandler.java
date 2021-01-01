@@ -15,8 +15,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity handleNotFoundException(NotFoundException e) {
-        return ResponseEntity.notFound().build();
+    public ResponseEntity handleNotFoundException(NotFoundException e, WebRequest request) {
+        var status = HttpStatus.NOT_FOUND;
+
+        var error = Error.builder()
+                .status(status.value())
+                .message("Requested resource not found")
+                .build();
+
+        return handleExceptionInternal(e, error, new HttpHeaders(), status, request);
     }
 
     @Override
