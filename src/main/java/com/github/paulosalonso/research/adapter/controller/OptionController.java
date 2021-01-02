@@ -4,7 +4,6 @@ import com.github.paulosalonso.research.adapter.controller.dto.OptionCriteriaDTO
 import com.github.paulosalonso.research.adapter.controller.dto.OptionDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.OptionInputDTO;
 import com.github.paulosalonso.research.adapter.controller.mapper.OptionDTOMapper;
-import com.github.paulosalonso.research.usecase.exception.NotFoundException;
 import com.github.paulosalonso.research.usecase.option.OptionCreate;
 import com.github.paulosalonso.research.usecase.option.OptionDelete;
 import com.github.paulosalonso.research.usecase.option.OptionRead;
@@ -13,7 +12,6 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -48,12 +46,8 @@ public class OptionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OptionDTO create(@PathVariable UUID questionId, @RequestBody @Valid OptionInputDTO optionInputDTO) {
-        try {
-            var created = optionCreate.create(questionId, mapper.toDomain(optionInputDTO));
-            return mapper.toDTO(created);
-        } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Question not found: " + questionId);
-        }
+        var created = optionCreate.create(questionId, mapper.toDomain(optionInputDTO));
+        return mapper.toDTO(created);
     }
 
     @PutMapping("/{optionId}")
