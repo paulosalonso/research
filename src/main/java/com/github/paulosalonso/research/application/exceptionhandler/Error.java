@@ -24,7 +24,7 @@ public class Error {
 	@Setter
 	@Builder
 	public static class Field {
-		private String context;
+		private String name;
 		private String message;
 	}
 }
