@@ -83,6 +83,36 @@ public class OptionControllerIT extends BaseIT {
     }
 
     @Test
+    public void givenAnInvalidQuestionUUIDWhenGetThenReturnBadRequest() {
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .when()
+                .get("/questions/{questionId}/options/{optionId}", "invalid-uuid", UUID.randomUUID())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'questionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
+    }
+
+    @Test
+    public void givenAnInvalidOptionUUIDWhenGetThenReturnBadRequest() {
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .when()
+                .get("/questions/{questionId}/options/{optionId}", UUID.randomUUID(), "invalid-uuid")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'optionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
+    }
+
+    @Test
     public void whenSearchWithoutParametersThenReturnAll() {
         truncateDatabase();
 

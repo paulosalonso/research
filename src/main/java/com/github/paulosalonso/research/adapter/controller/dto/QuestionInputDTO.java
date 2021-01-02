@@ -2,6 +2,7 @@ package com.github.paulosalonso.research.adapter.controller.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class QuestionInputDTO {
 
-    @NotNull
+    @NotBlank
     private String description;
 
     @NotNull

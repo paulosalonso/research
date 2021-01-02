@@ -11,9 +11,10 @@ import static com.github.paulosalonso.research.adapter.controller.creator.Resear
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.*;
 
 public class QuestionControllerIT extends BaseIT {
 
@@ -54,7 +55,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), question.getId())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -66,7 +71,39 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/questions/{questionId}", research.getId(), UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
+    }
+
+    @Test
+    public void givenAnInvalidResearchUUIDWhenGetThenReturnBadRequest() {
+        given()
+                .accept(JSON)
+                .when()
+                .get("/researches/{researchId}/questions/{questionId}", "invalid-uuid", UUID.randomUUID())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'researchId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
+    }
+
+    @Test
+    public void givenAnInvalidQuestionUUIDWhenGetThenReturnBadRequest() {
+        given()
+                .accept(JSON)
+                .when()
+                .get("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), "invalid-uuid")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'questionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -205,7 +242,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/questions", UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -215,11 +256,17 @@ public class QuestionControllerIT extends BaseIT {
         given()
                 .contentType(JSON)
                 .accept(JSON)
+                .header("Accept-Language", "en-US")
                 .body(QuestionInputDTO.builder().build())
                 .when()
                 .post("/researches/{researchId}/questions", research.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("Invalid field(s)"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("fields", hasSize(2))
+                .body("fields.name", hasItems("description", "multiSelect"))
+                .body("fields.message", hasItems("must not be blank", "must not be null"));
     }
 
     @Test
@@ -262,7 +309,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .put("researches/{researchId}/questions/{questionId}", UUID.randomUUID(), question.getId())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -282,7 +333,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .put("researches/{researchId}/questions/{questionId}", research.getId(), UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -293,11 +348,17 @@ public class QuestionControllerIT extends BaseIT {
         given()
                 .contentType(JSON)
                 .accept(JSON)
+                .header("Accept-Language", "en-US")
                 .body(QuestionInputDTO.builder().build())
                 .when()
                 .put("researches/{researchId}/questions/{questionId}", research.getId(), question.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", equalTo("Invalid field(s)"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("fields", hasSize(2))
+                .body("fields.name", hasItems("description", "multiSelect"))
+                .body("fields.message", hasItems("must not be blank", "must not be null"));
     }
 
     @Test
@@ -309,7 +370,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .put("researches/{researchId}/questions/{questionId}", "invalid-uuid", UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'researchId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -321,7 +386,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .put("researches/{researchId}/questions/{questionId}", UUID.randomUUID(), "invalid-uuid")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'questionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -349,7 +418,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .delete("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), question.getId())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -362,7 +435,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .delete("/researches/{researchId}/questions/{questionId}", research.getId(), UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -373,7 +450,11 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .delete("/researches/{researchId}/questions/{questionId}", "invalid-uuid", UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'researchId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -384,6 +465,10 @@ public class QuestionControllerIT extends BaseIT {
                 .when()
                 .delete("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), "invalid-uuid")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'questionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 }
