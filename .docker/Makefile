@@ -1,7 +1,6 @@
 SHELL = /bin/bash
 
-#VERSION ?= $(shell git describe --tags --abbrev=0)
-VERSION ?= 0.0.1-SNAPSHOT
+VERSION ?= $(shell git describe --tags --abbrev=0)
 IMAGE ?= paulosalonso/research
 ROOTPATH ?= $(shell git rev-parse --show-toplevel)
 TMP_DIR := "$(shell mktemp -d $(ROOTPATH)/tmp.build.XXXXXXXXXX)"
