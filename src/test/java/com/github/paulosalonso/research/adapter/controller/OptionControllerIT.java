@@ -13,9 +13,9 @@ import static com.github.paulosalonso.research.adapter.controller.creator.Resear
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 
 public class OptionControllerIT extends BaseIT {
 
@@ -58,7 +58,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", UUID.randomUUID(), option.getId())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -71,7 +75,41 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", question.getId(), UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
+    }
+
+    @Test
+    public void givenAnInvalidQuestionUUIDWhenGetThenReturnBadRequest() {
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .when()
+                .get("/questions/{questionId}/options/{optionId}", "invalid-uuid", UUID.randomUUID())
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'questionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
+    }
+
+    @Test
+    public void givenAnInvalidOptionUUIDWhenGetThenReturnBadRequest() {
+        given()
+                .contentType(JSON)
+                .accept(JSON)
+                .when()
+                .get("/questions/{questionId}/options/{optionId}", UUID.randomUUID(), "invalid-uuid")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'optionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -156,7 +194,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .post("/questions/{questionId}/options", questionId)
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -167,11 +209,18 @@ public class OptionControllerIT extends BaseIT {
         given()
                 .contentType(JSON)
                 .accept(JSON)
+                .header("Accept-Language", "en-US")
                 .body(OptionInputDTO.builder().build())
                 .when()
                 .post("/questions/{questionId}/options", question.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("Invalid field(s)"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("fields", hasSize(1))
+                .body("fields[0].name", equalTo("description"))
+                .body("fields[0].message", equalTo("must not be blank"));
     }
 
     @Test
@@ -213,7 +262,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .put("questions/{questionId}/options/{optionId}", UUID.randomUUID(), option.getId())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -233,7 +286,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .put("questions/{questionId}/options/{optionId}", question.getId(), UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -245,11 +302,18 @@ public class OptionControllerIT extends BaseIT {
         given()
                 .contentType(JSON)
                 .accept(JSON)
+                .header("Accept-Language", "en-US")
                 .body(OptionInputDTO.builder().build())
                 .when()
                 .put("questions/{questionId}/options/{optionId}", question.getId(), option.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("Invalid field(s)"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("fields", hasSize(1))
+                .body("fields[0].name", equalTo("description"))
+                .body("fields[0].message", equalTo("must not be blank"));
     }
 
     @Test
@@ -261,7 +325,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .put("questions/{questionId}/options/{optionId}", "invalid-uuid", UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'questionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -273,7 +341,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .put("questions/{questionId}/options/{optionId}", UUID.randomUUID(), "invalid-uuid")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'optionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -303,7 +375,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .delete("/questions/{questionId}/options/{optionId}", UUID.randomUUID(), option.getId())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -317,7 +393,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .delete("/questions/{questionId}/options/{optionId}", question.getId(), UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -328,7 +408,11 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .delete("/questions/{questionId}/options/{optionId}", "invalid-uuid", UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'questionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -339,6 +423,10 @@ public class OptionControllerIT extends BaseIT {
                 .when()
                 .delete("/questions/{questionId}/options/{optionId}", UUID.randomUUID(), "invalid-uuid")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("'invalid-uuid' is an invalid value for the 'optionId' URL parameter. Required type is 'UUID'."))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 }

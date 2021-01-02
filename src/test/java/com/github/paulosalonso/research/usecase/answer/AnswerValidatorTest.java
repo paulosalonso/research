@@ -60,8 +60,7 @@ public class AnswerValidatorTest {
         when(researchPort.read(answer.getResearchId())).thenThrow(NotFoundException.class);
 
         assertThatThrownBy(() -> validator.validate(answer.getResearchId(), List.of(answer)))
-                .isExactlyInstanceOf(InvalidAnswerException.class)
-                .hasMessage("Research not found");
+                .isExactlyInstanceOf(NotFoundException.class);
 
         verify(researchPort).read(answer.getResearchId());
         verifyNoInteractions(questionPort);
@@ -86,7 +85,7 @@ public class AnswerValidatorTest {
 
         assertThatThrownBy(() -> validator.validate(research.getId(), List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
-                .hasMessage("Research is not initialized");
+                .hasMessage("Research is not started");
 
         verify(researchPort).read(research.getId());
         verifyNoInteractions(questionPort);

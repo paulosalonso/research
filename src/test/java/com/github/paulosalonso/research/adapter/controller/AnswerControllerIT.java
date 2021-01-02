@@ -18,9 +18,11 @@ import static com.github.paulosalonso.research.adapter.controller.creator.Resear
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class AnswerControllerIT extends BaseIT {
 
@@ -54,13 +56,13 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var questionA = createQuestion(UUID.fromString(research.getId()));
+        var questionB = createQuestion(UUID.fromString(research.getId()));
+        var option = createOption(UUID.fromString(questionA.getId()));
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
+                        .questionId(UUID.fromString(questionA.getId()))
                         .optionId(UUID.fromString(option.getId()))
                         .build())
                 .build();
@@ -72,7 +74,11 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("The follow questions have not been answered: " + questionB.getId()))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -97,7 +103,11 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -108,9 +118,10 @@ public class AnswerControllerIT extends BaseIT {
         var question = createQuestion(UUID.fromString(research.getId()));
         var option = createOption(UUID.fromString(question.getId()));
 
+        var questionId = UUID.randomUUID();
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.randomUUID())
+                        .questionId(questionId)
                         .optionId(UUID.fromString(option.getId()))
                         .build())
                 .build();
@@ -122,7 +133,11 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("Question not found: " + questionId))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -132,10 +147,11 @@ public class AnswerControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(UUID.fromString(research.getId()));
 
+        var optionId = UUID.randomUUID();
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
                         .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.randomUUID())
+                        .optionId(optionId)
                         .build())
                 .build();
 
@@ -146,7 +162,11 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("Option not found: " + optionId))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -175,7 +195,11 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("Research is not started"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -205,7 +229,11 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("Research is finalized"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -267,7 +295,11 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .post("/researches/{researchId}/answers", research.getId())
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("status", equalTo(HttpStatus.BAD_REQUEST.value()))
+                .body("message", equalTo("The question does not allow the selection of various options: " + question.getId()))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 
     @Test
@@ -525,6 +557,10 @@ public class AnswerControllerIT extends BaseIT {
                 .when()
                 .get("/researches/{researchId}/answers", UUID.randomUUID())
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
+                .body("message", equalTo("Requested resource not found"))
+                .body("timestamp", matchesRegex(ISO_8601_REGEX))
+                .body("$", not(hasKey("fields")));
     }
 }
