@@ -25,7 +25,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build package with Maven
+      - name: Extracting tag
+        run: echo ::set-env name=VERSION::$(echo ${GITHUB_REF} | egrep -o '(?<=refs/tags/).*'
+
+      - name: Updating project version in pom.xml
+        run: mvn release:update-versions -DdevelopmentVersion=${VERSION}
+
+      - name: Building package with Maven
         run: mvn -B package
 
       - name: Moving artifact to staging folder
@@ -40,8 +46,8 @@ jobs:
       - name: Login on Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image
+      - name: Building Docker image
         run: cd .docker && make build
 
-      - name: Publish Docker image
+      - name: Publishing Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/research
