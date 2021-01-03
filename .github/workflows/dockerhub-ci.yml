@@ -56,12 +56,3 @@ jobs:
 
       - name: Publishing Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/research
-
-      - uses: actions/checkout@v2
-      - run: |
-            git config user.name paulosalonso
-            git config user.email paulo_alonso_@hotmail.com
-            git checkout master
-            git add pom.xml
-            git commit -m "Updated pom.xml with released version (by dockerhub-ci action)"
-            git push
