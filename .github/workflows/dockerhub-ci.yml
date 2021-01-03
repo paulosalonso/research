@@ -26,13 +26,13 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Extracting tag
-        run: echo ::set-env name=VERSION::$(echo ${GITHUB_REF} | egrep -o '(?<=refs/tags/).*'
+        run: echo "VERSION=$(echo ${GITHUB_REF} | egrep -o '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}-(|RELEASE|RC|SNAPSHOT)')" >> $GITHUB_ENV
 
       - name: Updating project version in pom.xml
         run: mvn release:update-versions -DdevelopmentVersion=${VERSION}
 
       - name: Building package with Maven
-        run: mvn -B package
+        run: mvn -B package -Dskip.unit.tests -Dskip.it.tests -Dskip.mutation
 
       - name: Moving artifact to staging folder
         run: mkdir staging && cp target/research.jar staging
