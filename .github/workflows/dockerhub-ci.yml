@@ -32,7 +32,7 @@ jobs:
         run: mvn release:update-versions -DdevelopmentVersion=${VERSION}
 
       - name: Building package with Maven
-        run: mvn -B package -Dskip.unit.tests -Dskip.it.tests -Dskip.mutation
+        run: mvn -B package -Pdocker-local -Pno-tests
 
       - name: Moving artifact to staging folder
         run: mkdir staging && cp target/research.jar staging
@@ -51,3 +51,12 @@ jobs:
 
       - name: Publishing Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/research
+
+      - name: Commiting pom.xml with released version
+        uses: actions/checkout@v2
+        run: |
+            git config user.name paulosalonso
+            git config user.email paulo_alonso_@hotmail.com
+            git add pom.xml
+            git commit -m "Updated pom.xml with released version (by dockerhub-ci action)"
+            git push
