@@ -8,6 +8,8 @@ ARTIFACTS ?= "$(shell git rev-parse --show-toplevel)/target/research.jar"
 DOCKERPATH ?= "$(shell git rev-parse --show-toplevel)/.docker"
 BRANCH ?= $(shell git name-rev --name-only HEAD)
 
+export
+
 # Rule "build:snapshot"
 .PHONY: build\:snapshot
 build\:snapshot:
