@@ -44,13 +44,12 @@ jobs:
           path: staging
 
       - name: Building Docker image
-#        run: cd .docker && make build
         run: |
-            mkdir tmp
+            mktemp tmp
             cp .docker/Dockerfile tmp
             cp target/research.jar tmp
             cd tmp
-            docker build --force-rm -t paulosalonso/research:${VERSION}
+            docker build -t paulosalonso/research:${VERSION}
 
       - name: Login on Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
