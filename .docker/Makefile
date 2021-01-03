@@ -8,19 +8,9 @@ ARTIFACTS ?= "$(shell git rev-parse --show-toplevel)/target/research.jar"
 DOCKERPATH ?= "$(shell git rev-parse --show-toplevel)/.docker"
 BRANCH ?= $(shell git name-rev --name-only HEAD)
 
-# Define here the list of images that should be builded
-LIST_OF_IMAGES_TO_BUILD := $(IMAGE)
-export
-
-# ensure that latest isn't use for build
-define isLatest
-	@[ $(VERSION) != "latest" ] || (echo "VERSION can't be latest in $(@)"; exit 1)
-endef
-
 # Rule "build:snapshot"
 .PHONY: build\:snapshot
-build\:latest:
-	$(call isLatest)
+build\:snapshot:
 	cp -R $(ARTIFACTS) $(TMP_DIR)
 	cp -R $(DOCKERPATH)/* $(TMP_DIR)
 	cd $(TMP_DIR)
@@ -34,7 +24,6 @@ build\:latest:
 # Rule "build"
 .PHONY: build
 build:
-	$(call isLatest)
 	cp -R $(ARTIFACTS) $(TMP_DIR)
 	cp -R $(DOCKERPATH)/* $(TMP_DIR)
 	cd $(TMP_DIR)
