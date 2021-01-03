@@ -61,6 +61,7 @@ Existem algumas formas diferentes para rodar a aplicação via Docker, veremos n
 Observação: O docker-compose iniciará também o container do PostgreSQL. O profile __postgresql__ é configurado para a aplicação via variável de ambiente no serviço __research__.
 
 #### Docker Hub
+![Docker Hub CI](https://github.com/paulosalonso/research/workflows/Docker%20Hub%20CI/badge.svg)
 
 Para rodar um container Docker da aplicação a partir de uma imagem do Docker Hub, acesse o diretório __.docker__ e rode o comando abaixo:
 
