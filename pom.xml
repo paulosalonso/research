@@ -27,6 +27,7 @@
 
 		<jacoco.version>0.8.5</jacoco.version>
 		<springfox.version>3.0.0</springfox.version>
+		<maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
 	</properties>
 
 	<dependencies>
@@ -238,4 +239,48 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>no-tests</id>
+			<properties>
+				<skip.unit.tests>true</skip.unit.tests>
+				<skip.it.tests>true</skip.it.tests>
+				<skip.mutation>true</skip.mutation>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>docker-local</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>${maven-dependency-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>copy-installed</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>${project.artifactId}</artifactId>
+											<version>${project.version}</version>
+											<type>${project.packaging}</type>
+											<destFileName>${project.build.finalName}.jar</destFileName>
+										</artifactItem>
+									</artifactItems>
+									<outputDirectory>${project.basedir}/.docker</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
