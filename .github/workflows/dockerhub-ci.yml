@@ -32,7 +32,7 @@ jobs:
         run: mvn release:update-versions -DdevelopmentVersion=${VERSION}
 
       - name: Building package with Maven
-        run: mvn -B package
+        run: mvn -B package -Dskip.unit.tests -Dskip.it.tests -Dskip.mutation
 
       - name: Moving artifact to staging folder
         run: mkdir staging && cp target/research.jar staging
