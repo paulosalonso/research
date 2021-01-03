@@ -8,6 +8,8 @@ ARTIFACTS ?= "$(shell git rev-parse --show-toplevel)/target/research.jar"
 DOCKERPATH ?= "$(shell git rev-parse --show-toplevel)/.docker"
 BRANCH ?= $(shell git name-rev --name-only HEAD)
 
+# Define here the list of images that should be builded
+LIST_OF_IMAGES_TO_BUILD := $(IMAGE)
 export
 
 # Rule "build:snapshot"
