@@ -43,11 +43,17 @@ jobs:
           name: package
           path: staging
 
-      - name: Login on Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Building Docker image
-        run: cd .docker && make build
+#        run: cd .docker && make build
+        run: |
+            mkdir tmp
+            cp .docker/Dockerfile tmp
+            cp target/research.jar tmp
+            cd tmp
+            docker build --force-rm -t ${{ secrets.DOCKER_USERNAME }}/research:${VERSION}
+
+      - name: Login on Docker Hub
+          run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Publishing Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/research
