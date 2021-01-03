@@ -45,7 +45,7 @@ jobs:
 
       - name: Building Docker image
         run: |
-            mktemp tmp
+            mkdir tmp
             cp .docker/Dockerfile tmp
             cp target/research.jar tmp
             cd tmp
