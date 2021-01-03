@@ -26,7 +26,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Extracting tag
-        run: echo "VERSION=$(echo ${GITHUB_REF} | egrep -o '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')" >> $GITHUB_ENV
+        run: echo "VERSION=$(echo ${GITHUB_REF} | egrep -o '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}-(|RELEASE|RC|SNAPSHOT)')" >> $GITHUB_ENV
 
       - name: Updating project version in pom.xml
         run: mvn release:update-versions -DdevelopmentVersion=${VERSION}
