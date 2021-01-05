@@ -113,6 +113,7 @@
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<skipTests>${skip.unit.tests}</skipTests>
+					<skipTests>${skipTests}</skipTests>
 					<argLine> ${argLine} --illegal-access=permit </argLine>
 				</configuration>
 			</plugin>
@@ -135,6 +136,7 @@
 						<configuration>
 							<classesDirectory>${project.build.outputDirectory}</classesDirectory>
 							<skipTests>${skip.it.tests}</skipTests>
+							<skipTests>${skipTests}</skipTests>
 						</configuration>
 					</execution>
 				</executions>
@@ -168,6 +170,9 @@
 							<goal>check</goal>
 						</goals>
 						<configuration>
+							<skip>${skip.unit.tests}</skip>
+							<skip>${skip.it.tests}</skip>
+							<skip>${skipTests}</skip>
 							<rules>
 								<rule>
 									<element>BUNDLE</element>
