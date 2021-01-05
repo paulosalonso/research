@@ -48,7 +48,7 @@ public class QuestionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentResearchIdWhenGetThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         given()
                 .accept(JSON)
@@ -110,7 +110,7 @@ public class QuestionControllerIT extends BaseIT {
     public void whenSearchWithoutParametersThenReturnAll() {
         truncateDatabase();
 
-        var researchId = UUID.fromString(createResearch().getId());
+        var researchId = createResearch().getId();
 
         createQuestion(researchId);
         createQuestion(researchId);
@@ -130,12 +130,12 @@ public class QuestionControllerIT extends BaseIT {
 
         var research = createResearch();
 
-        createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description-a")
                 .multiSelect(true)
                 .build());
 
-        var questionB = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        var questionB = createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description-b")
                 .multiSelect(true)
                 .build());
@@ -148,7 +148,7 @@ public class QuestionControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(questionB.getId()));
+                .body("id", contains(questionB.getId().toString()));
     }
 
     @Test
@@ -157,12 +157,12 @@ public class QuestionControllerIT extends BaseIT {
 
         var research = createResearch();
 
-        createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description-a")
                 .multiSelect(false)
                 .build());
 
-        var questionB = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        var questionB = createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description-b")
                 .multiSelect(true)
                 .build());
@@ -175,7 +175,7 @@ public class QuestionControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(questionB.getId()));
+                .body("id", contains(questionB.getId().toString()));
     }
 
     @Test
@@ -184,12 +184,12 @@ public class QuestionControllerIT extends BaseIT {
 
         var research = createResearch();
 
-        createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description-a")
                 .multiSelect(false)
                 .build());
 
-        var questionB = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        var questionB = createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description-b")
                 .multiSelect(true)
                 .build());
@@ -203,7 +203,7 @@ public class QuestionControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(questionB.getId()));
+                .body("id", contains(questionB.getId().toString()));
     }
 
     @Test
@@ -272,7 +272,7 @@ public class QuestionControllerIT extends BaseIT {
     @Test
     public void whenUpdateThenReturnOk() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         var updateBody = QuestionInputDTO.builder()
                 .description(question.getDescription() + " updated")
@@ -287,7 +287,7 @@ public class QuestionControllerIT extends BaseIT {
                 .put("researches/{researchId}/questions/{questionId}", research.getId(), question.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(question.getId()))
+                .body("id", equalTo(question.getId().toString()))
                 .body("description", equalTo(updateBody.getDescription()))
                 .body("multiSelect", equalTo(updateBody.getMultiSelect()));
     }
@@ -295,7 +295,7 @@ public class QuestionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentResearchIdWhenUpdateThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         var updateBody = QuestionInputDTO.builder()
                 .description(question.getDescription() + " updated")
@@ -319,7 +319,7 @@ public class QuestionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentQuestionIdWhenUpdateThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         var updateBody = QuestionInputDTO.builder()
                 .description(question.getDescription() + " updated")
@@ -343,7 +343,7 @@ public class QuestionControllerIT extends BaseIT {
     @Test
     public void whenUpdateWithNullRequiredValueThenReturnBadRequest() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         given()
                 .contentType(JSON)
@@ -396,7 +396,7 @@ public class QuestionControllerIT extends BaseIT {
     @Test
     public void whenDeleteThenReturnNoContent() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         given()
                 .contentType(JSON)
@@ -410,7 +410,7 @@ public class QuestionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentResearchIdWhenDeleteThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         given()
                 .contentType(JSON)

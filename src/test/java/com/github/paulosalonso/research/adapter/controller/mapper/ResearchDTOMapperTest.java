@@ -26,7 +26,7 @@ public class ResearchDTOMapperTest {
 
         var dto = mapper.toDTO(research);
 
-        assertThat(dto.getId()).isEqualTo(research.getId().toString());
+        assertThat(dto.getId()).isEqualTo(research.getId());
         assertThat(dto.getTitle()).isEqualTo(research.getTitle());
         assertThat(dto.getDescription()).isEqualTo(research.getDescription());
         assertThat(dto.getStartsOn()).isEqualTo(research.getStartsOn());

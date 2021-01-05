@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.time.OffsetDateTime;
+import java.util.UUID;
 
 @ApiModel("Research")
 @NoArgsConstructor
@@ -13,7 +14,7 @@ import java.time.OffsetDateTime;
 @Builder
 public class ResearchDTO {
 
-    private String id;
+    private UUID id;
     private String title;
     private String description;
     private OffsetDateTime startsOn;

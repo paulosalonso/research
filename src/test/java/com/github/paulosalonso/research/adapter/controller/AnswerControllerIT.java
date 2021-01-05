@@ -31,13 +31,13 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(option.getId()))
+                        .questionId(question.getId())
+                        .optionId(option.getId())
                         .build())
                 .build();
 
@@ -56,14 +56,14 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var questionA = createQuestion(UUID.fromString(research.getId()));
-        var questionB = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(questionA.getId()));
+        var questionA = createQuestion(research.getId());
+        var questionB = createQuestion(research.getId());
+        var option = createOption(questionA.getId());
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(questionA.getId()))
-                        .optionId(UUID.fromString(option.getId()))
+                        .questionId(questionA.getId())
+                        .optionId(option.getId())
                         .build())
                 .build();
 
@@ -86,13 +86,13 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(option.getId()))
+                        .questionId(question.getId())
+                        .optionId(option.getId())
                         .build())
                 .build();
 
@@ -115,14 +115,14 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         var questionId = UUID.randomUUID();
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
                         .questionId(questionId)
-                        .optionId(UUID.fromString(option.getId()))
+                        .optionId(option.getId())
                         .build())
                 .build();
 
@@ -145,12 +145,12 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         var optionId = UUID.randomUUID();
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
+                        .questionId(question.getId())
                         .optionId(optionId)
                         .build())
                 .build();
@@ -178,13 +178,13 @@ public class AnswerControllerIT extends BaseIT {
                 .startsOn(OffsetDateTime.now().plusHours(1))
                 .build());
 
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(option.getId()))
+                        .questionId(question.getId())
+                        .optionId(option.getId())
                         .build())
                 .build();
 
@@ -212,13 +212,13 @@ public class AnswerControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().minusHours(1))
                 .build());
 
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(option.getId()))
+                        .questionId(question.getId())
+                        .optionId(option.getId())
                         .build())
                 .build();
 
@@ -239,21 +239,21 @@ public class AnswerControllerIT extends BaseIT {
     @Test
     public void givenAQuestionMultipleSelectableWhenCreateWithMultipleOptionsSelectionThenReturnOk() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        var question = createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description")
                 .multiSelect(true)
                 .build());
-        var optionA = createOption(UUID.fromString(question.getId()));
-        var optionB = createOption(UUID.fromString(question.getId()));
+        var optionA = createOption(question.getId());
+        var optionB = createOption(question.getId());
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(optionA.getId()))
+                        .questionId(question.getId())
+                        .optionId(optionA.getId())
                         .build())
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(optionB.getId()))
+                        .questionId(question.getId())
+                        .optionId(optionB.getId())
                         .build())
                 .build();
 
@@ -270,21 +270,21 @@ public class AnswerControllerIT extends BaseIT {
     @Test
     public void givenAQuestionNotMultipleSelectableWhenCreateWithMultipleOptionsSelectionThenReturnBadRequest() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()), QuestionInputDTO.builder()
+        var question = createQuestion(research.getId(), QuestionInputDTO.builder()
                 .description("description")
                 .multiSelect(false)
                 .build());
-        var optionA = createOption(UUID.fromString(question.getId()));
-        var optionB = createOption(UUID.fromString(question.getId()));
+        var optionA = createOption(question.getId());
+        var optionB = createOption(question.getId());
 
         var answer = ResearchAnswerInputDTO.builder()
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(optionA.getId()))
+                        .questionId(question.getId())
+                        .optionId(optionA.getId())
                         .build())
                 .answer(QuestionAnswerInputDTO.builder()
-                        .questionId(UUID.fromString(question.getId()))
-                        .optionId(UUID.fromString(optionB.getId()))
+                        .questionId(question.getId())
+                        .optionId(optionB.getId())
                         .build())
                 .build();
 
@@ -307,32 +307,31 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var questionA = createQuestion(UUID.fromString(research.getId()));
-        var optionAA = createOption(UUID.fromString(questionA.getId()));
-        var optionAB = createOption(UUID.fromString(questionA.getId()));
-        var questionB = createQuestion(UUID.fromString(research.getId()));
-        var optionBA = createOption(UUID.fromString(questionB.getId()));
-        var optionBB = createOption(UUID.fromString(questionB.getId()));
-        var questionC = createQuestion(UUID.fromString(research.getId()));
-        var optionCA = createOption(UUID.fromString(questionC.getId()));
-        var optionCB = createOption(UUID.fromString(questionC.getId()));
-        var optionCC = createOption(UUID.fromString(questionC.getId()));
+        var questionA = createQuestion(research.getId());
+        var optionAA = createOption(questionA.getId());
+        var optionAB = createOption(questionA.getId());
+        var questionB = createQuestion(research.getId());
+        var optionBA = createOption(questionB.getId());
+        var optionBB = createOption(questionB.getId());
+        var questionC = createQuestion(research.getId());
+        var optionCA = createOption(questionC.getId());
+        var optionCB = createOption(questionC.getId());
+        var optionCC = createOption(questionC.getId());
 
+        createAnswer(research.getId(), Map.of(
+                questionA.getId(), optionAA.getId(),
+                questionB.getId(), optionBA.getId(),
+                questionC.getId(), optionCA.getId()));
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(questionA.getId()), UUID.fromString(optionAA.getId()),
-                UUID.fromString(questionB.getId()), UUID.fromString(optionBA.getId()),
-                UUID.fromString(questionC.getId()), UUID.fromString(optionCA.getId())));
+        createAnswer(research.getId(), Map.of(
+                questionA.getId(), optionAA.getId(),
+                questionB.getId(), optionBA.getId(),
+                questionC.getId(), optionCA.getId()));
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(questionA.getId()), UUID.fromString(optionAA.getId()),
-                UUID.fromString(questionB.getId()), UUID.fromString(optionBA.getId()),
-                UUID.fromString(questionC.getId()), UUID.fromString(optionCA.getId())));
-
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(questionA.getId()), UUID.fromString(optionAB.getId()),
-                UUID.fromString(questionB.getId()), UUID.fromString(optionBB.getId()),
-                UUID.fromString(questionC.getId()), UUID.fromString(optionCB.getId())));
+        createAnswer(research.getId(), Map.of(
+                questionA.getId(), optionAB.getId(),
+                questionB.getId(), optionBB.getId(),
+                questionC.getId(), optionCB.getId()));
 
         given()
                 .accept(JSON)
@@ -340,27 +339,27 @@ public class AnswerControllerIT extends BaseIT {
                 .get("/researches/{researchId}/answers", research.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(research.getId()))
+                .body("id", equalTo(research.getId().toString()))
                 .body("title", equalTo(research.getTitle()))
                 .body("criteria", notNullValue())
                 .body("criteria.dateFrom", nullValue())
                 .body("criteria.dateTo", nullValue())
                 .body("criteria.questionId", nullValue())
                 .body("questions", hasSize(3))
-                .body("questions.id", contains(questionA.getId(), questionB.getId(), questionC.getId()))
+                .body("questions.id", contains(questionA.getId().toString(), questionB.getId().toString(), questionC.getId().toString()))
                 .body("questions.description", contains(questionA.getDescription(), questionB.getDescription(), questionC.getDescription()))
                 .body("questions[0].options", hasSize(2))
-                .body("questions[0].options.id", contains(optionAA.getId(), optionAB.getId()))
+                .body("questions[0].options.id", contains(optionAA.getId().toString(), optionAB.getId().toString()))
                 .body("questions[0].options.sequence", contains(optionAA.getSequence(), optionAB.getSequence()))
                 .body("questions[0].options.description", contains(optionAA.getDescription(), optionAB.getDescription()))
                 .body("questions[0].options.amount", contains(2, 1))
                 .body("questions[1].options", hasSize(2))
-                .body("questions[1].options.id", contains(optionBA.getId(), optionBB.getId()))
+                .body("questions[1].options.id", contains(optionBA.getId().toString(), optionBB.getId().toString()))
                 .body("questions[1].options.sequence", contains(optionBA.getSequence(), optionBB.getSequence()))
                 .body("questions[1].options.description", contains(optionBA.getDescription(), optionBB.getDescription()))
                 .body("questions[1].options.amount", contains(2, 1))
                 .body("questions[2].options", hasSize(3))
-                .body("questions[2].options.id", contains(optionCA.getId(), optionCB.getId(), optionCC.getId()))
+                .body("questions[2].options.id", contains(optionCA.getId().toString(), optionCB.getId().toString(), optionCC.getId().toString()))
                 .body("questions[2].options.sequence", contains(optionCA.getSequence(), optionCB.getSequence(), optionCC.getSequence()))
                 .body("questions[2].options.description", contains(optionCA.getDescription(), optionCB.getDescription(), optionCC.getDescription()))
                 .body("questions[2].options.amount", contains(2, 1, 0));
@@ -371,15 +370,15 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var questionA = createQuestion(UUID.fromString(research.getId()));
-        var optionAA = createOption(UUID.fromString(questionA.getId()));
-        createOption(UUID.fromString(questionA.getId()));
-        var questionB = createQuestion(UUID.fromString(research.getId()));
-        var optionBA = createOption(UUID.fromString(questionB.getId()));
+        var questionA = createQuestion(research.getId());
+        var optionAA = createOption(questionA.getId());
+        createOption(questionA.getId());
+        var questionB = createQuestion(research.getId());
+        var optionBA = createOption(questionB.getId());
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(questionA.getId()), UUID.fromString(optionAA.getId()),
-                UUID.fromString(questionB.getId()), UUID.fromString(optionBA.getId())));
+        createAnswer(research.getId(), Map.of(
+                questionA.getId(), optionAA.getId(),
+                questionB.getId(), optionBA.getId()));
 
         given()
                 .accept(JSON)
@@ -390,7 +389,7 @@ public class AnswerControllerIT extends BaseIT {
                 .statusCode(HttpStatus.OK.value())
                 .body("criteria.dateFrom", nullValue())
                 .body("criteria.dateTo", nullValue())
-                .body("criteria.questionId", equalTo(questionA.getId()))
+                .body("criteria.questionId", equalTo(questionA.getId().toString()))
                 .body("questions[0].options[0].amount", equalTo(1))
                 .body("questions[0].options[1].amount", equalTo(0))
                 .body("questions[1].options[0].amount", equalTo(0));
@@ -401,11 +400,11 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(question.getId()), UUID.fromString(option.getId())));
+        createAnswer(research.getId(), Map.of(
+                question.getId(), option.getId()));
 
         var questionId = UUID.randomUUID().toString();
 
@@ -429,18 +428,18 @@ public class AnswerControllerIT extends BaseIT {
         var dateFrom = OffsetDateTime.now();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(question.getId()), UUID.fromString(option.getId())));
+        createAnswer(research.getId(), Map.of(
+                question.getId(), option.getId()));
 
         var dateTo = OffsetDateTime.now();
 
         Thread.sleep(1000);
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(question.getId()), UUID.fromString(option.getId())));
+        createAnswer(research.getId(), Map.of(
+                question.getId(), option.getId()));
 
         given()
                 .accept(JSON)
@@ -463,11 +462,11 @@ public class AnswerControllerIT extends BaseIT {
         var dateTo = OffsetDateTime.now();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(question.getId()), UUID.fromString(option.getId())));
+        createAnswer(research.getId(), Map.of(
+                question.getId(), option.getId()));
 
         given()
                 .accept(JSON)
@@ -487,11 +486,11 @@ public class AnswerControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(question.getId()), UUID.fromString(option.getId())));
+        createAnswer(research.getId(), Map.of(
+                question.getId(), option.getId()));
 
         var dateFrom = OffsetDateTime.now();
 
@@ -515,22 +514,22 @@ public class AnswerControllerIT extends BaseIT {
         var dateFrom = OffsetDateTime.now();
 
         var research = createResearch();
-        var questionA = createQuestion(UUID.fromString(research.getId()));
-        var optionAA = createOption(UUID.fromString(questionA.getId()));
-        var questionB = createQuestion(UUID.fromString(research.getId()));
-        var optionBA = createOption(UUID.fromString(questionB.getId()));
+        var questionA = createQuestion(research.getId());
+        var optionAA = createOption(questionA.getId());
+        var questionB = createQuestion(research.getId());
+        var optionBA = createOption(questionB.getId());
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(questionA.getId()), UUID.fromString(optionAA.getId()),
-                UUID.fromString(questionB.getId()), UUID.fromString(optionBA.getId())));
+        createAnswer(research.getId(), Map.of(
+                questionA.getId(), optionAA.getId(),
+                questionB.getId(), optionBA.getId()));
 
         var dateTo = OffsetDateTime.now();
 
         Thread.sleep(1000);
 
-        createAnswer(UUID.fromString(research.getId()), Map.of(
-                UUID.fromString(questionA.getId()), UUID.fromString(optionAA.getId()),
-                UUID.fromString(questionB.getId()), UUID.fromString(optionBA.getId())));
+        createAnswer(research.getId(), Map.of(
+                questionA.getId(), optionAA.getId(),
+                questionB.getId(), optionBA.getId()));
 
         given()
                 .accept(JSON)
@@ -543,7 +542,7 @@ public class AnswerControllerIT extends BaseIT {
                 .statusCode(HttpStatus.OK.value())
                 .body("criteria.dateFrom", equalTo(ISO_DATE_TIME.format(dateFrom)))
                 .body("criteria.dateTo", equalTo(ISO_DATE_TIME.format(dateTo)))
-                .body("criteria.questionId", equalTo(questionA.getId()))
+                .body("criteria.questionId", equalTo(questionA.getId().toString()))
                 .body("questions[0].options[0].amount", equalTo(1))
                 .body("questions[1].options[0].amount", equalTo(0));
     }
