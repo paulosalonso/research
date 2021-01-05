@@ -22,7 +22,7 @@ public class OptionDTOMapperTest {
 
         var dto = mapper.toDTO(option);
 
-        assertThat(dto.getId()).isEqualTo(option.getId().toString());
+        assertThat(dto.getId()).isEqualTo(option.getId());
         assertThat(dto.getDescription()).isEqualTo(option.getDescription());
     }
 

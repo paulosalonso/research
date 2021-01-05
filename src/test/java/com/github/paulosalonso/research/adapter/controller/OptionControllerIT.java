@@ -22,9 +22,9 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void whenGetThenReturnOk() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
-        createOption(UUID.fromString(question.getId()));
+        createOption(question.getId());
 
         var body = OptionInputDTO.builder()
                 .description("description")
@@ -50,8 +50,8 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentQuestionIdWhenGetThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         given()
                 .accept(JSON)
@@ -68,7 +68,7 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentOptionIdWhenGetThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         given()
                 .accept(JSON)
@@ -117,10 +117,10 @@ public class OptionControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
-        createOption(UUID.fromString(question.getId()));
-        createOption(UUID.fromString(question.getId()));
+        createOption(question.getId());
+        createOption(question.getId());
 
         given()
                 .accept(JSON)
@@ -136,13 +136,13 @@ public class OptionControllerIT extends BaseIT {
         truncateDatabase();
 
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
-        createOption(UUID.fromString(question.getId()), OptionInputDTO.builder()
+        createOption(question.getId(), OptionInputDTO.builder()
                 .description("description-a")
                 .build());
 
-        var optionB = createOption(UUID.fromString(question.getId()), OptionInputDTO.builder()
+        var optionB = createOption(question.getId(), OptionInputDTO.builder()
                 .description("description-b")
                 .build());
 
@@ -154,13 +154,13 @@ public class OptionControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(optionB.getId()));
+                .body("id", contains(optionB.getId().toString()));
     }
 
     @Test
     public void whenCreateThenReturnCreated() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         var body = OptionInputDTO.builder()
                 .description("description")
@@ -204,7 +204,7 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void whenCreateWithNullRequiredValueThenReturnBadRequest() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         given()
                 .contentType(JSON)
@@ -226,8 +226,8 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void whenUpdateThenReturnOk() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         var updateBody = OptionInputDTO.builder()
                 .description(question.getDescription() + " updated")
@@ -241,15 +241,15 @@ public class OptionControllerIT extends BaseIT {
                 .put("questions/{questionId}/options/{optionId}", question.getId(), option.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(option.getId()))
+                .body("id", equalTo(option.getId().toString()))
                 .body("description", equalTo(updateBody.getDescription()));
     }
 
     @Test
     public void givenANonexistentQuestionIdWhenUpdateThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         var updateBody = OptionInputDTO.builder()
                 .description(question.getDescription() + " updated")
@@ -272,7 +272,7 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentOptionIdWhenUpdateThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         var updateBody = QuestionInputDTO.builder()
                 .description(question.getDescription() + " updated")
@@ -296,8 +296,8 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void whenUpdateWithNullRequiredValueThenReturnBadRequest() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         given()
                 .contentType(JSON)
@@ -351,8 +351,8 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void whenDeleteThenReturnNoContent() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         given()
                 .contentType(JSON)
@@ -366,8 +366,8 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentQuestionIdWhenDeleteThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
-        var option = createOption(UUID.fromString(question.getId()));
+        var question = createQuestion(research.getId());
+        var option = createOption(question.getId());
 
         given()
                 .contentType(JSON)
@@ -385,7 +385,7 @@ public class OptionControllerIT extends BaseIT {
     @Test
     public void givenANonexistentOptionIdWhenDeleteThenReturnNotFound() {
         var research = createResearch();
-        var question = createQuestion(UUID.fromString(research.getId()));
+        var question = createQuestion(research.getId());
 
         given()
                 .contentType(JSON)

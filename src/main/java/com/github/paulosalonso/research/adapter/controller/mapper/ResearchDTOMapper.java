@@ -12,7 +12,7 @@ public class ResearchDTOMapper {
 
     public ResearchDTO toDTO(Research research) {
         return ResearchDTO.builder()
-                .id(research.getId().toString())
+                .id(research.getId())
                 .title(research.getTitle())
                 .description(research.getDescription())
                 .startsOn(research.getStartsOn())

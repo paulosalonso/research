@@ -24,7 +24,7 @@ public class QuestionDTOMapperTest {
 
         var dto = mapper.toDTO(question);
 
-        assertThat(dto.getId()).isEqualTo(question.getId().toString());
+        assertThat(dto.getId()).isEqualTo(question.getId());
         assertThat(dto.getSequence()).isEqualTo(question.getSequence());
         assertThat(dto.getDescription()).isEqualTo(question.getDescription());
         assertThat(dto.getMultiSelect()).isEqualTo(question.getMultiSelect());

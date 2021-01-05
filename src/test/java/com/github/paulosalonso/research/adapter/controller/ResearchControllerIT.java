@@ -93,7 +93,7 @@ public class ResearchControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(2))
-                .body("id", hasItems(researchA.getId(), researchB.getId()));
+                .body("id", hasItems(researchA.getId().toString(), researchB.getId().toString()));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class ResearchControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(researchB.getId()));
+                .body("id", contains(researchB.getId().toString()));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class ResearchControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(researchB.getId()));
+                .body("id", contains(researchB.getId().toString()));
     }
 
     @Test
@@ -187,7 +187,7 @@ public class ResearchControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(researchB.getId()));
+                .body("id", contains(researchB.getId().toString()));
     }
 
     @Test
@@ -271,7 +271,7 @@ public class ResearchControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(researchB.getId()));
+                .body("id", contains(researchB.getId().toString()));
     }
 
     @Test
@@ -365,7 +365,7 @@ public class ResearchControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(1))
-                .body("id", contains(researchB.getId()));
+                .body("id", contains(researchB.getId().toString()));
     }
 
     @Test

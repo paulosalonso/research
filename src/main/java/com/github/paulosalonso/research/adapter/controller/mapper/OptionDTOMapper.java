@@ -12,7 +12,7 @@ public class OptionDTOMapper {
 
     public OptionDTO toDTO(Option option) {
         return OptionDTO.builder()
-                .id(option.getId().toString())
+                .id(option.getId())
                 .sequence(option.getSequence())
                 .description(option.getDescription())
                 .build();
