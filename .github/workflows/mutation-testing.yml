@@ -28,4 +28,4 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run mutation tests
-        run: mvn -B verify --file pom.xml -Dskip.unit.tests -Dskip.it.tests
+        run: mvn -B verify --file pom.xml -Pmutation

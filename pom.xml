@@ -17,7 +17,7 @@
 	<properties>
 		<skip.unit.tests>false</skip.unit.tests>
 		<skip.it.tests>false</skip.it.tests>
-		<skip.mutation>false</skip.mutation>
+		<skip.mutation>true</skip.mutation>
 
 		<line.coverage>1.00</line.coverage>
 		<branch.coverage>1.00</branch.coverage>
@@ -240,6 +240,15 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>mutation</id>
+			<properties>
+				<skip.unit.tests>true</skip.unit.tests>
+				<skip.it.tests>true</skip.it.tests>
+				<skip.mutation>false</skip.mutation>
+			</properties>
+		</profile>
+
 		<profile>
 			<id>no-tests</id>
 			<properties>
