@@ -1,11 +1,13 @@
 package com.github.paulosalonso.research.adapter.controller.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.UUID;
 
+@ApiModel("ResearchAnswerInput")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,6 +19,7 @@ public class ResearchAnswerInputDTO {
     @NotEmpty
     private List<QuestionAnswerInputDTO> answers;
 
+    @ApiModel("QuestionAnswerInput")
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter

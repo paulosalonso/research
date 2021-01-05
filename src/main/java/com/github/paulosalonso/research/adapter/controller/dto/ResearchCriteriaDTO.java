@@ -1,10 +1,12 @@
 package com.github.paulosalonso.research.adapter.controller.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.OffsetDateTime;
 
+@ApiModel("ResearchCriteria")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

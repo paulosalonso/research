@@ -1,6 +1,6 @@
 package com.github.paulosalonso.research.adapter.controller.mapper;
 
-import com.github.paulosalonso.research.adapter.controller.dto.AnswerCriteriaInputDTO;
+import com.github.paulosalonso.research.adapter.controller.dto.AnswerCriteriaDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchSummaryDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchSummaryDTO.OptionSummaryDTO;
@@ -30,7 +30,7 @@ public class AnswerDTOMapper {
                 .collect(toList());
     }
 
-    public AnswerCriteria toDomain(UUID researchId, AnswerCriteriaInputDTO dto) {
+    public AnswerCriteria toDomain(UUID researchId, AnswerCriteriaDTO dto) {
         return AnswerCriteria.builder()
                 .dateFrom(dto.getDateFrom())
                 .dateTo(dto.getDateTo())
@@ -39,11 +39,11 @@ public class AnswerDTOMapper {
                 .build();
     }
 
-    public ResearchSummaryDTO toDTO(ResearchSummary researchSummary, AnswerCriteriaInputDTO answerCriteriaInputDTO) {
+    public ResearchSummaryDTO toDTO(ResearchSummary researchSummary, AnswerCriteriaDTO answerCriteriaDTO) {
         return ResearchSummaryDTO.builder()
                 .id(researchSummary.getId())
                 .title(researchSummary.getTitle())
-                .criteria(answerCriteriaInputDTO)
+                .criteria(answerCriteriaDTO)
                 .questions(researchSummary.getQuestions().stream()
                         .map(this::toDTO)
                         .collect(toList()))

@@ -1,9 +1,11 @@
 package com.github.paulosalonso.research.adapter.controller.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.time.OffsetDateTime;
 
+@ApiModel("Research")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

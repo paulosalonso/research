@@ -1,11 +1,13 @@
 package com.github.paulosalonso.research.adapter.controller.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
+@ApiModel("ResearchInput")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
