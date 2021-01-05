@@ -1,6 +1,6 @@
 package com.github.paulosalonso.research.adapter.controller;
 
-import com.github.paulosalonso.research.adapter.controller.dto.AnswerCriteriaInputDTO;
+import com.github.paulosalonso.research.adapter.controller.dto.AnswerCriteriaDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchSummaryDTO;
 import com.github.paulosalonso.research.adapter.controller.mapper.AnswerDTOMapper;
@@ -27,9 +27,9 @@ public class AnswerController {
     private final AnswerDTOMapper mapper;
 
     @GetMapping
-    public ResearchSummaryDTO search(@PathVariable UUID researchId, AnswerCriteriaInputDTO answerCriteriaInputDTO) {
-        var result = answerRead.search(mapper.toDomain(researchId, answerCriteriaInputDTO));
-        return mapper.toDTO(result, answerCriteriaInputDTO);
+    public ResearchSummaryDTO search(@PathVariable UUID researchId, AnswerCriteriaDTO answerCriteriaDTO) {
+        var result = answerRead.search(mapper.toDomain(researchId, answerCriteriaDTO));
+        return mapper.toDTO(result, answerCriteriaDTO);
     }
 
     @PostMapping

@@ -1,6 +1,6 @@
 package com.github.paulosalonso.research.adapter.controller.mapper;
 
-import com.github.paulosalonso.research.adapter.controller.dto.AnswerCriteriaInputDTO;
+import com.github.paulosalonso.research.adapter.controller.dto.AnswerCriteriaDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO.QuestionAnswerInputDTO;
 import com.github.paulosalonso.research.domain.ResearchSummary;
@@ -43,7 +43,7 @@ public class ResearchSummaryDTOMapperTest {
     @Test
     public void givenAnAnswerCriteriaInputDTOWhenMapThenReturnDomain() {
         var researchId = UUID.randomUUID();
-        var answerCriteriaInputDTO = AnswerCriteriaInputDTO.builder()
+        var answerCriteriaInputDTO = AnswerCriteriaDTO.builder()
                 .dateFrom(OffsetDateTime.now())
                 .dateTo(OffsetDateTime.now().plusMonths(1))
                 .questionId(UUID.randomUUID())
@@ -73,7 +73,7 @@ public class ResearchSummaryDTOMapperTest {
                         .build()))
                 .build();
 
-        var answerCriteriaInputDTO = AnswerCriteriaInputDTO.builder()
+        var answerCriteriaInputDTO = AnswerCriteriaDTO.builder()
                 .questionId(UUID.randomUUID())
                 .dateFrom(OffsetDateTime.now())
                 .dateTo(OffsetDateTime.now().plusMonths(1))

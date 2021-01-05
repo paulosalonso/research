@@ -1,10 +1,12 @@
 package com.github.paulosalonso.research.adapter.controller.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@ApiModel("ResearchSummary")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -13,11 +15,12 @@ import java.util.UUID;
 public class ResearchSummaryDTO {
     private UUID id;
     private String title;
-    private AnswerCriteriaInputDTO criteria;
+    private AnswerCriteriaDTO criteria;
 
     @Singular
     private List<QuestionSummaryDTO> questions;
 
+    @ApiModel("QuestionSummary")
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
@@ -29,6 +32,7 @@ public class ResearchSummaryDTO {
         private List<OptionSummaryDTO> options;
     }
 
+    @ApiModel("OptionSummary")
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
