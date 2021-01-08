@@ -39,11 +39,11 @@ A aplicação usa as portas padrão de cada banco para se conectar ao localhost,
 
 > export spring.datasource.url=jdbc:mysql://192.168.0.100:5432/research_api
 
-### API
+## API
 
 O root path da API é __/research/api__
 
-#### Documentação
+### Documentação
 
 A API é documentada utilizando [OpenAPI](https://swagger.io/specification/) e pode ser acessada via navegador através do path __/research/api/swagger-ui/index.html__
 
