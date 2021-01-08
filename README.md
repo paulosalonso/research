@@ -95,17 +95,17 @@ Depois acesse o diretório __.docker__ e rode o comando abaixo:
 
 > docker-compose -f docker-compose.yml -f docker-compose.local-pre-build.yml up --build
 
-### Observabilidade
+## Observabilidade
 
-#### Métricas
+### Métricas
 
 A aplicação utiliza do [Spring Actuator](https://docs.spring.io/spring-boot/docs/current/actuator-api/htmlsingle/) para expor dados sobre sua execução.
 
-#### Logs
+### Logs
 
 Os logs são gerenciados pelo [SLF4J](http://www.slf4j.org/), e utiliza o [Logback](http://logback.qos.ch/) como implementação.
 
-#### Dashboard
+### Dashboard
 
 O docker-compose existente no projeto inclui o [Prometheus](https://prometheus.io/) e o [Grafana](https://grafana.com/).
 O Grafana é exposto na porta 3000 com usuário __admin__ e senha __123456__. Ao logar, será exibido um dashboard preconfigurado que consome os dados fornecidos pelo Actuator ao Prometheus.
