@@ -15,6 +15,10 @@ O projeto foi construído utilizando [Clean Arch](https://blog.cleancoder.com/un
 A qualidade da aplicação é garantida através dos testes unitários e integrados. Utiliza o [JaCoCo](https://www.jacoco.org/) para validação de cobertura mínima e o [PIT Mutation](https://pitest.org/) para testar mutações de código.
 Também é realizada uma análise estática com o [SonarCloud](https://sonarcloud.io/dashboard?id=paulosalonso_research).
 
+### Teste de carga
+
+Há um [script para teste de carga](https://github.com/paulosalonso/research/blob/master/.jmeter/load_test.jmx) via [JMeter](https://jmeter.apache.org/).
+
 ## CI
 
 A cada entrega de código (push) os testes são executados e o novo código só é incorporado (merge) a branch master se os testes forem executados com sucesso.
