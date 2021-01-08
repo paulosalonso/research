@@ -12,7 +12,7 @@ O projeto foi construído utilizando [Clean Arch](https://blog.cleancoder.com/un
 ## Qualidade 
 ![Automated Testing](https://github.com/paulosalonso/research/workflows/Automated%20Testing/badge.svg) ![Mutation Testing](https://github.com/paulosalonso/research/workflows/Mutation%20Testing/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=paulosalonso_research&metric=alert_status)](https://sonarcloud.io/dashboard?id=paulosalonso_research)
 
-A qualidade da aplicação é garantida através dos testes unitários e integrados, com validação de cobertura mínima e mutação de código.
+A qualidade da aplicação é garantida através dos testes unitários e integrados. Utiliza o [JaCoCo](https://www.jacoco.org/) para validação de cobertura mínima e o [PIT Mutation](https://pitest.org/) para testar mutações de código.
 Também é realizada uma análise estática com o [SonarCloud](https://sonarcloud.io/dashboard?id=paulosalonso_research).
 
 ## CI
@@ -39,6 +39,14 @@ A aplicação usa as portas padrão de cada banco para se conectar ao localhost,
 
 > export spring.datasource.url=jdbc:mysql://192.168.0.100:5432/research_api
 
+### API
+
+O root path da API é __/research/api__
+
+#### Documentação
+
+A API é documentada utilizando [OpenAPI](https://swagger.io/specification/) e pode ser acessada via navegador através do path __/research/api/swagger-ui/index.html__
+
 ## Execução
 
 Veremos algumas formas para executar a aplicação. Para todas elas é importante observar a cofiguração das variáveis de ambiente citadas anteriormente.
@@ -63,7 +71,7 @@ Observação: O docker-compose iniciará também o container do PostgreSQL. O pr
 #### Docker Hub
 ![Docker Hub CI](https://github.com/paulosalonso/research/workflows/Docker%20Hub%20CI/badge.svg)
 
-Para rodar um container Docker da aplicação a partir de uma imagem do Docker Hub, acesse o diretório __.docker__ e rode o comando abaixo:
+Para rodar um container Docker da aplicação a partir de uma [imagem do Docker Hub](https://hub.docker.com/repository/docker/paulosalonso/research), acesse o diretório __.docker__ e rode o comando abaixo:
 
 > docker-compose up
 
@@ -86,3 +94,18 @@ Para evitar o download de todas as dependências a cada build, é possível faze
 Depois acesse o diretório __.docker__ e rode o comando abaixo:
 
 > docker-compose -f docker-compose.yml -f docker-compose.local-pre-build.yml up --build
+
+### Observabilidade
+
+#### Métricas
+
+A aplicação utiliza do [Spring Actuator](https://docs.spring.io/spring-boot/docs/current/actuator-api/htmlsingle/) para expor dados sobre sua execução.
+
+#### Logs
+
+Os logs são gerenciados pelo [SLF4J](http://www.slf4j.org/), e utiliza o [Logback](http://logback.qos.ch/) como implementação.
+
+#### Dashboard
+
+O docker-compose existente no projeto inclui o [Prometheus](https://prometheus.io/) e o [Grafana](https://grafana.com/).
+O Grafana é exposto na porta 3000 com usuário __admin__ e senha __123456__. Ao logar, será exibido um dashboard preconfigurado que consome os dados fornecidos pelo Actuator ao Prometheus.
