@@ -96,7 +96,7 @@ public class ResearchGatewayTest {
 
         when(specificationFactory.findById(id.toString())).thenCallRealMethod();
         when(specificationFactory.findFetchingQuestions()).thenCallRealMethod();
-        when(repository.findAll(any(Specification.class))).thenReturn(List.of(entity));
+        when(repository.findOne(any(Specification.class))).thenReturn(Optional.of(entity));
         when(researchMapper.toDomain(entity, true)).thenReturn(Research.builder()
                 .title(entity.getTitle())
                 .startsOn(entity.getStartsOn()).build());
@@ -105,7 +105,7 @@ public class ResearchGatewayTest {
 
         verify(specificationFactory).findById(id.toString());
         verify(specificationFactory).findFetchingQuestions();
-        verify(repository).findAll(any(Specification.class));
+        verify(repository).findOne(any(Specification.class));
         verifyNoMoreInteractions(repository);
         verify(researchMapper).toDomain(entity, true);
         verifyNoMoreInteractions(researchMapper);
