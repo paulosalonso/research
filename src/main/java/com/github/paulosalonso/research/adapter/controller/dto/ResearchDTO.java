@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @ApiModel("Research")
@@ -19,4 +20,5 @@ public class ResearchDTO {
     private String description;
     private OffsetDateTime startsOn;
     private OffsetDateTime endsOn;
+    private List<QuestionDTO> questions;
 }

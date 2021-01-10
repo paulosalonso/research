@@ -3,6 +3,7 @@ package com.github.paulosalonso.research.adapter.controller.dto;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @ApiModel("Question")
@@ -17,5 +18,6 @@ public class QuestionDTO {
     private Integer sequence;
     private String description;
     private Boolean multiSelect;
+    private List<OptionDTO> options;
 
 }
