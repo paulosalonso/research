@@ -41,10 +41,8 @@ public class ResearchGateway implements ResearchPort {
 
     @Override
     public Research readFetchingQuestions(UUID id) {
-        return repository.findAll(specificationFactory.findById(id.toString())
+        return repository.findOne(specificationFactory.findById(id.toString())
                 .and(specificationFactory.findFetchingQuestions()))
-                .stream()
-                .findFirst()
                 .map(research -> mapper.toDomain(research, true))
                 .orElseThrow(NotFoundException::new);
     }

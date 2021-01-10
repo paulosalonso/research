@@ -13,8 +13,8 @@ public class ResearchRead {
 
     private final ResearchPort researchPort;
 
-    public Research read(UUID id, boolean includeQuestions) {
-        if (includeQuestions) {
+    public Research read(UUID id, boolean fillQuestions) {
+        if (fillQuestions) {
             return researchPort.readFetchingQuestions(id);
         }
 
