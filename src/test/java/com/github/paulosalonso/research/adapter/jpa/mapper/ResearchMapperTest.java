@@ -1,17 +1,30 @@
 package com.github.paulosalonso.research.adapter.jpa.mapper;
 
+import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
 import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.domain.Research;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 
+@ExtendWith(MockitoExtension.class)
 public class ResearchMapperTest {
 
-    private final ResearchMapper mapper = new ResearchMapper();
+    @InjectMocks
+    private ResearchMapper researchMapper;
+
+    @Mock
+    private QuestionMapper questionMapper;
 
     @Test
     public void givenAResearchWhenMapThenReturnEntity() {
@@ -23,7 +36,7 @@ public class ResearchMapperTest {
                 .endsOn(OffsetDateTime.now())
                 .build();
 
-        var entity = mapper.toEntity(research);
+        var entity = researchMapper.toEntity(research);
 
         assertThat(entity.getId()).isEqualTo(research.getId().toString());
         assertThat(entity.getTitle()).isEqualTo(research.getTitle());
@@ -41,7 +54,7 @@ public class ResearchMapperTest {
                 .endsOn(OffsetDateTime.now())
                 .build();
 
-        var entity = mapper.toEntity(research);
+        var entity = researchMapper.toEntity(research);
 
         assertThat(entity.getId()).isNull();
         assertThat(entity.getTitle()).isEqualTo(research.getTitle());
@@ -51,7 +64,7 @@ public class ResearchMapperTest {
     }
 
     @Test
-    public void givenAResearchEntityWhenMapThenReturnDomain() {
+    public void givenAResearchEntityWhenMapWithoutQuestionsThenReturnDomain() {
         var entity = ResearchEntity.builder()
                 .id(UUID.randomUUID().toString())
                 .title("title")
@@ -60,13 +73,39 @@ public class ResearchMapperTest {
                 .endsOn(OffsetDateTime.now())
                 .build();
 
-        var research = mapper.toDomain(entity);
+        var research = researchMapper.toDomain(entity, false);
 
         assertThat(research.getId()).isEqualTo(UUID.fromString(entity.getId()));
         assertThat(research.getTitle()).isEqualTo(entity.getTitle());
         assertThat(research.getDescription()).isEqualTo(entity.getDescription());
         assertThat(research.getStartsOn()).isEqualTo(entity.getStartsOn());
         assertThat(research.getEndsOn()).isEqualTo(entity.getEndsOn());
+
+        verifyNoInteractions(questionMapper);
+    }
+
+    @Test
+    public void givenAResearchEntityWhenMapWithQuestionsThenReturnDomain() {
+        var question = QuestionEntity.builder().build();
+        var entity = ResearchEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .title("title")
+                .description("description")
+                .startsOn(OffsetDateTime.now())
+                .endsOn(OffsetDateTime.now())
+                .questions(List.of(question))
+                .build();
+
+        var research = researchMapper.toDomain(entity, true);
+
+        assertThat(research.getId()).isEqualTo(UUID.fromString(entity.getId()));
+        assertThat(research.getTitle()).isEqualTo(entity.getTitle());
+        assertThat(research.getDescription()).isEqualTo(entity.getDescription());
+        assertThat(research.getStartsOn()).isEqualTo(entity.getStartsOn());
+        assertThat(research.getEndsOn()).isEqualTo(entity.getEndsOn());
+        assertThat(research.getQuestions()).hasSize(1);
+
+        verify(questionMapper).toDomain(question);
     }
 
     @Test
@@ -78,7 +117,7 @@ public class ResearchMapperTest {
                 .endsOn(OffsetDateTime.now())
                 .build();
 
-        var research = mapper.toDomain(entity);
+        var research = researchMapper.toDomain(entity, false);
 
         assertThat(research.getId()).isNull();
         assertThat(research.getTitle()).isEqualTo(entity.getTitle());

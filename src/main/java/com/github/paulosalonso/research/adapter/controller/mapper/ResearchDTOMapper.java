@@ -5,19 +5,32 @@ import com.github.paulosalonso.research.adapter.controller.dto.ResearchDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchInputDTO;
 import com.github.paulosalonso.research.domain.Research;
 import com.github.paulosalonso.research.domain.ResearchCriteria;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import static java.util.stream.Collectors.toList;
+
+@RequiredArgsConstructor
 @Component
 public class ResearchDTOMapper {
 
-    public ResearchDTO toDTO(Research research) {
-        return ResearchDTO.builder()
+    private final QuestionDTOMapper questionDTOMapper;
+
+    public ResearchDTO toDTO(Research research, boolean fillQuestions) {
+        var builder = ResearchDTO.builder()
                 .id(research.getId())
                 .title(research.getTitle())
                 .description(research.getDescription())
                 .startsOn(research.getStartsOn())
-                .endsOn(research.getEndsOn())
-                .build();
+                .endsOn(research.getEndsOn());
+
+        if (fillQuestions) {
+            builder.questions(research.getQuestions().stream()
+                    .map(questionDTOMapper::toDTO)
+                    .collect(toList()));
+        }
+
+        return builder.build();
     }
 
     public ResearchCriteria toDomain(ResearchCriteriaDTO dto) {
