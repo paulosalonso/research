@@ -5,6 +5,7 @@ import com.github.paulosalonso.research.domain.ResearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.JoinType;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,11 @@ public class ResearchSpecificationFactory {
         return specifications.stream().reduce(findWithoutFilter(), Specification::and);
     }
 
+    public Specification<ResearchEntity> findById(String id) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(ResearchEntity.Fields.id), id);
+    }
+
     public Specification<ResearchEntity> findByTitleLike(String title) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.like(root.get(ResearchEntity.Fields.title), "%" + title + "%");
@@ -67,5 +73,12 @@ public class ResearchSpecificationFactory {
     public Specification<ResearchEntity> findByEndsOnTo(OffsetDateTime endsOnTo) {
         return (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder
                 .lessThanOrEqualTo(root.get(ResearchEntity.Fields.endsOn), endsOnTo);
+    }
+
+    public Specification<ResearchEntity> findFetchingQuestions() {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            root.fetch(ResearchEntity.Fields.questions, JoinType.LEFT);
+            return null;
+        };
     }
 }

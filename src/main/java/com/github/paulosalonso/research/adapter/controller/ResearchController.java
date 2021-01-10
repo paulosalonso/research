@@ -32,14 +32,14 @@ public class ResearchController {
     private final ResearchDTOMapper mapper;
 
     @GetMapping("/{id}")
-    public ResearchDTO get(@PathVariable UUID id) {
-        return mapper.toDTO(researchRead.read(id));
+    public ResearchDTO get(@PathVariable UUID id, @RequestParam(required = false) boolean fillQuestions) {
+        return mapper.toDTO(researchRead.read(id, fillQuestions), fillQuestions);
     }
 
     @GetMapping
     public List<ResearchDTO> search(ResearchCriteriaDTO criteria) {
         return researchRead.search(mapper.toDomain(criteria)).stream()
-                .map(mapper::toDTO)
+                .map(research -> mapper.toDTO(research, false))
                 .collect(toList());
     }
 
@@ -47,7 +47,7 @@ public class ResearchController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResearchDTO create(@RequestBody @Valid ResearchInputDTO researchInputDTO) {
         var created = researchCreate.create(mapper.toDomain(researchInputDTO));
-        return mapper.toDTO(created);
+        return mapper.toDTO(created, false);
     }
 
     @PutMapping("/{id}")
@@ -57,7 +57,7 @@ public class ResearchController {
                 .build();
 
         var updated = researchUpdate.update(research);
-        return mapper.toDTO(updated);
+        return mapper.toDTO(updated, false);
     }
 
     @DeleteMapping("/{id}")

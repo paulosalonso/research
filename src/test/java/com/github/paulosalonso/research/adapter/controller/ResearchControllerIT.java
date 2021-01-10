@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.adapter.controller.creator.QuestionCreator.createQuestion;
 import static com.github.paulosalonso.research.adapter.controller.creator.ResearchCreator.createResearch;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
@@ -22,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 public class ResearchControllerIT extends BaseIT {
 
     @Test
-    public void whenGetThenReturnOk() {
+    public void whenGetWithoutQuestionsThenReturnOk() {
         var body = ResearchInputDTO.builder()
                 .title("title")
                 .description("description")
@@ -48,7 +49,43 @@ public class ResearchControllerIT extends BaseIT {
                 .body("title", equalTo(body.getTitle()))
                 .body("description", equalTo(body.getDescription()))
                 .body("startsOn", equalTo(ISO_DATE_TIME.format(body.getStartsOn().withOffsetSameInstant(ZoneOffset.UTC))))
-                .body("endsOn", equalTo(ISO_DATE_TIME.format(body.getEndsOn().withOffsetSameInstant(ZoneOffset.UTC))));
+                .body("endsOn", equalTo(ISO_DATE_TIME.format(body.getEndsOn().withOffsetSameInstant(ZoneOffset.UTC))))
+                .body("$", not(hasKey("questions")));
+    }
+
+    @Test
+    public void whenGetWithQuestionsThenReturnOk() {
+        var body = ResearchInputDTO.builder()
+                .title("title")
+                .description("description")
+                .startsOn(OffsetDateTime.now())
+                .endsOn(OffsetDateTime.now().plusMonths(1))
+                .build();
+
+        String id = given()
+                .contentType(JSON)
+                .accept(JSON)
+                .body(body)
+                .when()
+                .post("/researches")
+                .path("id");
+
+        var question = createQuestion(UUID.fromString(id));
+
+        given()
+                .accept(JSON)
+                .queryParam("fillQuestions", true)
+                .when()
+                .get("/researches/{id}", id)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(id))
+                .body("title", equalTo(body.getTitle()))
+                .body("description", equalTo(body.getDescription()))
+                .body("startsOn", equalTo(ISO_DATE_TIME.format(body.getStartsOn().withOffsetSameInstant(ZoneOffset.UTC))))
+                .body("endsOn", equalTo(ISO_DATE_TIME.format(body.getEndsOn().withOffsetSameInstant(ZoneOffset.UTC))))
+                .body("questions", hasSize(1))
+                .body("questions.id", contains(question.getId().toString()));
     }
 
     @Test

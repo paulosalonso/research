@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.toList;
 public final class GeneralSpecificationFactory {
     private GeneralSpecificationFactory(){}
 
-    static Specification findWithoutFilter() {
+    public static Specification findWithoutFilter() {
         return (root, criteriaQuery, criteriaBuilder) -> null;
     }
 

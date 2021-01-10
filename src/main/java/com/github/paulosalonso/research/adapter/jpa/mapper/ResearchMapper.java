@@ -2,12 +2,18 @@ package com.github.paulosalonso.research.adapter.jpa.mapper;
 
 import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.domain.Research;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toSet;
+
+@RequiredArgsConstructor
 @Component
 public class ResearchMapper {
+
+    private final QuestionMapper questionMapper;
 
     public ResearchEntity copy(Research from, ResearchEntity to) {
         to.setTitle(from.getTitle());
@@ -18,16 +24,23 @@ public class ResearchMapper {
         return to;
     }
 
-    public Research toDomain(ResearchEntity researchEntity) {
+    public Research toDomain(ResearchEntity researchEntity, boolean fillQuestions) {
         UUID id = researchEntity.getId() != null ? UUID.fromString(researchEntity.getId()) : null;
 
-        return Research.builder()
+        var builder = Research.builder()
                 .id(id)
                 .title(researchEntity.getTitle())
                 .description(researchEntity.getDescription())
                 .startsOn(researchEntity.getStartsOn())
-                .endsOn(researchEntity.getEndsOn())
-                .build();
+                .endsOn(researchEntity.getEndsOn());
+
+        if (fillQuestions) {
+            builder.questions(researchEntity.getQuestions().stream()
+                    .map(questionMapper::toDomain)
+                    .collect(toSet()));
+        }
+
+        return builder.build();
     }
 
     public ResearchEntity toEntity(Research research) {

@@ -10,6 +10,7 @@ public interface ResearchPort {
 
     Research create(Research research);
     Research read(UUID id);
+    Research readFetchingQuestions(UUID id);
     List<Research> search(ResearchCriteria criteria);
     Research update(Research research);
     void delete(UUID id);

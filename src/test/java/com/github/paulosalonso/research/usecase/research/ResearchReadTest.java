@@ -27,7 +27,7 @@ public class ResearchReadTest {
     private ResearchPort port;
 
     @Test
-    public void givenAUUIDWhenReadThenCallPort() {
+    public void givenAUUIDWhenReadWithoutQuestionsThenCallPort() {
         var id = UUID.randomUUID();
         var toRead = Research.builder()
                 .title("title")
@@ -37,10 +37,27 @@ public class ResearchReadTest {
 
         when(port.read(id)).thenReturn(toRead);
 
-        var result = researchRead.read(id);
+        var result = researchRead.read(id, false);
 
         assertThat(result).isSameAs(toRead);
         verify(port).read(id);
+    }
+
+    @Test
+    public void givenAUUIDWhenReadWithQuestionsThenCallPort() {
+        var id = UUID.randomUUID();
+        var toRead = Research.builder()
+                .title("title")
+                .description("description")
+                .startsOn(OffsetDateTime.now())
+                .build();
+
+        when(port.readFetchingQuestions(id)).thenReturn(toRead);
+
+        var result = researchRead.read(id, true);
+
+        assertThat(result).isSameAs(toRead);
+        verify(port).readFetchingQuestions(id);
     }
 
     @Test
