@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.adapter.controller.creator.OptionCreator.createOption;
 import static com.github.paulosalonso.research.adapter.controller.creator.QuestionCreator.createQuestion;
 import static com.github.paulosalonso.research.adapter.controller.creator.ResearchCreator.createResearch;
 import static io.restassured.RestAssured.given;
@@ -19,7 +20,7 @@ import static org.hamcrest.Matchers.*;
 public class QuestionControllerIT extends BaseIT {
 
     @Test
-    public void whenGetThenReturnOk() {
+    public void whenGetWithoutOptionsThenReturnOk() {
         var research = createResearch();
 
         var body = QuestionInputDTO.builder()
@@ -42,7 +43,40 @@ public class QuestionControllerIT extends BaseIT {
                 .statusCode(HttpStatus.OK.value())
                 .body("id", equalTo(questionId))
                 .body("description", equalTo(body.getDescription()))
-                .body("multiSelect", equalTo(body.getMultiSelect()));
+                .body("multiSelect", equalTo(body.getMultiSelect()))
+                .body("$", not(hasKey("options")));
+    }
+
+    @Test
+    public void whenGetWithOptionsThenReturnOk() {
+        var research = createResearch();
+
+        var body = QuestionInputDTO.builder()
+                .description("description")
+                .multiSelect(false)
+                .build();
+
+        String questionId = given()
+                .contentType(JSON)
+                .accept(JSON)
+                .body(body)
+                .post("/researches/{researchId}/questions", research.getId())
+                .path("id");
+
+        var option = createOption(UUID.fromString(questionId));
+
+        given()
+                .accept(JSON)
+                .queryParam("fillOptions", true)
+                .when()
+                .get("/researches/{researchId}/questions/{questionId}", research.getId(), questionId)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("id", equalTo(questionId))
+                .body("description", equalTo(body.getDescription()))
+                .body("multiSelect", equalTo(body.getMultiSelect()))
+                .body("options", hasSize(1))
+                .body("options.id", contains(option.getId().toString()));
     }
 
     @Test

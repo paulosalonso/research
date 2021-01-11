@@ -6,6 +6,7 @@ import com.github.paulosalonso.research.domain.QuestionCriteria;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.JoinType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,5 +46,12 @@ public class QuestionSpecificationFactory {
     public Specification<QuestionEntity> findByMultiSelect(Boolean multiSelect) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get(QuestionEntity.Fields.multiSelect), multiSelect);
+    }
+
+    public Specification<QuestionEntity> findFetchingOptions() {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            root.fetch(QuestionEntity.Fields.options, JoinType.LEFT);
+            return null;
+        };
     }
 }

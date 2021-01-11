@@ -32,14 +32,15 @@ public class QuestionController {
     private final QuestionDTOMapper mapper;
 
     @GetMapping("/{questionId}")
-    public QuestionDTO get(@PathVariable UUID researchId, @PathVariable UUID questionId) {
-        return mapper.toDTO(questionRead.read(researchId, questionId));
+    public QuestionDTO get(@PathVariable UUID researchId,
+            @PathVariable UUID questionId, @RequestParam(required = false) boolean fillOptions) {
+        return mapper.toDTO(questionRead.read(researchId, questionId, fillOptions), fillOptions);
     }
 
     @GetMapping
     public List<QuestionDTO> search(@PathVariable UUID researchId, QuestionCriteriaDTO criteria) {
         return questionRead.search(researchId, mapper.toDomain(criteria)).stream()
-                .map(mapper::toDTO)
+                .map(question -> mapper.toDTO(question, false))
                 .collect(toList());
     }
 
@@ -47,7 +48,7 @@ public class QuestionController {
     @ResponseStatus(HttpStatus.CREATED)
     public QuestionDTO create(@PathVariable UUID researchId, @RequestBody @Valid QuestionInputDTO questionInputDTO) {
         var created = questionCreate.create(researchId, mapper.toDomain(questionInputDTO));
-        return mapper.toDTO(created);
+        return mapper.toDTO(created, false);
     }
 
     @PutMapping("/{questionId}")
@@ -59,7 +60,7 @@ public class QuestionController {
                 .build();
 
         var updated = questionUpdate.update(researchId, question);
-        return mapper.toDTO(updated);
+        return mapper.toDTO(updated, false);
     }
 
     @DeleteMapping("/{questionId}")
