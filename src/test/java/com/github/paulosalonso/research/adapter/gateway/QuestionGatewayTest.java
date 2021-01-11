@@ -1,6 +1,7 @@
 package com.github.paulosalonso.research.adapter.gateway;
 
 import com.github.paulosalonso.research.adapter.jpa.mapper.QuestionMapper;
+import com.github.paulosalonso.research.adapter.jpa.model.OptionEntity;
 import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
 import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.QuestionRepository;
@@ -79,7 +80,7 @@ public class QuestionGatewayTest {
     }
 
     @Test
-    public void givenAResearchIdAndAQuestionIdWhenReadThenFindAndMapIt() {
+    public void givenAResearchIdAndAQuestionIdWhenReadWithoutOptionsThenFindAndMapIt() {
         var researchId = UUID.randomUUID();
         var questionId = UUID.randomUUID();
 
@@ -92,7 +93,10 @@ public class QuestionGatewayTest {
         when(specificationFactory.findByResearchId(researchId.toString())).thenCallRealMethod();
         when(specificationFactory.findById(questionId.toString())).thenCallRealMethod();
         when(questionRepository.findOne(any(Specification.class))).thenReturn(Optional.of(entity));
-        when(mapper.toDomain(entity)).thenCallRealMethod();
+        when(mapper.toDomain(entity, false)).thenReturn(Question.builder()
+                .description("description")
+                .multiSelect(false)
+                .build());
 
         gateway.read(researchId, questionId);
 
@@ -101,7 +105,42 @@ public class QuestionGatewayTest {
         verifyNoMoreInteractions(specificationFactory);
         verify(questionRepository).findOne(any(Specification.class));
         verifyNoMoreInteractions(questionRepository);
-        verify(mapper).toDomain(entity);
+        verify(mapper).toDomain(entity, false);
+        verifyNoMoreInteractions(mapper);
+    }
+
+    @Test
+    public void givenAResearchIdAndAQuestionIdWhenReadWithOptionsThenFindAndMapIt() {
+        var researchId = UUID.randomUUID();
+        var questionId = UUID.randomUUID();
+
+        var option = OptionEntity.builder()
+                .description("description")
+                .build();
+
+        var entity = QuestionEntity.builder()
+                .id(questionId.toString())
+                .description("description")
+                .multiSelect(true)
+                .options(List.of(option))
+                .build();
+
+        when(specificationFactory.findByResearchId(researchId.toString())).thenCallRealMethod();
+        when(specificationFactory.findById(questionId.toString())).thenCallRealMethod();
+        when(questionRepository.findOne(any(Specification.class))).thenReturn(Optional.of(entity));
+        when(mapper.toDomain(entity, true)).thenReturn(Question.builder()
+                .description("description")
+                .multiSelect(false)
+                .build());
+
+        gateway.readFetchingOptions(researchId, questionId);
+
+        verify(specificationFactory).findByResearchId(researchId.toString());
+        verify(specificationFactory).findById(questionId.toString());
+        verify(specificationFactory).findFetchingOptions();
+        verify(questionRepository).findOne(any(Specification.class));
+        verifyNoMoreInteractions(questionRepository);
+        verify(mapper).toDomain(entity, true);
         verifyNoMoreInteractions(mapper);
     }
 
@@ -135,7 +174,7 @@ public class QuestionGatewayTest {
 
         when(specificationFactory.findByResearchId(researchId.toString())).thenCallRealMethod();
         when(specificationFactory.findByQuestionCriteria(criteria)).thenCallRealMethod();
-        when(mapper.toDomain(any(QuestionEntity.class))).thenCallRealMethod();
+        when(mapper.toDomain(entity, false)).thenCallRealMethod();
         when(questionRepository.findAll(any(Specification.class))).thenReturn(List.of(entity));
 
         gateway.search(researchId, criteria);
@@ -145,7 +184,7 @@ public class QuestionGatewayTest {
         verifyNoMoreInteractions(specificationFactory);
         verify(questionRepository).findAll(any(Specification.class));
         verifyNoMoreInteractions(questionRepository);
-        verify(mapper).toDomain(entity);
+        verify(mapper).toDomain(entity, false);
         verifyNoMoreInteractions(mapper);
     }
 
@@ -226,7 +265,7 @@ public class QuestionGatewayTest {
         gateway.delete(researchId, questionId);
 
         verify(specificationFactory).findByResearchId(researchId.toString());
-        verify(specificationFactory).findById(question.getId().toString());
+        verify(specificationFactory).findById(question.getId());
         verifyNoMoreInteractions(specificationFactory);
         verify(questionRepository).delete(question);
         verifyNoMoreInteractions(questionRepository);

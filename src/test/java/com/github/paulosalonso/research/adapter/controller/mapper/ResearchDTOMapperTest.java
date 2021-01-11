@@ -72,7 +72,7 @@ public class ResearchDTOMapperTest {
         assertThat(dto.getEndsOn()).isEqualTo(research.getEndsOn());
         assertThat(dto.getQuestions()).hasSize(1);
 
-        verify(questionDTOMapper).toDTO(question);
+        verify(questionDTOMapper).toDTO(question, false);
     }
 
     @Test

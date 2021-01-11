@@ -36,7 +36,7 @@ public class ResearchMapper {
 
         if (fillQuestions) {
             builder.questions(researchEntity.getQuestions().stream()
-                    .map(questionMapper::toDomain)
+                    .map(question -> questionMapper.toDomain(question, false))
                     .collect(toSet()));
         }
 

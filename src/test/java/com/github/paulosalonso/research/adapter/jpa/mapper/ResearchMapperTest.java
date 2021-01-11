@@ -105,7 +105,7 @@ public class ResearchMapperTest {
         assertThat(research.getEndsOn()).isEqualTo(entity.getEndsOn());
         assertThat(research.getQuestions()).hasSize(1);
 
-        verify(questionMapper).toDomain(question);
+        verify(questionMapper).toDomain(question, false);
     }
 
     @Test

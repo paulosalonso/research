@@ -13,7 +13,11 @@ public class QuestionRead {
 
     private final QuestionPort questionPort;
 
-    public Question read(UUID researchId, UUID questionId) {
+    public Question read(UUID researchId, UUID questionId, boolean fillOptions) {
+        if (fillOptions) {
+            return questionPort.readFetchingOptions(researchId, questionId);
+        }
+
         return questionPort.read(researchId, questionId);
     }
 

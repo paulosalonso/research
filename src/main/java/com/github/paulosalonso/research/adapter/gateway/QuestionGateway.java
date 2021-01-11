@@ -49,7 +49,19 @@ public class QuestionGateway implements QuestionPort {
                 .and(specificationFactory.findById(questionId.toString()));
 
         return questionRepository.findOne(specification)
-                .map(mapper::toDomain)
+                .map(question -> mapper.toDomain(question, false))
+                .orElseThrow(NotFoundException::new);
+    }
+
+    @Override
+    public Question readFetchingOptions(UUID researchId, UUID questionId) {
+        var specification = specificationFactory
+                .findByResearchId(researchId.toString())
+                .and(specificationFactory.findById(questionId.toString()))
+                .and(specificationFactory.findFetchingOptions());
+
+        return questionRepository.findOne(specification)
+                .map(question -> mapper.toDomain(question, true))
                 .orElseThrow(NotFoundException::new);
     }
 
@@ -61,7 +73,7 @@ public class QuestionGateway implements QuestionPort {
 
         return questionRepository.findAll(specification)
                 .stream()
-                .map(mapper::toDomain)
+                .map(question -> mapper.toDomain(question, false))
                 .collect(toList());
     }
 

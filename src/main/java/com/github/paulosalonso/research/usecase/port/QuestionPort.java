@@ -10,6 +10,7 @@ public interface QuestionPort {
 
     Question create(UUID researchId, Question question);
     Question read(UUID researchId, UUID questionId);
+    Question readFetchingOptions(UUID researchId, UUID questionId);
     List<Question> search(UUID researchId, QuestionCriteria criteria);
     Question update(UUID researchId, Question question);
     void delete(UUID researchId, UUID questionId);
