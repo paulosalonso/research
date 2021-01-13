@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.adapter.controller.creator.OptionCreator.createOption;
 import static com.github.paulosalonso.research.adapter.controller.creator.QuestionCreator.createQuestion;
 import static com.github.paulosalonso.research.adapter.controller.creator.ResearchCreator.createResearch;
 import static io.restassured.RestAssured.given;
@@ -71,6 +72,7 @@ public class ResearchControllerIT extends BaseIT {
                 .path("id");
 
         var question = createQuestion(UUID.fromString(id));
+        var option = createOption(question.getId());
 
         given()
                 .accept(JSON)
@@ -85,7 +87,9 @@ public class ResearchControllerIT extends BaseIT {
                 .body("startsOn", equalTo(ISO_DATE_TIME.format(body.getStartsOn().withOffsetSameInstant(ZoneOffset.UTC))))
                 .body("endsOn", equalTo(ISO_DATE_TIME.format(body.getEndsOn().withOffsetSameInstant(ZoneOffset.UTC))))
                 .body("questions", hasSize(1))
-                .body("questions.id", contains(question.getId().toString()));
+                .body("questions.id", contains(question.getId().toString()))
+                .body("questions.options", hasSize(1))
+                .body("questions[0].options.id", contains(option.getId().toString()));
     }
 
     @Test

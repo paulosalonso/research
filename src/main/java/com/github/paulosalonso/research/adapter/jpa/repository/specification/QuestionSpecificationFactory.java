@@ -50,6 +50,7 @@ public class QuestionSpecificationFactory {
 
     public Specification<QuestionEntity> findFetchingOptions() {
         return (root, criteriaQuery, criteriaBuilder) -> {
+            criteriaQuery.distinct(true);
             root.fetch(QuestionEntity.Fields.options, JoinType.LEFT);
             return null;
         };

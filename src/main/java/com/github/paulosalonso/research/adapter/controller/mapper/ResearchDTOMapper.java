@@ -26,7 +26,7 @@ public class ResearchDTOMapper {
 
         if (fillQuestions) {
             builder.questions(research.getQuestions().stream()
-                    .map(question -> questionDTOMapper.toDTO(question, false))
+                    .map(question -> questionDTOMapper.toDTO(question, true))
                     .collect(toList()));
         }
 

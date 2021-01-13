@@ -2,9 +2,12 @@ package com.github.paulosalonso.research.adapter.gateway;
 
 import com.github.paulosalonso.research.adapter.jpa.mapper.QuestionMapper;
 import com.github.paulosalonso.research.adapter.jpa.mapper.ResearchMapper;
+import com.github.paulosalonso.research.adapter.jpa.model.OptionEntity;
 import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
 import com.github.paulosalonso.research.adapter.jpa.model.ResearchEntity;
+import com.github.paulosalonso.research.adapter.jpa.repository.QuestionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.ResearchRepository;
+import com.github.paulosalonso.research.adapter.jpa.repository.specification.QuestionSpecificationFactory;
 import com.github.paulosalonso.research.adapter.jpa.repository.specification.ResearchSpecificationFactory;
 import com.github.paulosalonso.research.domain.Research;
 import com.github.paulosalonso.research.domain.ResearchCriteria;
@@ -33,10 +36,16 @@ public class ResearchGatewayTest {
     private ResearchGateway gateway;
 
     @Mock
-    private ResearchRepository repository;
+    private ResearchRepository researchRepository;
 
     @Mock
-    private ResearchSpecificationFactory specificationFactory;
+    private QuestionRepository questionRepository;
+
+    @Mock
+    private ResearchSpecificationFactory researchSpecificationFactory;
+
+    @Mock
+    private QuestionSpecificationFactory questionSpecificationFactory;
 
     @Mock
     private ResearchMapper researchMapper;
@@ -57,8 +66,8 @@ public class ResearchGatewayTest {
 
         verify(researchMapper).toEntity(research);
         verifyNoMoreInteractions(researchMapper);
-        verify(repository).save(any());
-        verifyNoMoreInteractions(repository);
+        verify(researchRepository).save(any());
+        verifyNoMoreInteractions(researchRepository);
     }
 
     @Test
@@ -71,13 +80,13 @@ public class ResearchGatewayTest {
                 .startsOn(OffsetDateTime.now())
                 .build();
 
-        when(repository.findById(id.toString())).thenReturn(Optional.of(entity));
+        when(researchRepository.findById(id.toString())).thenReturn(Optional.of(entity));
         when(researchMapper.toDomain(entity, false)).thenCallRealMethod();
 
         gateway.read(id);
 
-        verify(repository).findById(id.toString());
-        verifyNoMoreInteractions(repository);
+        verify(researchRepository).findById(id.toString());
+        verifyNoMoreInteractions(researchRepository);
         verify(researchMapper).toDomain(entity, false);
         verifyNoMoreInteractions(researchMapper);
     }
@@ -86,41 +95,47 @@ public class ResearchGatewayTest {
     public void givenAnIdWhenReadWithQuestionsThenReturnResearch() {
         var id = UUID.randomUUID();
 
-        var question = QuestionEntity.builder().build();
+        var option = OptionEntity.builder().build();
+        var question = QuestionEntity.builder()
+                .options(List.of(option))
+                .build();
         var entity = ResearchEntity.builder()
                 .id(id.toString())
                 .title("title")
                 .startsOn(OffsetDateTime.now())
-                .questions(List.of(question))
                 .build();
 
-        when(specificationFactory.findById(id.toString())).thenCallRealMethod();
-        when(specificationFactory.findFetchingQuestions()).thenCallRealMethod();
-        when(repository.findOne(any(Specification.class))).thenReturn(Optional.of(entity));
-        when(researchMapper.toDomain(entity, true)).thenReturn(Research.builder()
+        var result = Research.builder()
                 .title(entity.getTitle())
-                .startsOn(entity.getStartsOn()).build());
+                .startsOn(entity.getStartsOn())
+                .build();
+
+        when(questionSpecificationFactory.findByResearchId(entity.getId())).thenCallRealMethod();
+        when(questionSpecificationFactory.findFetchingOptions()).thenCallRealMethod();
+        when(researchRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
+        when(questionRepository.findAll(any(Specification.class))).thenReturn(List.of(question));
+        when(researchMapper.toDomain(entity, false)).thenReturn(result);
 
         gateway.readFetchingQuestions(id);
 
-        verify(specificationFactory).findById(id.toString());
-        verify(specificationFactory).findFetchingQuestions();
-        verify(repository).findOne(any(Specification.class));
-        verifyNoMoreInteractions(repository);
-        verify(researchMapper).toDomain(entity, true);
-        verifyNoMoreInteractions(researchMapper);
+        verify(researchRepository).findById(entity.getId());
+        verify(questionSpecificationFactory).findByResearchId(entity.getId());
+        verify(questionSpecificationFactory).findFetchingOptions();
+        verify(questionRepository).findAll(any(Specification.class));
+        verify(researchMapper).toDomain(entity, false);
+        verify(questionMapper).toDomain(question, true);
     }
 
     @Test
     public void givenANonexistentIdWhenReadThenThrowsNotFoundException() {
         var id = UUID.randomUUID();
 
-        when(repository.findById(id.toString())).thenReturn(Optional.empty());
+        when(researchRepository.findById(id.toString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> gateway.read(id))
                 .isExactlyInstanceOf(NotFoundException.class);
 
-        verify(repository).findById(id.toString());
+        verify(researchRepository).findById(id.toString());
         verifyNoInteractions(researchMapper);
     }
 
@@ -132,16 +147,16 @@ public class ResearchGatewayTest {
                 .startsOn(OffsetDateTime.now())
                 .build();
 
-        when(specificationFactory.findByResearchCriteria(criteria)).thenCallRealMethod();
+        when(researchSpecificationFactory.findByResearchCriteria(criteria)).thenCallRealMethod();
         when(researchMapper.toDomain(any(ResearchEntity.class), eq(false))).thenCallRealMethod();
-        when(repository.findAll(any(Specification.class))).thenReturn(List.of(entity));
+        when(researchRepository.findAll(any(Specification.class))).thenReturn(List.of(entity));
 
         gateway.search(criteria);
 
-        verify(specificationFactory).findByResearchCriteria(criteria);
-        verifyNoMoreInteractions(specificationFactory);
-        verify(repository).findAll(any(Specification.class));
-        verifyNoMoreInteractions(repository);
+        verify(researchSpecificationFactory).findByResearchCriteria(criteria);
+        verifyNoMoreInteractions(researchSpecificationFactory);
+        verify(researchRepository).findAll(any(Specification.class));
+        verifyNoMoreInteractions(researchRepository);
         verify(researchMapper).toDomain(entity, false);
         verifyNoMoreInteractions(researchMapper);
     }
@@ -163,13 +178,13 @@ public class ResearchGatewayTest {
                 .endsOn(OffsetDateTime.now().plusDays(10))
                 .build();
 
-        when(repository.findById(research.getId().toString())).thenReturn(Optional.of(entity));
+        when(researchRepository.findById(research.getId().toString())).thenReturn(Optional.of(entity));
         when(researchMapper.copy(research, entity)).thenCallRealMethod();
 
         gateway.update(research);
 
-        verify(repository).findById(research.getId().toString());
-        verifyNoMoreInteractions(repository);
+        verify(researchRepository).findById(research.getId().toString());
+        verifyNoMoreInteractions(researchRepository);
         verify(researchMapper).copy(research, entity);
         verifyNoMoreInteractions(researchMapper);
 
@@ -187,13 +202,13 @@ public class ResearchGatewayTest {
                 .startsOn(OffsetDateTime.now())
                 .build();
 
-        when(repository.findById(research.getId().toString())).thenReturn(Optional.empty());
+        when(researchRepository.findById(research.getId().toString())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> gateway.update(research))
                 .isExactlyInstanceOf(NotFoundException.class);
 
-        verify(repository).findById(research.getId().toString());
-        verifyNoMoreInteractions(repository);
+        verify(researchRepository).findById(research.getId().toString());
+        verifyNoMoreInteractions(researchRepository);
         verifyNoInteractions(researchMapper);
     }
 
@@ -203,31 +218,31 @@ public class ResearchGatewayTest {
 
         gateway.delete(id);
 
-        verify(repository).deleteById(id.toString());
-        verifyNoMoreInteractions(repository);
+        verify(researchRepository).deleteById(id.toString());
+        verifyNoMoreInteractions(researchRepository);
     }
 
     @Test
     public void givenAResearchWithoutQuestionsWhenGetNextQuestionSequenceThenReturnOne() {
         var id = UUID.randomUUID();
 
-        when(repository.findLastQuestionSequence(id.toString())).thenReturn(Optional.empty());
+        when(researchRepository.findLastQuestionSequence(id.toString())).thenReturn(Optional.empty());
 
         var sequence = gateway.getNextQuestionSequence(id);
 
         assertThat(sequence).isEqualTo(1);
-        verify(repository).findLastQuestionSequence(id.toString());
+        verify(researchRepository).findLastQuestionSequence(id.toString());
     }
 
     @Test
     public void givenAResearchWithOptionsWhenGetNextQuestionSequenceThenReturnNextSequence() {
         var id = UUID.randomUUID();
 
-        when(repository.findLastQuestionSequence(id.toString())).thenReturn(Optional.of(1));
+        when(researchRepository.findLastQuestionSequence(id.toString())).thenReturn(Optional.of(1));
 
         var sequence = gateway.getNextQuestionSequence(id);
 
         assertThat(sequence).isEqualTo(2);
-        verify(repository).findLastQuestionSequence(id.toString());
+        verify(researchRepository).findLastQuestionSequence(id.toString());
     }
 }
