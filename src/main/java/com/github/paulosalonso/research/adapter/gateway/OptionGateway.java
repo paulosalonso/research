@@ -54,6 +54,11 @@ public class OptionGateway implements OptionPort {
     }
 
     @Override
+    public Option readFetchingQuestions(UUID questionId, UUID optionId) {
+        throw new NotFoundException();
+    }
+
+    @Override
     public List<Option> search(UUID questionId, OptionCriteria criteria) {
         var specification = specificationFactory.findByQuestionId(questionId.toString())
                 .and(specificationFactory.findByOptionCriteria(criteria))

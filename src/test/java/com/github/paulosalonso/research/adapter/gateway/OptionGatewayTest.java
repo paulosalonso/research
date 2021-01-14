@@ -103,6 +103,12 @@ public class OptionGatewayTest {
     }
 
     @Test
+    public void givenAQuestionIdAndAnOptionIdWhenReadFetchingQuestionsThenFindAndMapIt() {
+        assertThatThrownBy(() -> gateway.readFetchingQuestions(UUID.randomUUID(), UUID.randomUUID()))
+                .isExactlyInstanceOf(NotFoundException.class);
+    }
+
+    @Test
     public void givenANonexistentCompositeIdWhenReadThenThrowsNotFoundException() {
         var questionId = UUID.randomUUID();
         var optionId = UUID.randomUUID();

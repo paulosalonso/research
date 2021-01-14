@@ -17,6 +17,7 @@ public class Option {
     private Integer sequence;
 
     @NonNull
-    private final String description;
+    private String description;
 
+    private Question questions;
 }
