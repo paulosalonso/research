@@ -13,7 +13,11 @@ public class OptionRead {
 
     private final OptionPort optionPort;
 
-    public Option read(UUID questionId, UUID optionId) {
+    public Option read(UUID questionId, UUID optionId, boolean fillQuestions) {
+        if (fillQuestions) {
+            return optionPort.readFetchingQuestions(questionId, optionId);
+        }
+
         return optionPort.read(questionId, optionId);
     }
 

@@ -32,8 +32,10 @@ public class OptionController {
     private final OptionDTOMapper mapper;
 
     @GetMapping("/{optionId}")
-    public OptionDTO get(@PathVariable UUID questionId, @PathVariable UUID optionId) {
-        return mapper.toDTO(optionRead.read(questionId, optionId));
+    public OptionDTO get(@PathVariable UUID questionId,
+                         @PathVariable UUID optionId, @RequestParam(required = false) boolean fillQuestions) {
+
+        return mapper.toDTO(optionRead.read(questionId, optionId, fillQuestions));
     }
 
     @GetMapping
