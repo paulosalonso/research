@@ -106,6 +106,7 @@ public class OptionGatewayTest {
     public void givenAQuestionIdAndAnOptionIdWhenReadFetchingQuestionsThenFindAndMapIt() {
         assertThatThrownBy(() -> gateway.readFetchingQuestions(UUID.randomUUID(), UUID.randomUUID()))
                 .isExactlyInstanceOf(NotFoundException.class);
+        // TODO - Change test when implementing real flow
     }
 
     @Test
