@@ -11,6 +11,7 @@ create table option (
     id varchar(255) not null,
     sequence int not null,
     description varchar(255) not null,
+    notify boolean not null,
     question_id varchar(255) not null,
     primary key (id)
 );

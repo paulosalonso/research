@@ -31,6 +31,8 @@ public class OptionEntity {
     @NotBlank
     private String description;
 
+    private boolean notify;
+
     @NotNull
     @ManyToOne(fetch = LAZY)
     private QuestionEntity question;
