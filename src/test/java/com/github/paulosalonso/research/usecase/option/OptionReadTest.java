@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class OptionReadTest {
@@ -25,7 +26,7 @@ public class OptionReadTest {
     private OptionPort port;
 
     @Test
-    public void givenAQuestionIdAndAnOptionIdIdWhenReadWithoutQuestionsThenCallPort() {
+    public void givenAQuestionIdAndAnOptionIdIdWhenReadThenCallPort() {
         var questionId = UUID.randomUUID();
         var optionId = UUID.randomUUID();
         var toRead = Option.builder()
@@ -34,28 +35,10 @@ public class OptionReadTest {
 
         when(port.read(questionId, optionId)).thenReturn(toRead);
 
-        var result = optionRead.read(questionId, optionId, false);
+        var result = optionRead.read(questionId, optionId);
 
         assertThat(result).isSameAs(toRead);
         verify(port).read(questionId, optionId);
-        verifyNoMoreInteractions(port);
-    }
-
-    @Test
-    public void givenAQuestionIdAndAnOptionIdIdWhenReadWithQuestionsThenCallPort() {
-        var questionId = UUID.randomUUID();
-        var optionId = UUID.randomUUID();
-        var toRead = Option.builder()
-                .description("description")
-                .build();
-
-        when(port.readFetchingQuestions(questionId, optionId)).thenReturn(toRead);
-
-        var result = optionRead.read(questionId, optionId, true);
-
-        assertThat(result).isSameAs(toRead);
-        verify(port).readFetchingQuestions(questionId, optionId);
-        verifyNoMoreInteractions(port);
     }
 
     @Test
