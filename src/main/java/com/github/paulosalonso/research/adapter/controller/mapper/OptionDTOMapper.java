@@ -15,18 +15,21 @@ public class OptionDTOMapper {
                 .id(option.getId())
                 .sequence(option.getSequence())
                 .description(option.getDescription())
+                .notify(option.isNotify())
                 .build();
     }
 
     public Option toDomain(OptionInputDTO dto) {
         return Option.builder()
                 .description(dto.getDescription())
+                .notify(dto.isNotify())
                 .build();
     }
 
     public OptionCriteria toDomain(OptionCriteriaDTO dto) {
         return OptionCriteria.builder()
                 .description(dto.getDescription())
+                .notify(dto.getNotify())
                 .build();
     }
 }

@@ -16,4 +16,6 @@ public class OptionInputDTO {
     @NotBlank
     private String description;
 
+    private boolean notify;
+
 }

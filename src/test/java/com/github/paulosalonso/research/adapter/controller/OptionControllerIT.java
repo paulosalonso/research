@@ -44,7 +44,8 @@ public class OptionControllerIT extends BaseIT {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("id", equalTo(optionId))
-                .body("description", equalTo(body.getDescription()));
+                .body("description", equalTo(body.getDescription()))
+                .body("notify", equalTo(body.isNotify()));
     }
 
     @Test
@@ -149,6 +150,33 @@ public class OptionControllerIT extends BaseIT {
         given()
                 .accept(JSON)
                 .queryParam("description", optionB.getDescription())
+                .when()
+                .get("/questions/{questionId}/options", question.getId())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("$", hasSize(1))
+                .body("id", contains(optionB.getId().toString()));
+    }
+
+    @Test
+    public void whenSearchWithNotifyParameterThenReturnFiltered() {
+        truncateDatabase();
+
+        var research = createResearch();
+        var question = createQuestion(research.getId());
+
+        createOption(question.getId(), OptionInputDTO.builder()
+                .description("description-a")
+                .build());
+
+        var optionB = createOption(question.getId(), OptionInputDTO.builder()
+                .description("description-b")
+                .notify(true)
+                .build());
+
+        given()
+                .accept(JSON)
+                .queryParam("notify", optionB.isNotify())
                 .when()
                 .get("/questions/{questionId}/options", question.getId())
                 .then()

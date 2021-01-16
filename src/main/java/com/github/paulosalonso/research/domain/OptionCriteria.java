@@ -10,5 +10,5 @@ import lombok.Getter;
 public class OptionCriteria {
 
     private final String description;
-    private final boolean notify;
+    private final Boolean notify;
 }

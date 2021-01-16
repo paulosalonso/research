@@ -21,6 +21,9 @@ public class OptionSpecificationFactory {
         ofNullable(OptionCriteria.getDescription())
                 .ifPresent(description -> specifications.add(findByDescriptionLike(description)));
 
+        ofNullable(OptionCriteria.getNotify())
+                .ifPresent(notify -> specifications.add(findByNotify(notify)));
+
         return specifications.stream().reduce(findWithoutFilter(), Specification::and);
     }
 
@@ -37,5 +40,10 @@ public class OptionSpecificationFactory {
     public Specification<OptionEntity> findByDescriptionLike(String description) {
         return (root, criteriaQuery, criteriaBuilder) ->
                 criteriaBuilder.like(root.get(OptionEntity.Fields.description), "%" + description + "%");
+    }
+
+    public Specification<OptionEntity> findByNotify(boolean notify) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(OptionEntity.Fields.notify), notify);
     }
 }

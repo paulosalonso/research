@@ -12,4 +12,5 @@ import lombok.*;
 public class OptionCriteriaDTO {
 
     private String description;
+    private Boolean notify;
 }
