@@ -11,6 +11,7 @@ public class OptionMapper {
 
     public OptionEntity copy(Option from, OptionEntity to) {
         to.setDescription(from.getDescription());
+        to.setNotify(from.isNotify());
         return to;
     }
 
@@ -21,6 +22,7 @@ public class OptionMapper {
                 .id(id)
                 .sequence(optionEntity.getSequence())
                 .description(optionEntity.getDescription())
+                .notify(optionEntity.isNotify())
                 .build();
     }
 
@@ -31,6 +33,7 @@ public class OptionMapper {
                 .id(id)
                 .sequence(option.getSequence())
                 .description(option.getDescription())
+                .notify(option.isNotify())
                 .build();
     }
 }

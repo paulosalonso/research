@@ -144,6 +144,7 @@ public class ResearchGatewayTest {
         var criteria = ResearchCriteria.builder().build();
         var entity = ResearchEntity.builder()
                 .title("title")
+
                 .startsOn(OffsetDateTime.now())
                 .build();
 
@@ -151,7 +152,7 @@ public class ResearchGatewayTest {
         when(researchMapper.toDomain(any(ResearchEntity.class), eq(false))).thenCallRealMethod();
         when(researchRepository.findAll(any(Specification.class))).thenReturn(List.of(entity));
 
-        gateway.search(criteria);
+        assertThat(gateway.search(criteria)).hasSize(1);
 
         verify(researchSpecificationFactory).findByResearchCriteria(criteria);
         verifyNoMoreInteractions(researchSpecificationFactory);

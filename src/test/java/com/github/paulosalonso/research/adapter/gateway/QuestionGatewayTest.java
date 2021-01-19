@@ -177,7 +177,7 @@ public class QuestionGatewayTest {
         when(mapper.toDomain(entity, false)).thenCallRealMethod();
         when(questionRepository.findAll(any(Specification.class))).thenReturn(List.of(entity));
 
-        gateway.search(researchId, criteria);
+        assertThat(gateway.search(researchId, criteria)).hasSize(1);
 
         verify(specificationFactory).findByResearchId(researchId.toString());
         verify(specificationFactory).findByQuestionCriteria(criteria);

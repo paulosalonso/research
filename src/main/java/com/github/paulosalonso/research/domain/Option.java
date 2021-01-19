@@ -12,11 +12,13 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class Option {
 
-    private UUID id;
+    private final UUID id;
 
-    private Integer sequence;
+    private final Integer sequence;
 
     @NonNull
     private final String description;
+
+    private final boolean notify;
 
 }

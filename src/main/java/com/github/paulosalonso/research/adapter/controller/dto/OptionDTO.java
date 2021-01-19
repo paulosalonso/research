@@ -16,4 +16,5 @@ public class OptionDTO {
     private UUID id;
     private Integer sequence;
     private String description;
+    private boolean notify;
 }
