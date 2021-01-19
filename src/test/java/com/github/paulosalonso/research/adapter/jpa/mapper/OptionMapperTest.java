@@ -42,6 +42,28 @@ public class OptionMapperTest {
     }
 
     @Test
+    public void givenAnOptionWhenCopyThenReturnEntity() {
+        var option = Option.builder()
+                .description("description updated")
+                .notify(true)
+                .build();
+
+        var id = UUID.randomUUID().toString();
+
+        var entity = OptionEntity.builder()
+                .id(id)
+                .description("description")
+                .notify(false)
+                .build();
+
+        mapper.copy(option, entity);
+
+        assertThat(entity.getId()).isEqualTo(id);
+        assertThat(entity.getDescription()).isEqualTo(option.getDescription());
+        assertThat(entity.isNotify()).isEqualTo(option.isNotify());
+    }
+
+    @Test
     public void givenAnOptionEntityWhenMapThenReturnDomain() {
         var entity = OptionEntity.builder()
                 .id(UUID.randomUUID().toString())

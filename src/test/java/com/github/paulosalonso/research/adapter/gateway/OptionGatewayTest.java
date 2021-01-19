@@ -134,7 +134,7 @@ public class OptionGatewayTest {
         when(mapper.toDomain(any(OptionEntity.class))).thenCallRealMethod();
         when(optionRepository.findAll(any(Specification.class))).thenReturn(List.of(entity));
 
-        gateway.search(questionId, criteria);
+        assertThat(gateway.search(questionId, criteria)).hasSize(1);
 
         verify(specificationFactory).findByQuestionId(questionId.toString());
         verify(specificationFactory).findByOptionCriteria(criteria);

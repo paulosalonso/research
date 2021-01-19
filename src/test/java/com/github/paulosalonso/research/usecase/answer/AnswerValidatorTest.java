@@ -40,8 +40,25 @@ public class AnswerValidatorTest {
 
     @Test
     public void givenAnAnswerWhenValidatingThenDoesNotThrowAnyException() {
-        var answer = buildAnswer();
-        var research = buildResearch(answer);
+        var research = buildResearch();
+        var answer = buildAnswer(research);
+
+        when(researchPort.read(research.getId())).thenReturn(research);
+
+        assertThatCode(() -> validator.validate(research.getId(), List.of(answer)))
+                .doesNotThrowAnyException();
+
+        verify(researchPort).read(research.getId());
+        verify(questionPort).read(answer.getResearchId(), answer.getQuestionId());
+        verify(optionPort).read(answer.getQuestionId(), answer.getOptionId());
+    }
+
+    @Test
+    public void givenAnAnswerWithEndsDateInFutureWhenValidatingThenDoesNotThrowAnyException() {
+        var research = buildResearch().toBuilder()
+                .endsOn(OffsetDateTime.now().plusDays(1))
+                .build();
+        var answer = buildAnswer(research);
 
         when(researchPort.read(research.getId())).thenReturn(research);
 
@@ -55,7 +72,8 @@ public class AnswerValidatorTest {
 
     @Test
     public void givenAnAnswerWhenResearchIsNotFoundThenThrowsException() {
-        var answer = buildAnswer();
+        var research = buildResearch();
+        var answer = buildAnswer(research);
 
         when(researchPort.read(answer.getResearchId())).thenThrow(NotFoundException.class);
 
@@ -75,11 +93,7 @@ public class AnswerValidatorTest {
                 .startsOn(OffsetDateTime.now().plusMinutes(1))
                 .build();
 
-        var answer = Answer.builder()
-                .researchId(research.getId())
-                .questionId(UUID.randomUUID())
-                .optionId(UUID.randomUUID())
-                .build();
+        var answer = buildAnswer(research);
 
         when(researchPort.read(research.getId())).thenReturn(research);
 
@@ -101,11 +115,7 @@ public class AnswerValidatorTest {
                 .endsOn(OffsetDateTime.now().minusMinutes(1))
                 .build();
 
-        var answer = Answer.builder()
-                .researchId(research.getId())
-                .questionId(UUID.randomUUID())
-                .optionId(UUID.randomUUID())
-                .build();
+        var answer = buildAnswer(research);
 
         when(researchPort.read(research.getId())).thenReturn(research);
 
@@ -120,8 +130,8 @@ public class AnswerValidatorTest {
 
     @Test
     public void givenAnAnswerWhenQuestionIsNotFoundThenThrowsException() {
-        var answer = buildAnswer();
-        var research = buildResearch(answer);
+        var research = buildResearch();
+        var answer = buildAnswer(research);
 
         when(researchPort.read(research.getId())).thenReturn(research);
         when(questionPort.read(answer.getResearchId(), answer.getQuestionId())).thenThrow(NotFoundException.class);
@@ -137,8 +147,8 @@ public class AnswerValidatorTest {
 
     @Test
     public void givenAnAnswerWhenOptionIsNotFoundThenThrowsException() {
-        var answer = buildAnswer();
-        var research = buildResearch(answer);
+        var research = buildResearch();
+        var answer = buildAnswer(research);
 
         when(researchPort.read(research.getId())).thenReturn(research);
         when(optionPort.read(answer.getQuestionId(), answer.getOptionId())).thenThrow(NotFoundException.class);
@@ -154,11 +164,7 @@ public class AnswerValidatorTest {
 
     @Test
     public void givenAQuestionThatAcceptsMultipleSelectWhenValidateAnAnswerWithMoreThenOneOptionForItThenDoesNotThrowAnyException() {
-        var research = Research.builder()
-                .id(UUID.randomUUID())
-                .title("title")
-                .startsOn(OffsetDateTime.now().minusMinutes(1))
-                .build();
+        var research = buildResearch();
 
         var questionId = UUID.randomUUID();
 
@@ -194,12 +200,45 @@ public class AnswerValidatorTest {
     }
 
     @Test
-    public void givenAQuestionThatNotAcceptsMultipleSelectWhenValidateAnAnswerWithMoreThenOneOptionForItThenDoesNotThrowAnyException() {
-        var research = Research.builder()
-                .id(UUID.randomUUID())
-                .title("title")
-                .startsOn(OffsetDateTime.now().minusMinutes(1))
+    public void givenAQuestionThatNotAcceptsMultipleSelectWhenValidateAnAnswerWithOneOptionForItThenDoesNotThrowAnyException() {
+        var research = buildResearch();
+
+        var questionId = UUID.randomUUID();
+
+        var answerA = Answer.builder()
+                .researchId(research.getId())
+                .questionId(questionId)
+                .optionId(UUID.randomUUID())
                 .build();
+
+        var answerB = Answer.builder()
+                .researchId(research.getId())
+                .questionId(UUID.randomUUID())
+                .optionId(UUID.randomUUID())
+                .build();
+
+        var question = Question.builder()
+                .id(questionId)
+                .description("description")
+                .multiSelect(false)
+                .build();
+
+        when(researchPort.read(research.getId())).thenReturn(research);
+        when(questionPort.search(eq(research.getId()), any(QuestionCriteria.class))).thenReturn(List.of(question));
+
+        assertThatCode(() -> validator.validate(research.getId(), List.of(answerA, answerB)))
+                .doesNotThrowAnyException();
+
+        verify(researchPort).read(research.getId());
+        verify(questionPort).search(eq(research.getId()), any(QuestionCriteria.class));
+        verify(questionPort).read(research.getId(), questionId);
+        verify(optionPort).read(answerA.getQuestionId(), answerA.getOptionId());
+        verify(optionPort).read(answerB.getQuestionId(), answerB.getOptionId());
+    }
+
+    @Test
+    public void givenAQuestionThatNotAcceptsMultipleSelectWhenValidateAnAnswerWithMoreThenOneOptionForItThenThrowException() {
+        var research = buildResearch();
 
         var questionId = UUID.randomUUID();
 
@@ -235,19 +274,19 @@ public class AnswerValidatorTest {
         verify(optionPort).read(questionId, answerB.getOptionId());
     }
 
-    private Answer buildAnswer() {
-        return Answer.builder()
-                .researchId(UUID.randomUUID())
-                .questionId(UUID.randomUUID())
-                .optionId(UUID.randomUUID())
+    private Research buildResearch() {
+        return Research.builder()
+                .id(UUID.randomUUID())
+                .title("title")
+                .startsOn(OffsetDateTime.now().minusDays(1))
                 .build();
     }
 
-    private Research buildResearch(Answer answer) {
-        return Research.builder()
-                .id(answer.getResearchId())
-                .title("title")
-                .startsOn(OffsetDateTime.now().minusDays(1))
+    private Answer buildAnswer(Research research) {
+        return Answer.builder()
+                .researchId(research.getId())
+                .questionId(UUID.randomUUID())
+                .optionId(UUID.randomUUID())
                 .build();
     }
 

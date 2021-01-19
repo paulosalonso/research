@@ -245,7 +245,12 @@
 					</targetTests>
 					<excludedClasses>
 						<param>com.github.paulosalonso.research.application.*</param>
+						<param>com.github.paulosalonso.research.adapter.jpa.repository.*</param>
+						<param>**Controller*</param>
 					</excludedClasses>
+					<excludedTestClasses>
+						<param>**IT*</param>
+					</excludedTestClasses>
 				</configuration>
 			</plugin>
 		</plugins>
