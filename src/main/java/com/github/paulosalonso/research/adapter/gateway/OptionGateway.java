@@ -93,6 +93,6 @@ public class OptionGateway implements OptionPort {
 
     @Override
     public boolean shouldNotify(UUID optionId) {
-        return false;
+        return optionRepository.findNotifyById(optionId.toString());
     }
 }
