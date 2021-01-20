@@ -90,4 +90,9 @@ public class OptionGateway implements OptionPort {
 
         optionRepository.delete(option);
     }
+
+    @Override
+    public boolean shouldNotify(UUID optionId) {
+        return false;
+    }
 }
