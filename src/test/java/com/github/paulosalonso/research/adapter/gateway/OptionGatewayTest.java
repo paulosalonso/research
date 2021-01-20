@@ -249,7 +249,18 @@ public class OptionGatewayTest {
     }
 
     @Test
-    public void shouldNotifyTest() {
-        assertThat(gateway.shouldNotify(UUID.randomUUID())).isFalse();
+    public void givenAnOptionIdWhenOptionRepositoryReturnTrueThenReturnTrue() {
+        UUID id = UUID.randomUUID();
+        when(optionRepository.findNotifyById(id.toString())).thenReturn(true);
+        assertThat(gateway.shouldNotify(id)).isTrue();
+        verify(optionRepository).findNotifyById(id.toString());
+    }
+
+    @Test
+    public void givenAnOptionIdWhenOptionRepositoryReturnFalseThenReturnFalse() {
+        UUID id = UUID.randomUUID();
+        when(optionRepository.findNotifyById(id.toString())).thenReturn(true);
+        assertThat(gateway.shouldNotify(id)).isTrue();
+        verify(optionRepository).findNotifyById(id.toString());
     }
 }
