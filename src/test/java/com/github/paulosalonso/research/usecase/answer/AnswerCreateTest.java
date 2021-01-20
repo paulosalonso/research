@@ -1,9 +1,10 @@
 package com.github.paulosalonso.research.usecase.answer;
 
 import com.github.paulosalonso.research.domain.Answer;
-import com.github.paulosalonso.research.domain.Research;
 import com.github.paulosalonso.research.usecase.exception.InvalidAnswerException;
 import com.github.paulosalonso.research.usecase.port.AnswerPort;
+import com.github.paulosalonso.research.usecase.port.NotifierPort;
+import com.github.paulosalonso.research.usecase.port.OptionPort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -17,8 +18,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AnswerCreateTest {
@@ -32,6 +32,12 @@ public class AnswerCreateTest {
     @Mock
     private AnswerValidator validator;
 
+    @Mock
+    private OptionPort optionPort;
+
+    @Mock
+    private NotifierPort notifierPort;
+
     @Test
     public void givenAnAnswerWhenCreateThenCallPort() {
         var testInit = OffsetDateTime.now();
@@ -41,6 +47,8 @@ public class AnswerCreateTest {
                 .questionId(UUID.randomUUID())
                 .optionId(UUID.randomUUID())
                 .build();
+
+        when(optionPort.shouldNotify(toSave.getOptionId())).thenReturn(false);
 
         answerCreate.create(toSave.getResearchId(), List.of(toSave));
 
@@ -54,6 +62,8 @@ public class AnswerCreateTest {
         assertThat(saved.getOptionId()).isEqualTo(toSave.getOptionId());
 
         verify(validator).validate(toSave.getResearchId(), List.of(toSave));
+        verify(optionPort).shouldNotify(toSave.getOptionId());
+        verifyNoInteractions(notifierPort);
     }
 
     @Test
@@ -70,13 +80,23 @@ public class AnswerCreateTest {
                 .isSameAs(exception);
 
         verify(validator).validate(answer.getResearchId(), List.of(answer));
+        verifyNoInteractions(optionPort);
+        verifyNoInteractions(notifierPort);
     }
 
-    private Research buildResearch(Answer toSave) {
-        return Research.builder()
-                .id(toSave.getResearchId())
-                .title("title")
-                .startsOn(OffsetDateTime.now().minusDays(1))
+    @Test
+    public void givenAnAnswerContainingNotifyOptionWhenCreateThenCallNotifierPort() {
+        var answer = Answer.builder()
+                .researchId(UUID.randomUUID())
+                .questionId(UUID.randomUUID())
+                .optionId(UUID.randomUUID())
                 .build();
+
+        when(optionPort.shouldNotify(answer.getOptionId())).thenReturn(true);
+
+        answerCreate.create(answer.getResearchId(), List.of(answer));
+
+        verify(optionPort).shouldNotify(answer.getOptionId());
+        verify(notifierPort).notifyAnswer(answer);
     }
 }

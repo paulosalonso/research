@@ -247,4 +247,9 @@ public class OptionGatewayTest {
         verify(optionRepository, never()).delete(option);
         verifyNoMoreInteractions(optionRepository);
     }
+
+    @Test
+    public void shouldNotifyTest() {
+        assertThat(gateway.shouldNotify(UUID.randomUUID())).isFalse();
+    }
 }

@@ -13,4 +13,5 @@ public interface OptionPort {
     List<Option> search(UUID questionId, OptionCriteria criteria);
     Option update(UUID questionId, Option option);
     void delete(UUID questionId, UUID optionId);
+    boolean shouldNotify(UUID optionId);
 }
