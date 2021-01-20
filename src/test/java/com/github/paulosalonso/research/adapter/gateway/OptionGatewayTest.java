@@ -259,8 +259,8 @@ public class OptionGatewayTest {
     @Test
     public void givenAnOptionIdWhenOptionRepositoryReturnFalseThenReturnFalse() {
         UUID id = UUID.randomUUID();
-        when(optionRepository.findNotifyById(id.toString())).thenReturn(true);
-        assertThat(gateway.shouldNotify(id)).isTrue();
+        when(optionRepository.findNotifyById(id.toString())).thenReturn(false);
+        assertThat(gateway.shouldNotify(id)).isFalse();
         verify(optionRepository).findNotifyById(id.toString());
     }
 }
