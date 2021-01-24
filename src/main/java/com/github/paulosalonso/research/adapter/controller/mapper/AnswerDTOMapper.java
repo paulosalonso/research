@@ -53,6 +53,7 @@ public class AnswerDTOMapper {
     private QuestionSummaryDTO toDTO(QuestionSummary questionSummary) {
         return QuestionSummaryDTO.builder()
                 .id(questionSummary.getId())
+                .sequence(questionSummary.getSequence())
                 .description(questionSummary.getDescription())
                 .options(questionSummary.getOptions().stream()
                         .map(this::toDTO)

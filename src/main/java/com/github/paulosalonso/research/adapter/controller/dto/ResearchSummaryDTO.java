@@ -28,6 +28,7 @@ public class ResearchSummaryDTO {
     @Builder
     public static class QuestionSummaryDTO {
         private UUID id;
+        private Integer sequence;
         private String description;
         private List<OptionSummaryDTO> options;
     }
