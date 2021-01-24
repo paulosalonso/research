@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ResearchSummaryDTOMapperTest {
+public class AnswerDTOMapperTest {
 
     private AnswerDTOMapper mapper = new AnswerDTOMapper();
 
@@ -65,6 +65,7 @@ public class ResearchSummaryDTOMapperTest {
                 .questions(List.of(QuestionSummary.builder()
                         .id(UUID.randomUUID())
                         .description("description")
+                        .sequence(1)
                         .options(List.of(OptionSummary.builder()
                                 .id(UUID.randomUUID())
                                 .description("description")
@@ -89,6 +90,7 @@ public class ResearchSummaryDTOMapperTest {
                 .first()
                 .satisfies(question -> {
                     assertThat(question.getId()).isEqualTo(researchSummary.getQuestions().get(0).getId());
+                    assertThat(question.getSequence()).isEqualTo(researchSummary.getQuestions().get(0).getSequence());
                     assertThat(question.getDescription()).isEqualTo(researchSummary.getQuestions().get(0).getDescription());
                     assertThat(question.getOptions())
                             .hasSize(1)

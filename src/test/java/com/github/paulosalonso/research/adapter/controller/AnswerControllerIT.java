@@ -347,6 +347,7 @@ public class AnswerControllerIT extends BaseIT {
                 .body("criteria.questionId", nullValue())
                 .body("questions", hasSize(3))
                 .body("questions.id", contains(questionA.getId().toString(), questionB.getId().toString(), questionC.getId().toString()))
+                .body("questions.sequence", contains(questionA.getSequence(), questionB.getSequence(), questionC.getSequence()))
                 .body("questions.description", contains(questionA.getDescription(), questionB.getDescription(), questionC.getDescription()))
                 .body("questions[0].options", hasSize(2))
                 .body("questions[0].options.id", contains(optionAA.getId().toString(), optionAB.getId().toString()))
