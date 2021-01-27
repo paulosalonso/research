@@ -11,11 +11,10 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.adapter.controller.creator.AnswerCreator.createAnswer;
-import static com.github.paulosalonso.research.adapter.controller.creator.OptionCreator.createOption;
-import static com.github.paulosalonso.research.adapter.controller.creator.QuestionCreator.createQuestion;
-import static com.github.paulosalonso.research.adapter.controller.creator.ResearchCreator.createResearch;
-import static io.restassured.RestAssured.given;
+import static com.github.paulosalonso.research.adapter.controller.AnswerCreator.createAnswer;
+import static com.github.paulosalonso.research.adapter.controller.OptionCreator.createOption;
+import static com.github.paulosalonso.research.adapter.controller.QuestionCreator.createQuestion;
+import static com.github.paulosalonso.research.adapter.controller.ResearchCreator.createResearch;
 import static io.restassured.http.ContentType.JSON;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -41,7 +40,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -67,7 +66,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -96,7 +95,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -126,7 +125,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -155,7 +154,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -188,7 +187,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -222,7 +221,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -257,7 +256,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -288,7 +287,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -333,7 +332,7 @@ public class AnswerControllerIT extends BaseIT {
                 questionB.getId(), optionBB.getId(),
                 questionC.getId(), optionCB.getId()));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/answers", research.getId())
@@ -381,7 +380,7 @@ public class AnswerControllerIT extends BaseIT {
                 questionA.getId(), optionAA.getId(),
                 questionB.getId(), optionBA.getId()));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("questionId", questionA.getId())
                 .when()
@@ -409,7 +408,7 @@ public class AnswerControllerIT extends BaseIT {
 
         var questionId = UUID.randomUUID().toString();
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("questionId", questionId)
                 .when()
@@ -442,7 +441,7 @@ public class AnswerControllerIT extends BaseIT {
         createAnswer(research.getId(), Map.of(
                 question.getId(), option.getId()));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("dateFrom", ISO_DATE_TIME.format(dateFrom))
                 .queryParam("dateTo", ISO_DATE_TIME.format(dateTo))
@@ -469,7 +468,7 @@ public class AnswerControllerIT extends BaseIT {
         createAnswer(research.getId(), Map.of(
                 question.getId(), option.getId()));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("dateTo", ISO_DATE_TIME.format(dateTo))
                 .when()
@@ -495,7 +494,7 @@ public class AnswerControllerIT extends BaseIT {
 
         var dateFrom = OffsetDateTime.now();
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("dateFrom", ISO_DATE_TIME.format(dateFrom))
                 .when()
@@ -532,7 +531,7 @@ public class AnswerControllerIT extends BaseIT {
                 questionA.getId(), optionAA.getId(),
                 questionB.getId(), optionBA.getId()));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("dateFrom", ISO_DATE_TIME.format(dateFrom))
                 .queryParam("dateTo", ISO_DATE_TIME.format(dateTo))
@@ -552,7 +551,7 @@ public class AnswerControllerIT extends BaseIT {
     public void whenSearchWithNonexistentResearchIdThenReturnNotFound() {
         truncateDatabase();
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/answers", UUID.randomUUID())

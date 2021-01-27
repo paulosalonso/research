@@ -1,4 +1,4 @@
-package com.github.paulosalonso.research.adapter.controller.creator;
+package com.github.paulosalonso.research.adapter.controller;
 
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO.QuestionAnswerInputDTO;
@@ -6,7 +6,7 @@ import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInp
 import java.util.Map;
 import java.util.UUID;
 
-import static io.restassured.RestAssured.given;
+import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticated;
 import static io.restassured.http.ContentType.JSON;
 
 public class AnswerCreator {
@@ -20,7 +20,7 @@ public class AnswerCreator {
                         .optionId(answers.get(questionId))
                         .build()));
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(builder.build())
