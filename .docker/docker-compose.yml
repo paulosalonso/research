@@ -22,7 +22,26 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: keycloak
+      DB_SCHEMA: public
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/research-realm.json
+    ports:
+      - 8050:8080
+    volumes:
+      - ./research-realm.json:/opt/jboss/keycloak/imports/research-realm.json
+    depends_on:
+      - postgres
 
   prometheus:
     image: 'prom/prometheus'
@@ -31,7 +50,7 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
 
   grafana:
     image: 'grafana/grafana'
@@ -43,5 +62,5 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=123456
       - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/research_statistics.json
     volumes:
-      - ./dashboards:/var/lib/grafana/dashboards
-      - ./provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
