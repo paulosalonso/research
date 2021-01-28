@@ -51,6 +51,19 @@ O root path da API é __/research/api__
 
 A API é documentada utilizando [OpenAPI](https://swagger.io/specification/) e pode ser acessada via navegador através do path __/research/api/swagger-ui/index.html__
 
+### Segurança
+
+A API é protegida via autenticação com OAuth2. A autenticação deve ser feita com um Bearer Token (JWT). 
+
+#### JWT + Secret Key
+
+O profile padrão (default) espera por uma secret via variável de ambiente (SECURITY_JWT_SIGNATURE_SECRET) para decodificar o token.
+Nesse caso o algoritmo utilizado por padrão é o HmacSHA256, que também pode ser customizado via variável de ambiente (SECURITY_JWT_SIGNATURE_ALGORITHM).
+
+#### JWT + JWK
+
+O profile "jwk" habilita a utlização de JWK (JSON Web Key) para decodificação do token. Nesse caso deve ser informada a URI para obtenção da chave pública via variável de ambiente (SECURITY_JWT_SIGNATURE_JWK-SET-URI).
+
 ## Execução
 
 Veremos algumas formas para executar a aplicação. Para todas elas é importante observar a cofiguração das variáveis de ambiente citadas anteriormente.
