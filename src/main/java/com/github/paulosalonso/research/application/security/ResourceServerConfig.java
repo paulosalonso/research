@@ -4,6 +4,7 @@ import com.github.paulosalonso.research.application.security.jwtconverter.JwtGra
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 
@@ -26,6 +27,17 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        permitAllOnSwagger(web);
+    }
+
+    private void permitAllOnSwagger(WebSecurity web) {
+        web.ignoring().antMatchers("/v3/api-docs",
+                "/swagger-ui/**",
+                "/swagger-resources/**");
     }
 
     private JwtAuthenticationConverter jwtAuthenticationConverter() {

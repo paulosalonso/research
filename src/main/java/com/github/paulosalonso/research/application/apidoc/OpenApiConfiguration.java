@@ -2,18 +2,16 @@ package com.github.paulosalonso.research.application.apidoc;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import springfox.documentation.builders.*;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.Response;
-import springfox.documentation.service.Tag;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.List;
@@ -36,7 +34,9 @@ public class OpenApiConfiguration implements WebMvcConfigurer {
                         .and(not(PathSelectors.ant("/research/api/actuator/**"))))
                 .build()
                 .useDefaultResponseMessages(false)
-                .apiInfo(buildApiInfo());
+                .apiInfo(buildApiInfo())
+                .securitySchemes(List.of(apiKey()))
+                .securityContexts(List.of(buildSecurityContext()));
 
         addTags(docket);
 
@@ -61,28 +61,22 @@ public class OpenApiConfiguration implements WebMvcConfigurer {
                 .build();
     }
 
-    private List<Response> globalGetResponses() {
-        return List.of(
-                new ResponseBuilder()
-                        .code(Integer.toString(HttpStatus.NOT_FOUND.value()))
-                        .description("Not found")
-                        .representation(MediaType.APPLICATION_JSON)
-                        .apply(this::buildErrorModel)
-                        .build());
+    private ApiKey apiKey() {
+        return new ApiKey("Authorization", "Authorization", "header");
     }
 
-    private void buildErrorModel(RepresentationBuilder representationBuilder) {
-        representationBuilder.model(msBuilder -> msBuilder
-                .name("Error")
-                .referenceModel( rmsBuilder -> rmsBuilder.key(mkBuilder -> mkBuilder
-                        .isResponse( true )
-                        .qualifiedModelName(qmnBuilder -> qmnBuilder
-                                .name("Error")
-                                .namespace("com.github.paulosalonso.research.application.exceptionhandler")
-                                .build())
-                        .build() )
-                .build())
-        .build());
+    private SecurityContext buildSecurityContext() {
+        return SecurityContext.builder()
+                .securityReferences(buildSecurityReference())
+                .operationSelector(operationContext -> true)
+                .build();
+    }
+
+    private List<SecurityReference> buildSecurityReference() {
+        AuthorizationScope authorizationScope = new AuthorizationScope("*", "Full access");
+        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return List.of(new SecurityReference("Authorization", authorizationScopes));
     }
 
 }
