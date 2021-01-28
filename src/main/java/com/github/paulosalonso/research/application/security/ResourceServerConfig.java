@@ -31,10 +31,10 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        permitAllOnSwagger(web);
+        permitAllForSwagger(web);
     }
 
-    private void permitAllOnSwagger(WebSecurity web) {
+    private void permitAllForSwagger(WebSecurity web) {
         web.ignoring().antMatchers("/v3/api-docs",
                 "/swagger-ui/**",
                 "/swagger-resources/**");
