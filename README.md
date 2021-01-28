@@ -112,15 +112,42 @@ Depois acesse o diretório __.docker__ e rode o comando abaixo:
 
 > docker-compose -f docker-compose.yml -f docker-compose.local-pre-build.yml up --build
 
+### Segurança
+
+Ao rodar a aplicação através do docker-compose disponibilizado no projeto, um container do Keycloak será executado também. O Keycloak já é iniciado com o real "researh", o client "openapi" com a secret "01a13864-0d17-441a-8721-a222bcf17842" e o usuário "research" com a senha "123456".
+
+No diretório .postman há uma coleção com duas requests, uma pra obter um token de usuário e outra pra obter um token de client. Há também um arquivo de environment, o qual cria uma variável global "token", na qual o token é atribuído após a requisição pra faciliar o uso do token.
+
+Também é possível obter os tokens com os comandos curl abaix:
+
+#### User token
+
+> curl --location --request POST 'http://localhost:8050/auth/realms/research/protocol/openid-connect/token' \
+> --header 'Authorization: Basic b3BlbmFwaTowMWExMzg2NC0wZDE3LTQ0MWEtODcyMS1hMjIyYmNmMTc4NDI=' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'grant_type=password' \
+> --data-urlencode 'username=research' \
+> --data-urlencode 'password=123456' \
+> --data-urlencode 'client_id=openapi'
+ 
+#### Client token
+
+> curl --location --request POST 'http://localhost:8050/auth/realms/research/protocol/openid-connect/token' \
+> --header 'Authorization: Basic b3BlbmFwaTowMWExMzg2NC0wZDE3LTQ0MWEtODcyMS1hMjIyYmNmMTc4NDI=' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'grant_type=client_credentials' \
+> --data-urlencode 'client_id=openapi' \
+> --data-urlencode 'client_secret=01a13864-0d17-441a-8721-a222bcf17842'
+
 ## Observabilidade
-
-### Métricas
-
-A aplicação utiliza do [Spring Actuator](https://docs.spring.io/spring-boot/docs/current/actuator-api/htmlsingle/) para expor dados sobre sua execução.
 
 ### Logs
 
 Os logs são gerenciados pelo [SLF4J](http://www.slf4j.org/), e utiliza o [Logback](http://logback.qos.ch/) como implementação.
+
+### Métricas
+
+A aplicação utiliza do [Spring Actuator](https://docs.spring.io/spring-boot/docs/current/actuator-api/htmlsingle/) para expor dados sobre sua execução.
 
 ### Dashboard
 
