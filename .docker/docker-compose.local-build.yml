@@ -3,39 +3,3 @@ version: '3'
 services:
   research:
     build: ..
-#    ports:
-#      - 8080:8080
-#    environment:
-#      SPRING_PROFILES_ACTIVE: postgresql
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres/research
-#      SPRING_DATASOURCE_USERNAME: postgres
-#      SPRING_DATASOURCE_PASSWORD: postgres
-#      SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
-#      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-#    depends_on:
-#      - postgres
-#
-#  postgres:
-#    image: postgres:12
-#    environment:
-#      POSTGRES_PASSWORD: "postgres"
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-#
-#  prometheus:
-#    image: 'prom/prometheus'
-#    ports:
-#      - 9090:9090
-#    command:
-#      - --config.file=/etc/prometheus/prometheus.yml
-#    volumes:
-#      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
-#
-#  grafana:
-#    image: 'grafana/grafana'
-#    ports:
-#      - 3000:3000
-#    environment:
-#      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-clock-panel

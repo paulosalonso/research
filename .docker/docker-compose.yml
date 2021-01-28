@@ -12,7 +12,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
-      SECURITY_JWT_SIGNATURE_JWK-SET-URI: http://keycloak:8050/auth/realms/research/protocol/openid-connect/certs
+      SECURITY_JWT_SIGNATURE_JWK-SET-URI: http://keycloak:8080/auth/realms/research/protocol/openid-connect/certs
+      NOTIFIER_URL: http://notifier:8070
     depends_on:
       - postgres
 
@@ -40,7 +41,7 @@ services:
     ports:
       - 8050:8080
     volumes:
-      - ./research-realm.json:/opt/jboss/keycloak/imports/research-realm.json
+      - ./keycloak/research-realm.json:/opt/jboss/keycloak/imports/research-realm.json
     depends_on:
       - postgres
 

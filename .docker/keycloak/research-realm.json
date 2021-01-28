@@ -425,6 +425,31 @@
   "webAuthnPolicyPasswordlessCreateTimeout": 0,
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
+  "users" : [
+    {
+      "id" : "a5461470-33eb-4b2d-82d4-b0484e96ad7f",
+      "createdTimestamp" : 1574174706812,
+      "username" : "research",
+      "enabled" : true,
+      "totp" : false,
+      "emailVerified" : true,
+      "credentials" : [ {
+        "id" : "024b62f1-3af0-49fc-a15f-e843b72e00df",
+        "type" : "password",
+        "createdDate" : 1574174719522,
+        "secretData" : "{\"value\":\"7eMRRHz7GQAABmL0D1n7pT1QLm43SYR3plSWNSQJM9dwZwAQM8mG0+cpx/89thBaYqSx2WsgSiHoMQAWX2gLfg==\",\"salt\":\"xy+QnHRqG3onZfKr5c0SgQ==\",\"additionalParameters\":{}}",
+        "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+      } ],
+      "disableableCredentialTypes" : [ ],
+      "requiredActions" : [ ],
+      "realmRoles" : [ "offline_access", "uma_authorization" ],
+      "clientRoles" : {
+        "account" : [ "manage-account", "view-profile" ]
+      },
+      "notBefore" : 0,
+      "groups" : [ "Admin" ]
+    }
+  ],
   "scopeMappings": [
     {
       "clientScope": "offline_access",
@@ -635,7 +660,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "01a13864-0d17-441a-8721-a222bcf17842",
       "redirectUris": [
         "http://localhost:8080/*"
       ],
@@ -648,7 +673,7 @@
       "standardFlowEnabled": true,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
+      "serviceAccountsEnabled": true,
       "publicClient": false,
       "frontchannelLogout": false,
       "protocol": "openid-connect",
