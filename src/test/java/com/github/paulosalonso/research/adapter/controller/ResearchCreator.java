@@ -1,4 +1,4 @@
-package com.github.paulosalonso.research.adapter.controller.creator;
+package com.github.paulosalonso.research.adapter.controller;
 
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchInputDTO;
@@ -6,7 +6,7 @@ import com.github.paulosalonso.research.adapter.controller.dto.ResearchInputDTO;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import static io.restassured.RestAssured.given;
+import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticated;
 import static io.restassured.http.ContentType.JSON;
 
 public class ResearchCreator {
@@ -25,7 +25,7 @@ public class ResearchCreator {
     }
 
     public static ResearchDTO createResearch(ResearchInputDTO researchInputDTO) {
-        return given()
+        return givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(researchInputDTO)

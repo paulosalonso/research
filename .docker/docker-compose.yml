@@ -6,12 +6,13 @@ services:
     ports:
       - 8080:8080
     environment:
-      SPRING_PROFILES_ACTIVE: postgresql
+      SPRING_PROFILES_ACTIVE: postgresql,jwk
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres/research
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: org.postgresql.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SECURITY_JWT_SIGNATURE_JWK-SET-URI: http://keycloak:8050/auth/realms/research/protocol/openid-connect/certs
     depends_on:
       - postgres
 

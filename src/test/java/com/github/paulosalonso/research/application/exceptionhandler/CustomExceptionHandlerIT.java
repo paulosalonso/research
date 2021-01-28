@@ -4,7 +4,6 @@ import com.github.paulosalonso.research.adapter.controller.BaseIT;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasKey;
@@ -16,7 +15,7 @@ public class CustomExceptionHandlerIT extends BaseIT {
     public void whenBodyContainsAnInvalidValueThenReturnBadRequest() {
         var body = "{\"title\":\"title\", \"startsOn\":\"invalid-date\"}";
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -34,7 +33,7 @@ public class CustomExceptionHandlerIT extends BaseIT {
     public void whenBodyIsInvalidThenReturnBadRequest() {
         var body = "{'title\":\"title\", \"startsOn\":\"invalid-date\"}";
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)

@@ -8,11 +8,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.adapter.controller.creator.OptionCreator.createOption;
-import static com.github.paulosalonso.research.adapter.controller.creator.QuestionCreator.createQuestion;
-import static com.github.paulosalonso.research.adapter.controller.creator.ResearchCreator.createResearch;
-import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
+import static com.github.paulosalonso.research.adapter.controller.OptionCreator.createOption;
+import static com.github.paulosalonso.research.adapter.controller.QuestionCreator.createQuestion;
+import static com.github.paulosalonso.research.adapter.controller.ResearchCreator.createResearch;
 import static io.restassured.http.ContentType.JSON;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -32,15 +30,14 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = given()
+        String id = givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
-                .when()
                 .post("/researches")
                 .path("id");
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/researches/{id}", id)
@@ -63,7 +60,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = given()
+        String id = givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -74,7 +71,7 @@ public class ResearchControllerIT extends BaseIT {
         var question = createQuestion(UUID.fromString(id));
         var option = createOption(question.getId());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("fillQuestions", true)
                 .when()
@@ -94,7 +91,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void givenANonexistentIdWhenGetThenReturnNotFound() {
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/researches/{id}", UUID.randomUUID().toString())
@@ -108,8 +105,9 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidUUIdWhenGetThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .accept(JSON)
+                .auth().oauth2(TOKEN)
                 .when()
                 .get("/researches/{id}", "invalid-uuid")
                 .then()
@@ -127,7 +125,7 @@ public class ResearchControllerIT extends BaseIT {
         var researchA = createResearch();
         var researchB = createResearch();
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/researches")
@@ -155,7 +153,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("title", researchB.getTitle())
                 .when()
@@ -184,7 +182,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("description", researchB.getDescription())
                 .when()
@@ -219,7 +217,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("startsOnFrom", from)
                 .queryParam("startsOnTo", to)
@@ -245,7 +243,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().minusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("startsOnTo", to)
                 .when()
@@ -269,7 +267,7 @@ public class ResearchControllerIT extends BaseIT {
         var from = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("startsOnFrom", from)
                 .when()
@@ -303,7 +301,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).plusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("endsOnFrom", from)
                 .queryParam("endsOnTo", to)
@@ -329,7 +327,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).minusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("endsOnTo", to)
                 .when()
@@ -353,7 +351,7 @@ public class ResearchControllerIT extends BaseIT {
         var from = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).plusDays(1).withHour(0).withMinute(0).withSecond(0));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("endsOnFrom", from)
                 .when()
@@ -393,7 +391,7 @@ public class ResearchControllerIT extends BaseIT {
         var endsOnTo = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).plusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("title", researchB.getTitle())
                 .queryParam("description", researchB.getDescription())
@@ -418,7 +416,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -435,7 +433,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void whenCreateWithNullRequiredValueThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -460,7 +458,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = given()
+        String id = givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -475,7 +473,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(2))
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -499,7 +497,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -515,7 +513,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void whenUpdateWithNullRequiredValueThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -540,7 +538,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -563,22 +561,23 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = given()
+        String id = givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
-                .when()
                 .post("/researches")
                 .path("id");
 
-        when().delete("/researches/{id}", id)
+        givenAuthenticated()
+                .when().delete("/researches/{id}", id)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     public void givenANonexistentIdWhenDeleteThenReturnNotFound() {
-        when().delete("/researches/{id}", UUID.randomUUID())
+        givenAuthenticated()
+                .when().delete("/researches/{id}", UUID.randomUUID())
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .body("status", equalTo(HttpStatus.NOT_FOUND.value()))
@@ -589,7 +588,8 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidUUIDWhenDeleteThenReturnBadRequest() {
-        when().delete("/researches/{id}", "invalid-uuid")
+        givenAuthenticated()
+                .when().delete("/researches/{id}", "invalid-uuid")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", equalTo("'invalid-uuid' is an invalid value for the 'id' URL parameter. Required type is 'UUID'."))

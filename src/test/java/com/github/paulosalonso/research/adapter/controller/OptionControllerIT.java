@@ -7,10 +7,9 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.adapter.controller.creator.OptionCreator.createOption;
-import static com.github.paulosalonso.research.adapter.controller.creator.QuestionCreator.createQuestion;
-import static com.github.paulosalonso.research.adapter.controller.creator.ResearchCreator.createResearch;
-import static io.restassured.RestAssured.given;
+import static com.github.paulosalonso.research.adapter.controller.OptionCreator.createOption;
+import static com.github.paulosalonso.research.adapter.controller.QuestionCreator.createQuestion;
+import static com.github.paulosalonso.research.adapter.controller.ResearchCreator.createResearch;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -30,14 +29,14 @@ public class OptionControllerIT extends BaseIT {
                 .description("description")
                 .build();
 
-        String optionId = given()
+        String optionId = givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
                 .post("/questions/{questionId}/options", question.getId())
                 .path("id");
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", question.getId(), optionId)
@@ -54,7 +53,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", UUID.randomUUID(), option.getId())
@@ -71,7 +70,7 @@ public class OptionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", question.getId(), UUID.randomUUID())
@@ -85,7 +84,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenGetThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -100,7 +99,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidOptionUUIDWhenGetThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -123,7 +122,7 @@ public class OptionControllerIT extends BaseIT {
         createOption(question.getId());
         createOption(question.getId());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options", question.getId())
@@ -147,7 +146,7 @@ public class OptionControllerIT extends BaseIT {
                 .description("description-b")
                 .build());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("description", optionB.getDescription())
                 .when()
@@ -174,7 +173,7 @@ public class OptionControllerIT extends BaseIT {
                 .notify(true)
                 .build());
 
-        given()
+        givenAuthenticated()
                 .accept(JSON)
                 .queryParam("notify", optionB.isNotify())
                 .when()
@@ -194,7 +193,7 @@ public class OptionControllerIT extends BaseIT {
                 .description("description")
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -215,7 +214,7 @@ public class OptionControllerIT extends BaseIT {
 
         var questionId = UUID.randomUUID();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -234,7 +233,7 @@ public class OptionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -261,7 +260,7 @@ public class OptionControllerIT extends BaseIT {
                 .description(question.getDescription() + " updated")
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -283,7 +282,7 @@ public class OptionControllerIT extends BaseIT {
                 .description(question.getDescription() + " updated")
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -307,7 +306,7 @@ public class OptionControllerIT extends BaseIT {
                 .multiSelect(!question.getMultiSelect())
                 .build();
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -327,7 +326,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -346,7 +345,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenUpdateThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(OptionInputDTO.builder().build())
@@ -362,7 +361,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidOptionUUIDWhenUpdateThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(OptionInputDTO.builder().build())
@@ -382,7 +381,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -397,7 +396,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -415,7 +414,7 @@ public class OptionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -430,7 +429,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenDeleteThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -445,7 +444,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidOptionUUIDWhenDeleteThenReturnBadRequest() {
-        given()
+        givenAuthenticated()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
