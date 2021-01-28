@@ -197,6 +197,8 @@
 					<excludes>
 						<exclude>**/ResearchApplication.*</exclude>
 						<exclude>**/OpenApiConfiguration.*</exclude>
+						<exclude>**/jwtconverter/**</exclude>
+						<exclude>**/jwtdecoder/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
