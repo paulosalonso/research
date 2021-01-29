@@ -130,6 +130,8 @@ Também é possível obter os tokens com os comandos curl abaixo:
 > --data-urlencode 'password=123456' \
 > --data-urlencode 'client_id=openapi'
 
+Este usuário contém a authority "ADMIN" e pode realizar todas as operações: cadastrar e buscar pesquisas, cadastrar respostas e ver o resumo da pesquisa.
+
 #### User token
 
 > curl --location --request POST 'http://localhost:8050/auth/realms/research/protocol/openid-connect/token' \
@@ -139,15 +141,8 @@ Também é possível obter os tokens com os comandos curl abaixo:
 > --data-urlencode 'username=user' \
 > --data-urlencode 'password=123456' \
 > --data-urlencode 'client_id=openapi'
- 
-#### Client token
 
-> curl --location --request POST 'http://localhost:8050/auth/realms/research/protocol/openid-connect/token' \
-> --header 'Authorization: Basic b3BlbmFwaTo4Y2RhMjJjYi0yN2EwLTRhZmItYTU5NC00ZGJiMGU5YWRmNmY=' \
-> --header 'Content-Type: application/x-www-form-urlencoded' \
-> --data-urlencode 'grant_type=client_credentials' \
-> --data-urlencode 'client_id=openapi' \
-> --data-urlencode 'client_secret=8cda22cb-27a0-4afb-a594-4dbb0e9adf6f'
+Este usuário não contém nenhuma authority e pode buscar pesquisas, cadastrar respostas e ver o resumo de respostas da pesquisa.
 
 ## Observabilidade
 
