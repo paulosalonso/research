@@ -11,12 +11,14 @@ import com.github.paulosalonso.research.usecase.option.OptionUpdate;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.application.security.SecurityExpressions.IS_ADMIN;
 import static java.util.stream.Collectors.toList;
 
 @Api(tags = "Options")
@@ -43,6 +45,7 @@ public class OptionController {
                 .collect(toList());
     }
 
+    @PreAuthorize(IS_ADMIN)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OptionDTO create(@PathVariable UUID questionId, @RequestBody @Valid OptionInputDTO optionInputDTO) {
@@ -50,6 +53,7 @@ public class OptionController {
         return mapper.toDTO(created);
     }
 
+    @PreAuthorize(IS_ADMIN)
     @PutMapping("/{optionId}")
     public OptionDTO update(@PathVariable UUID questionId, @PathVariable UUID optionId,
                               @RequestBody @Valid OptionInputDTO optionInputDTO) {
@@ -62,6 +66,7 @@ public class OptionController {
         return mapper.toDTO(updated);
     }
 
+    @PreAuthorize(IS_ADMIN)
     @DeleteMapping("/{optionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID questionId, @PathVariable UUID optionId) {
