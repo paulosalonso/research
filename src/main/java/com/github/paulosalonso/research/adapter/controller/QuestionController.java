@@ -11,12 +11,14 @@ import com.github.paulosalonso.research.usecase.question.QuestionUpdate;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.application.security.SecurityExpressions.IS_ADMIN;
 import static java.util.stream.Collectors.toList;
 
 @Api(tags = "Questions")
@@ -44,6 +46,7 @@ public class QuestionController {
                 .collect(toList());
     }
 
+    @PreAuthorize(IS_ADMIN)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public QuestionDTO create(@PathVariable UUID researchId, @RequestBody @Valid QuestionInputDTO questionInputDTO) {
@@ -51,6 +54,7 @@ public class QuestionController {
         return mapper.toDTO(created, false);
     }
 
+    @PreAuthorize(IS_ADMIN)
     @PutMapping("/{questionId}")
     public QuestionDTO update(@PathVariable UUID researchId, @PathVariable UUID questionId,
                               @RequestBody @Valid QuestionInputDTO questionInputDTO) {
@@ -63,6 +67,7 @@ public class QuestionController {
         return mapper.toDTO(updated, false);
     }
 
+    @PreAuthorize(IS_ADMIN)
     @DeleteMapping("/{questionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID researchId, @PathVariable UUID questionId) {
