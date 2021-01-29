@@ -11,12 +11,14 @@ import com.github.paulosalonso.research.usecase.research.ResearchUpdate;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.paulosalonso.research.application.security.SecurityExpressions.IS_ADMIN;
 import static java.util.stream.Collectors.toList;
 
 @Api(tags = "Researches")
@@ -43,6 +45,7 @@ public class ResearchController {
                 .collect(toList());
     }
 
+    @PreAuthorize(IS_ADMIN)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResearchDTO create(@RequestBody @Valid ResearchInputDTO researchInputDTO) {
@@ -50,6 +53,7 @@ public class ResearchController {
         return mapper.toDTO(created, false);
     }
 
+    @PreAuthorize(IS_ADMIN)
     @PutMapping("/{id}")
     public ResearchDTO update(@PathVariable UUID id, @RequestBody @Valid ResearchInputDTO researchInputDTO) {
         var research = mapper.toDomain(researchInputDTO).toBuilder()
@@ -60,6 +64,7 @@ public class ResearchController {
         return mapper.toDTO(updated, false);
     }
 
+    @PreAuthorize(IS_ADMIN)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
