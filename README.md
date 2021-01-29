@@ -114,11 +114,21 @@ Depois acesse o diretório __.docker__ e rode o comando abaixo:
 
 ### Segurança
 
-Ao rodar a aplicação através do docker-compose disponibilizado no projeto, um container do Keycloak será executado também. O Keycloak já é iniciado com o real "researh", o client "openapi" com a secret "01a13864-0d17-441a-8721-a222bcf17842" e o usuário "research" com a senha "123456".
+Ao rodar a aplicação através do docker-compose disponibilizado no projeto, um container do Keycloak será executado também. O Keycloak já é iniciado com o realm "researh", o client "openapi" e secret "01a13864-0d17-441a-8721-a222bcf17842", e os usuários "adm" com a senha "123456" e "user" com a senha "123456".
 
-No diretório .postman há uma coleção com duas requests, uma pra obter um token de usuário e outra pra obter um token de client. Há também um arquivo de environment, o qual cria uma variável global "token", na qual o token é atribuído após a requisição pra faciliar o uso do token.
+No diretório .postman há uma coleção com requests de autenticação, para criação de pesquisa e para responder uma pesquisa. 
 
-Também é possível obter os tokens com os comandos curl abaix:
+Também é possível obter os tokens com os comandos curl abaixo:
+
+#### Admin token
+
+> curl --location --request POST 'http://localhost:8050/auth/realms/research/protocol/openid-connect/token' \
+> --header 'Authorization: Basic b3BlbmFwaTo4Y2RhMjJjYi0yN2EwLTRhZmItYTU5NC00ZGJiMGU5YWRmNmY=' \
+> --header 'Content-Type: application/x-www-form-urlencoded' \
+> --data-urlencode 'grant_type=password' \
+> --data-urlencode 'username=adm' \
+> --data-urlencode 'password=123456' \
+> --data-urlencode 'client_id=openapi'
 
 #### User token
 
@@ -126,18 +136,18 @@ Também é possível obter os tokens com os comandos curl abaix:
 > --header 'Authorization: Basic b3BlbmFwaTowMWExMzg2NC0wZDE3LTQ0MWEtODcyMS1hMjIyYmNmMTc4NDI=' \
 > --header 'Content-Type: application/x-www-form-urlencoded' \
 > --data-urlencode 'grant_type=password' \
-> --data-urlencode 'username=research' \
+> --data-urlencode 'username=user' \
 > --data-urlencode 'password=123456' \
 > --data-urlencode 'client_id=openapi'
  
 #### Client token
 
 > curl --location --request POST 'http://localhost:8050/auth/realms/research/protocol/openid-connect/token' \
-> --header 'Authorization: Basic b3BlbmFwaTowMWExMzg2NC0wZDE3LTQ0MWEtODcyMS1hMjIyYmNmMTc4NDI=' \
+> --header 'Authorization: Basic b3BlbmFwaTo4Y2RhMjJjYi0yN2EwLTRhZmItYTU5NC00ZGJiMGU5YWRmNmY=' \
 > --header 'Content-Type: application/x-www-form-urlencoded' \
 > --data-urlencode 'grant_type=client_credentials' \
 > --data-urlencode 'client_id=openapi' \
-> --data-urlencode 'client_secret=01a13864-0d17-441a-8721-a222bcf17842'
+> --data-urlencode 'client_secret=8cda22cb-27a0-4afb-a594-4dbb0e9adf6f'
 
 ## Observabilidade
 
