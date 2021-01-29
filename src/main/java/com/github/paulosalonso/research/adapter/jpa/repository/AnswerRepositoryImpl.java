@@ -37,12 +37,8 @@ public class AnswerRepositoryImpl implements AnswerRepositoryCustom {
         criteriaQuery
                 .select(selection)
                 .where(predicate)
-                .orderBy(criteriaBuilder.asc(root.get(AnswerEntity.Fields.question).get(QuestionEntity.Fields.sequence)),
-                        criteriaBuilder.asc(root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.sequence)))
                 .groupBy(root.get(AnswerEntity.Fields.question).get(QuestionEntity.Fields.id),
-                        root.get(AnswerEntity.Fields.question).get(QuestionEntity.Fields.sequence),
-                        root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.id),
-                        root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.sequence));
+                        root.get(AnswerEntity.Fields.option).get(OptionEntity.Fields.id));
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
