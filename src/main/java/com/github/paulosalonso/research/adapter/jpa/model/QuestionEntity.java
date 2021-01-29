@@ -36,6 +36,7 @@ public class QuestionEntity {
     @ManyToOne(fetch = LAZY)
     private ResearchEntity research;
 
+    @OrderBy("sequence")
     @OneToMany(mappedBy = "question")
     private List<OptionEntity> options;
 }
