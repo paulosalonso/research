@@ -15,7 +15,7 @@ public class CustomExceptionHandlerIT extends BaseIT {
     public void whenBodyContainsAnInvalidValueThenReturnBadRequest() {
         var body = "{\"title\":\"title\", \"startsOn\":\"invalid-date\"}";
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -33,7 +33,7 @@ public class CustomExceptionHandlerIT extends BaseIT {
     public void whenBodyIsInvalidThenReturnBadRequest() {
         var body = "{'title\":\"title\", \"startsOn\":\"invalid-date\"}";
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)

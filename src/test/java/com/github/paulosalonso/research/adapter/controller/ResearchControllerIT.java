@@ -30,14 +30,14 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = givenAuthenticated()
+        String id = givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
                 .post("/researches")
                 .path("id");
 
-        givenAuthenticated()
+        givenAuthenticatedUser()
                 .accept(JSON)
                 .when()
                 .get("/researches/{id}", id)
@@ -60,7 +60,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = givenAuthenticated()
+        String id = givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -71,7 +71,7 @@ public class ResearchControllerIT extends BaseIT {
         var question = createQuestion(UUID.fromString(id));
         var option = createOption(question.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("fillQuestions", true)
                 .when()
@@ -91,7 +91,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void givenANonexistentIdWhenGetThenReturnNotFound() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{id}", UUID.randomUUID().toString())
@@ -105,9 +105,9 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidUUIdWhenGetThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
-                .auth().oauth2(TOKEN)
+                .auth().oauth2(ADMIN_TOKEN)
                 .when()
                 .get("/researches/{id}", "invalid-uuid")
                 .then()
@@ -125,7 +125,7 @@ public class ResearchControllerIT extends BaseIT {
         var researchA = createResearch();
         var researchB = createResearch();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches")
@@ -153,7 +153,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("title", researchB.getTitle())
                 .when()
@@ -182,7 +182,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("description", researchB.getDescription())
                 .when()
@@ -217,7 +217,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("startsOnFrom", from)
                 .queryParam("startsOnTo", to)
@@ -243,7 +243,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().minusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("startsOnTo", to)
                 .when()
@@ -267,7 +267,7 @@ public class ResearchControllerIT extends BaseIT {
         var from = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("startsOnFrom", from)
                 .when()
@@ -301,7 +301,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).plusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("endsOnFrom", from)
                 .queryParam("endsOnTo", to)
@@ -327,7 +327,7 @@ public class ResearchControllerIT extends BaseIT {
         var to = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).minusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("endsOnTo", to)
                 .when()
@@ -351,7 +351,7 @@ public class ResearchControllerIT extends BaseIT {
         var from = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).plusDays(1).withHour(0).withMinute(0).withSecond(0));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("endsOnFrom", from)
                 .when()
@@ -391,7 +391,7 @@ public class ResearchControllerIT extends BaseIT {
         var endsOnTo = ISO_DATE_TIME.format(
                 OffsetDateTime.now().plusMonths(1).plusDays(1).withHour(23).withMinute(59).withSecond(59));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("title", researchB.getTitle())
                 .queryParam("description", researchB.getDescription())
@@ -416,7 +416,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -433,7 +433,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void whenCreateWithNullRequiredValueThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -458,7 +458,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = givenAuthenticated()
+        String id = givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -473,7 +473,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(2))
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -497,7 +497,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -513,7 +513,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void whenUpdateWithNullRequiredValueThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -538,7 +538,7 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -561,14 +561,14 @@ public class ResearchControllerIT extends BaseIT {
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        String id = givenAuthenticated()
+        String id = givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
                 .post("/researches")
                 .path("id");
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .when().delete("/researches/{id}", id)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
@@ -576,7 +576,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void givenANonexistentIdWhenDeleteThenReturnNotFound() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .when().delete("/researches/{id}", UUID.randomUUID())
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value())
@@ -588,7 +588,7 @@ public class ResearchControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidUUIDWhenDeleteThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .when().delete("/researches/{id}", "invalid-uuid")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
