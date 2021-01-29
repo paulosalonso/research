@@ -6,7 +6,7 @@ import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInp
 import java.util.Map;
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticatedAdmin;
+import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticatedUser;
 import static io.restassured.http.ContentType.JSON;
 
 public class AnswerCreator {
@@ -20,7 +20,7 @@ public class AnswerCreator {
                         .optionId(answers.get(questionId))
                         .build()));
 
-        givenAuthenticatedAdmin()
+        givenAuthenticatedUser()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(builder.build())
