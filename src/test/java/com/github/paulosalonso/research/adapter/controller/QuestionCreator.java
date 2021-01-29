@@ -6,7 +6,7 @@ import com.github.paulosalonso.research.adapter.controller.dto.QuestionInputDTO;
 import java.util.Random;
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticated;
+import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticatedAdmin;
 import static io.restassured.http.ContentType.JSON;
 
 public class QuestionCreator {
@@ -23,7 +23,7 @@ public class QuestionCreator {
     }
 
     public static QuestionDTO createQuestion(UUID researchId, QuestionInputDTO questionInputDTO) {
-        return givenAuthenticated()
+        return givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(questionInputDTO)

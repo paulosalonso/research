@@ -27,14 +27,14 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(false)
                 .build();
 
-        String questionId = givenAuthenticated()
+        String questionId = givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
                 .post("/researches/{researchId}/questions", research.getId())
                 .path("id");
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/questions/{questionId}", research.getId(), questionId)
@@ -55,7 +55,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(false)
                 .build();
 
-        String questionId = givenAuthenticated()
+        String questionId = givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -64,7 +64,7 @@ public class QuestionControllerIT extends BaseIT {
 
         var option = createOption(UUID.fromString(questionId));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("fillOptions", true)
                 .when()
@@ -83,7 +83,7 @@ public class QuestionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), question.getId())
@@ -99,7 +99,7 @@ public class QuestionControllerIT extends BaseIT {
     public void givenANonexistentQuestionIdWhenGetThenReturnNotFound() {
         var research = createResearch();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/questions/{questionId}", research.getId(), UUID.randomUUID())
@@ -113,7 +113,7 @@ public class QuestionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidResearchUUIDWhenGetThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/questions/{questionId}", "invalid-uuid", UUID.randomUUID())
@@ -127,7 +127,7 @@ public class QuestionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenGetThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), "invalid-uuid")
@@ -148,7 +148,7 @@ public class QuestionControllerIT extends BaseIT {
         createQuestion(researchId);
         createQuestion(researchId);
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/questions", researchId.toString())
@@ -173,7 +173,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(true)
                 .build());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("description", questionB.getDescription())
                 .when()
@@ -200,7 +200,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(true)
                 .build());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("multiSelect", questionB.getMultiSelect())
                 .when()
@@ -227,7 +227,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(true)
                 .build());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("description", questionB.getDescription())
                 .queryParam("multiSelect", questionB.getMultiSelect())
@@ -248,7 +248,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(true)
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -268,7 +268,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(false)
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -286,7 +286,7 @@ public class QuestionControllerIT extends BaseIT {
     public void whenCreateWithNullRequiredValueThenReturnBadRequest() {
         var research = createResearch();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -312,7 +312,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(!question.getMultiSelect())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -335,7 +335,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(!question.getMultiSelect())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -359,7 +359,7 @@ public class QuestionControllerIT extends BaseIT {
                 .multiSelect(!question.getMultiSelect())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -378,7 +378,7 @@ public class QuestionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -396,7 +396,7 @@ public class QuestionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidResearchUUIDWhenUpdateThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(QuestionInputDTO.builder().build())
@@ -412,7 +412,7 @@ public class QuestionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenUpdateThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(QuestionInputDTO.builder().build())
@@ -431,7 +431,7 @@ public class QuestionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -445,7 +445,7 @@ public class QuestionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -462,7 +462,7 @@ public class QuestionControllerIT extends BaseIT {
     public void givenANonexistentQuestionIdWhenDeleteThenReturnNotFound() {
         var research = createResearch();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -477,7 +477,7 @@ public class QuestionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidResearchUUIDWhenDeleteThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -492,7 +492,7 @@ public class QuestionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenDeleteThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()

@@ -22,7 +22,8 @@ public class BaseIT {
     private int port;
 
     protected static final String ISO_8601_REGEX = "^(?:[1-9]\\d{3}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]|1\\d|2[0-8])|(?:0[13-9]|1[0-2])-(?:29|30)|(?:0[13578]|1[02])-31)|(?:[1-9]\\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d{1,9})?(?:Z|[+-][01]\\d:[0-5]\\d)$";
-    protected static final String TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjQxMDI0NDQ3OTksImlhdCI6MCwidHlwIjoiQmVhcmVyIn0.cTLo-MMnmpU-lFWAJyo65I5npzVHS5A3TTdEuycRE3M";
+    protected static final String ADMIN_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjQxMDI0NDQ3OTksImlhdCI6MCwidHlwIjoiQmVhcmVyIiwiYXV0aG9yaXRpZXMiOlsiQURNSU4iXX0.BZ59MOA8CqGV43rLd80R-YY8pYR70hBj00rbxiEjGpQ";
+    protected static final String USER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjQxMDI0NDQ3OTksImlhdCI6MCwidHlwIjoiQmVhcmVyIn0.cTLo-MMnmpU-lFWAJyo65I5npzVHS5A3TTdEuycRE3M";
 
     @BeforeEach
     void setUp() {
@@ -30,8 +31,12 @@ public class BaseIT {
         RestAssured.basePath = "/research/api";
     }
 
-    protected static RequestSpecification givenAuthenticated() {
-        return given().auth().oauth2(TOKEN);
+    protected static RequestSpecification givenAuthenticatedAdmin() {
+        return given().auth().oauth2(ADMIN_TOKEN);
+    }
+
+    protected static RequestSpecification givenAuthenticatedUser() {
+        return given().auth().oauth2(USER_TOKEN);
     }
 
     protected void truncateDatabase() {

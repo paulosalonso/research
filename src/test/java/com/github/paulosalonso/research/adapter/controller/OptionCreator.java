@@ -5,7 +5,7 @@ import com.github.paulosalonso.research.adapter.controller.dto.OptionInputDTO;
 
 import java.util.UUID;
 
-import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticated;
+import static com.github.paulosalonso.research.adapter.controller.BaseIT.givenAuthenticatedAdmin;
 import static io.restassured.http.ContentType.JSON;
 
 public class OptionCreator {
@@ -19,7 +19,7 @@ public class OptionCreator {
     }
 
     public static OptionDTO createOption(UUID questionId, OptionInputDTO optionInputDTO) {
-        return givenAuthenticated()
+        return givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(optionInputDTO)

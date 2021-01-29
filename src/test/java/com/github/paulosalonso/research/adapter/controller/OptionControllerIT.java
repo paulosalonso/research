@@ -29,14 +29,14 @@ public class OptionControllerIT extends BaseIT {
                 .description("description")
                 .build();
 
-        String optionId = givenAuthenticated()
+        String optionId = givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
                 .post("/questions/{questionId}/options", question.getId())
                 .path("id");
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", question.getId(), optionId)
@@ -53,7 +53,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", UUID.randomUUID(), option.getId())
@@ -70,7 +70,7 @@ public class OptionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options/{optionId}", question.getId(), UUID.randomUUID())
@@ -84,7 +84,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenGetThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -99,7 +99,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidOptionUUIDWhenGetThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -122,7 +122,7 @@ public class OptionControllerIT extends BaseIT {
         createOption(question.getId());
         createOption(question.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/questions/{questionId}/options", question.getId())
@@ -146,7 +146,7 @@ public class OptionControllerIT extends BaseIT {
                 .description("description-b")
                 .build());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("description", optionB.getDescription())
                 .when()
@@ -173,7 +173,7 @@ public class OptionControllerIT extends BaseIT {
                 .notify(true)
                 .build());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("notify", optionB.isNotify())
                 .when()
@@ -193,7 +193,7 @@ public class OptionControllerIT extends BaseIT {
                 .description("description")
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -214,7 +214,7 @@ public class OptionControllerIT extends BaseIT {
 
         var questionId = UUID.randomUUID();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(body)
@@ -233,7 +233,7 @@ public class OptionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -260,7 +260,7 @@ public class OptionControllerIT extends BaseIT {
                 .description(question.getDescription() + " updated")
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -282,7 +282,7 @@ public class OptionControllerIT extends BaseIT {
                 .description(question.getDescription() + " updated")
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -306,7 +306,7 @@ public class OptionControllerIT extends BaseIT {
                 .multiSelect(!question.getMultiSelect())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(updateBody)
@@ -326,7 +326,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .header("Accept-Language", "en-US")
@@ -345,7 +345,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenUpdateThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(OptionInputDTO.builder().build())
@@ -361,7 +361,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidOptionUUIDWhenUpdateThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(OptionInputDTO.builder().build())
@@ -381,7 +381,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -396,7 +396,7 @@ public class OptionControllerIT extends BaseIT {
         var question = createQuestion(research.getId());
         var option = createOption(question.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -414,7 +414,7 @@ public class OptionControllerIT extends BaseIT {
         var research = createResearch();
         var question = createQuestion(research.getId());
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -429,7 +429,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidQuestionUUIDWhenDeleteThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()
@@ -444,7 +444,7 @@ public class OptionControllerIT extends BaseIT {
 
     @Test
     public void givenAnInvalidOptionUUIDWhenDeleteThenReturnBadRequest() {
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .when()

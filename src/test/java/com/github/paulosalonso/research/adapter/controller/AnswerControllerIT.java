@@ -40,7 +40,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -66,7 +66,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -95,7 +95,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -125,7 +125,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -154,7 +154,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -187,7 +187,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -221,7 +221,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -256,7 +256,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -287,7 +287,7 @@ public class AnswerControllerIT extends BaseIT {
                         .build())
                 .build();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .contentType(JSON)
                 .accept(JSON)
                 .body(answer)
@@ -332,7 +332,7 @@ public class AnswerControllerIT extends BaseIT {
                 questionB.getId(), optionBB.getId(),
                 questionC.getId(), optionCB.getId()));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/answers", research.getId())
@@ -380,7 +380,7 @@ public class AnswerControllerIT extends BaseIT {
                 questionA.getId(), optionAA.getId(),
                 questionB.getId(), optionBA.getId()));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("questionId", questionA.getId())
                 .when()
@@ -408,7 +408,7 @@ public class AnswerControllerIT extends BaseIT {
 
         var questionId = UUID.randomUUID().toString();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("questionId", questionId)
                 .when()
@@ -441,7 +441,7 @@ public class AnswerControllerIT extends BaseIT {
         createAnswer(research.getId(), Map.of(
                 question.getId(), option.getId()));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("dateFrom", ISO_DATE_TIME.format(dateFrom))
                 .queryParam("dateTo", ISO_DATE_TIME.format(dateTo))
@@ -468,7 +468,7 @@ public class AnswerControllerIT extends BaseIT {
         createAnswer(research.getId(), Map.of(
                 question.getId(), option.getId()));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("dateTo", ISO_DATE_TIME.format(dateTo))
                 .when()
@@ -494,7 +494,7 @@ public class AnswerControllerIT extends BaseIT {
 
         var dateFrom = OffsetDateTime.now();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("dateFrom", ISO_DATE_TIME.format(dateFrom))
                 .when()
@@ -531,7 +531,7 @@ public class AnswerControllerIT extends BaseIT {
                 questionA.getId(), optionAA.getId(),
                 questionB.getId(), optionBA.getId()));
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .queryParam("dateFrom", ISO_DATE_TIME.format(dateFrom))
                 .queryParam("dateTo", ISO_DATE_TIME.format(dateTo))
@@ -551,7 +551,7 @@ public class AnswerControllerIT extends BaseIT {
     public void whenSearchWithNonexistentResearchIdThenReturnNotFound() {
         truncateDatabase();
 
-        givenAuthenticated()
+        givenAuthenticatedAdmin()
                 .accept(JSON)
                 .when()
                 .get("/researches/{researchId}/answers", UUID.randomUUID())
