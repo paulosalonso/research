@@ -108,7 +108,7 @@
 							"basic": [
 								{
 									"key": "password",
-									"value": "01a13864-0d17-441a-8721-a222bcf17842",
+									"value": "8cda22cb-27a0-4afb-a594-4dbb0e9adf6f",
 									"type": "string"
 								},
 								{
@@ -400,6 +400,48 @@
 						"questions",
 						"{{questionId}}",
 						"options"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Answer",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"answers\": [\n    {\n      \"optionId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\n      \"questionId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/research/api/researches/{{researchId}}/answers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"research",
+						"api",
+						"researches",
+						"{{researchId}}",
+						"answers"
 					]
 				}
 			},
