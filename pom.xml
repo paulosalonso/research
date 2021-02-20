@@ -202,6 +202,9 @@
 						<exclude>**/OpenApiConfiguration.*</exclude>
 						<exclude>**/jwtconverter/**</exclude>
 						<exclude>**/jwtdecoder/**</exclude>
+						<exclude>**/SecurityInfo.*</exclude>
+						<exclude>**/Claims.*</exclude>
+						<exclude>**/TenantNotProvidedException.*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
