@@ -12,6 +12,7 @@ import com.github.paulosalonso.research.adapter.jpa.repository.specification.Res
 import com.github.paulosalonso.research.domain.Research;
 import com.github.paulosalonso.research.domain.ResearchCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,6 +32,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ResearchGatewayTest {
+
+    private static final String TENANT = "tenant";
 
     @InjectMocks
     private ResearchGateway gateway;
@@ -52,6 +55,12 @@ public class ResearchGatewayTest {
 
     @Mock
     private QuestionMapper questionMapper;
+
+    @BeforeEach
+    public void setUp() {
+        lenient().when(researchSpecificationFactory.findById(anyString())).thenCallRealMethod();
+        lenient().when(researchSpecificationFactory.findByTenant(TENANT)).thenCallRealMethod();
+    }
 
     @Test
     public void givenAResearchWhenCreateThenGenerateIdAndPersist() {
@@ -76,19 +85,22 @@ public class ResearchGatewayTest {
 
         var entity = ResearchEntity.builder()
                 .id(id.toString())
+                .tenant(TENANT)
                 .title("title")
                 .startsOn(OffsetDateTime.now())
                 .build();
 
-        when(researchRepository.findById(id.toString())).thenReturn(Optional.of(entity));
+        when(researchRepository.findOne(any(Specification.class))).thenReturn(Optional.of(entity));
         when(researchMapper.toDomain(entity, false)).thenCallRealMethod();
 
-        gateway.read(id);
+        gateway.read(id, TENANT);
 
-        verify(researchRepository).findById(id.toString());
-        verifyNoMoreInteractions(researchRepository);
+        verify(researchSpecificationFactory).findById(id.toString());
+        verify(researchSpecificationFactory).findByTenant(TENANT);
+        verify(researchRepository).findOne(any(Specification.class));
+        verify(researchSpecificationFactory).findById(id.toString());
+        verify(researchSpecificationFactory).findByTenant(TENANT);
         verify(researchMapper).toDomain(entity, false);
-        verifyNoMoreInteractions(researchMapper);
     }
 
     @Test
@@ -101,28 +113,33 @@ public class ResearchGatewayTest {
                 .build();
         var entity = ResearchEntity.builder()
                 .id(id.toString())
+                .tenant(TENANT)
                 .title("title")
                 .startsOn(OffsetDateTime.now())
                 .build();
 
         var result = Research.builder()
+                .id(UUID.fromString(entity.getId()))
+                .tenant(entity.getTenant())
                 .title(entity.getTitle())
                 .startsOn(entity.getStartsOn())
                 .build();
 
-        when(questionSpecificationFactory.findByResearchId(entity.getId())).thenCallRealMethod();
+        when(questionSpecificationFactory.findByResearchId(id.toString())).thenCallRealMethod();
         when(questionSpecificationFactory.findFetchingOptions()).thenCallRealMethod();
-        when(researchRepository.findById(entity.getId())).thenReturn(Optional.of(entity));
+        when(researchRepository.findOne(any(Specification.class))).thenReturn(Optional.of(entity));
         when(questionRepository.findAll(any(Specification.class))).thenReturn(List.of(question));
-        when(researchMapper.toDomain(entity, false)).thenReturn(result);
+        when(researchMapper.toDomain(entity, true)).thenReturn(result);
 
-        gateway.readFetchingQuestions(id);
+        gateway.readFetchingQuestions(id, TENANT);
 
-        verify(researchRepository).findById(entity.getId());
-        verify(questionSpecificationFactory).findByResearchId(entity.getId());
+        verify(researchSpecificationFactory).findById(id.toString());
+        verify(researchSpecificationFactory).findByTenant(TENANT);
+        verify(researchRepository).findOne(any(Specification.class));
+        verify(questionSpecificationFactory).findByResearchId(id.toString());
         verify(questionSpecificationFactory).findFetchingOptions();
         verify(questionRepository).findAll(any(Specification.class));
-        verify(researchMapper).toDomain(entity, false);
+        verify(researchMapper).toDomain(entity, true);
         verify(questionMapper).toDomain(question, true);
     }
 
@@ -130,21 +147,26 @@ public class ResearchGatewayTest {
     public void givenANonexistentIdWhenReadThenThrowsNotFoundException() {
         var id = UUID.randomUUID();
 
-        when(researchRepository.findById(id.toString())).thenReturn(Optional.empty());
+        when(researchRepository.findOne(any(Specification.class))).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> gateway.read(id))
+        assertThatThrownBy(() -> gateway.read(id, TENANT))
                 .isExactlyInstanceOf(NotFoundException.class);
 
-        verify(researchRepository).findById(id.toString());
+        verify(researchSpecificationFactory).findById(id.toString());
+        verify(researchSpecificationFactory).findByTenant(TENANT);
+        verify(researchRepository).findOne(any(Specification.class));
         verifyNoInteractions(researchMapper);
     }
 
     @Test
     public void givenAResearchCriteriaWhenSearchThenCallRepository() {
-        var criteria = ResearchCriteria.builder().build();
+        var criteria = ResearchCriteria.builder()
+                .tenant(TENANT)
+                .build();
         var entity = ResearchEntity.builder()
+                .id(UUID.randomUUID().toString())
+                .tenant(TENANT)
                 .title("title")
-
                 .startsOn(OffsetDateTime.now())
                 .build();
 
@@ -155,17 +177,15 @@ public class ResearchGatewayTest {
         assertThat(gateway.search(criteria)).hasSize(1);
 
         verify(researchSpecificationFactory).findByResearchCriteria(criteria);
-        verifyNoMoreInteractions(researchSpecificationFactory);
         verify(researchRepository).findAll(any(Specification.class));
-        verifyNoMoreInteractions(researchRepository);
         verify(researchMapper).toDomain(entity, false);
-        verifyNoMoreInteractions(researchMapper);
     }
 
     @Test
     public void givenAResearchWhenUpdateThenFindAndCopy() {
         var research = Research.builder()
                 .id(UUID.randomUUID())
+                .tenant(TENANT)
                 .title("title b")
                 .startsOn(OffsetDateTime.now())
                 .endsOn(OffsetDateTime.now().plusHours(15))
@@ -173,21 +193,24 @@ public class ResearchGatewayTest {
 
         var entity = ResearchEntity.builder()
                 .id(research.getId().toString())
+                .tenant(TENANT)
                 .title("title a")
                 .description("description a")
                 .startsOn(OffsetDateTime.now().minusHours(2))
                 .endsOn(OffsetDateTime.now().plusDays(10))
                 .build();
 
-        when(researchRepository.findById(research.getId().toString())).thenReturn(Optional.of(entity));
+        when(researchSpecificationFactory.findById(research.getId().toString())).thenCallRealMethod();
+        when(researchSpecificationFactory.findByTenant(TENANT)).thenCallRealMethod();
+        when(researchRepository.findOne(any(Specification.class))).thenReturn(Optional.of(entity));
         when(researchMapper.copy(research, entity)).thenCallRealMethod();
 
         gateway.update(research);
 
-        verify(researchRepository).findById(research.getId().toString());
-        verifyNoMoreInteractions(researchRepository);
+        verify(researchSpecificationFactory).findById(research.getId().toString());
+        verify(researchSpecificationFactory).findByTenant(TENANT);
+        verify(researchRepository).findOne(any(Specification.class));
         verify(researchMapper).copy(research, entity);
-        verifyNoMoreInteractions(researchMapper);
 
         assertThat(entity.getTitle()).isEqualTo(research.getTitle());
         assertThat(entity.getDescription()).isEqualTo(research.getDescription());
@@ -199,17 +222,21 @@ public class ResearchGatewayTest {
     public void givenAResearchWithNonexistentIdWhenUpdateThenThrowsNotFoundException() {
         var research = Research.builder()
                 .id(UUID.randomUUID())
+                .tenant(TENANT)
                 .title("title")
                 .startsOn(OffsetDateTime.now())
                 .build();
 
-        when(researchRepository.findById(research.getId().toString())).thenReturn(Optional.empty());
+        when(researchSpecificationFactory.findById(research.getId().toString())).thenCallRealMethod();
+        when(researchSpecificationFactory.findByTenant(TENANT)).thenCallRealMethod();
+        when(researchRepository.findOne(any(Specification.class))).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> gateway.update(research))
                 .isExactlyInstanceOf(NotFoundException.class);
 
-        verify(researchRepository).findById(research.getId().toString());
-        verifyNoMoreInteractions(researchRepository);
+        verify(researchSpecificationFactory).findById(research.getId().toString());
+        verify(researchSpecificationFactory).findByTenant(TENANT);
+        verify(researchRepository).findOne(any(Specification.class));
         verifyNoInteractions(researchMapper);
     }
 
@@ -217,10 +244,23 @@ public class ResearchGatewayTest {
     public void givenAnIdWhenDeleteThenCallRepository() {
         var id = UUID.randomUUID();
 
-        gateway.delete(id);
+        when(researchRepository.deleteByIdAndTenant(id.toString(), TENANT)).thenReturn(1);
 
-        verify(researchRepository).deleteById(id.toString());
-        verifyNoMoreInteractions(researchRepository);
+        gateway.delete(id, TENANT);
+
+        verify(researchRepository).deleteByIdAndTenant(id.toString(), TENANT);
+    }
+
+    @Test
+    public void givenAnIdWhenDoesNotDeleteThenThrowsNotFoundException() {
+        var id = UUID.randomUUID();
+
+        when(researchRepository.deleteByIdAndTenant(id.toString(), TENANT)).thenReturn(0);
+
+        assertThatThrownBy(() -> gateway.delete(id, TENANT))
+                .isExactlyInstanceOf(NotFoundException.class);
+
+        verify(researchRepository).deleteByIdAndTenant(id.toString(), TENANT);
     }
 
     @Test

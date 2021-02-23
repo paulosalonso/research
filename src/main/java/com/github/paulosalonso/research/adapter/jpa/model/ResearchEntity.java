@@ -23,6 +23,9 @@ public class ResearchEntity {
     private String id;
 
     @NotBlank
+    private String tenant;
+
+    @NotBlank
     private String title;
 
     private String description;

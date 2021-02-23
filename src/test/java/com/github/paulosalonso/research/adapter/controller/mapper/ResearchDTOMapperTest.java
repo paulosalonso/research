@@ -21,6 +21,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 @ExtendWith(MockitoExtension.class)
 public class ResearchDTOMapperTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private ResearchDTOMapper researchDTOMapper;
 
@@ -86,8 +88,9 @@ public class ResearchDTOMapperTest {
                 .endsOnTo(OffsetDateTime.now().plusMonths(1).plusDays(5))
                 .build();
 
-        var searchCriteria = researchDTOMapper.toDomain(dto);
+        var searchCriteria = researchDTOMapper.toDomain(dto, TENANT);
 
+        assertThat(searchCriteria.getTenant()).isEqualTo(TENANT);
         assertThat(searchCriteria.getTitle()).isEqualTo(dto.getTitle());
         assertThat(searchCriteria.getDescription()).isEqualTo(dto.getDescription());
         assertThat(searchCriteria.getStartsOnFrom()).isEqualTo(dto.getStartsOnFrom());
@@ -98,19 +101,20 @@ public class ResearchDTOMapperTest {
 
     @Test
     public void givenAResearchInputDTOWhenMapThenReturnResearch() {
-        var research = ResearchInputDTO.builder()
+        var dto = ResearchInputDTO.builder()
                 .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
                 .endsOn(OffsetDateTime.now().plusMonths(1))
                 .build();
 
-        var dto = researchDTOMapper.toDomain(research);
+        var research = researchDTOMapper.toDomain(dto, TENANT);
 
-        assertThat(dto.getId()).isNull();
-        assertThat(dto.getTitle()).isEqualTo(research.getTitle());
-        assertThat(dto.getDescription()).isEqualTo(research.getDescription());
-        assertThat(dto.getStartsOn()).isEqualTo(research.getStartsOn());
-        assertThat(dto.getEndsOn()).isEqualTo(research.getEndsOn());
+        assertThat(research.getId()).isNull();
+        assertThat(research.getTenant()).isEqualTo(TENANT);
+        assertThat(research.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(research.getDescription()).isEqualTo(dto.getDescription());
+        assertThat(research.getStartsOn()).isEqualTo(dto.getStartsOn());
+        assertThat(research.getEndsOn()).isEqualTo(dto.getEndsOn());
     }
 }

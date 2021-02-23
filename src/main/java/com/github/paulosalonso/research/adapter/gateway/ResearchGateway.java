@@ -11,7 +11,6 @@ import com.github.paulosalonso.research.domain.ResearchCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
 import com.github.paulosalonso.research.usecase.port.ResearchPort;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,16 +39,17 @@ public class ResearchGateway implements ResearchPort {
     }
 
     @Override
-    public Research read(UUID id) {
-        return researchRepository.findById(id.toString())
+    public Research read(UUID id, String tenant) {
+        return researchRepository.findOne(researchSpecificationFactory.findById(id.toString()).and(researchSpecificationFactory.findByTenant(tenant)))
                 .map(research -> researchMapper.toDomain(research, false))
                 .orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public Research readFetchingQuestions(UUID id) {
-        var research = researchMapper.toDomain(researchRepository.findById(id.toString())
-                .orElseThrow(NotFoundException::new), false);
+    public Research readFetchingQuestions(UUID id, String tenant) {
+        var research = researchRepository.findOne(researchSpecificationFactory.findById(id.toString()).and(researchSpecificationFactory.findByTenant(tenant)))
+                .map(entity -> researchMapper.toDomain(entity, true))
+                .orElseThrow(NotFoundException::new);
 
         var specification = questionSpecificationFactory.findByResearchId(id.toString());
         specification = specification.and(questionSpecificationFactory.findFetchingOptions());
@@ -74,18 +74,17 @@ public class ResearchGateway implements ResearchPort {
     @Transactional
     @Override
     public Research update(Research research) {
-        researchRepository.findById(research.getId().toString())
+        researchRepository.findOne(researchSpecificationFactory.findById(research.getId().toString()).and(researchSpecificationFactory.findByTenant(research.getTenant())))
                 .map(persisted -> researchMapper.copy(research, persisted))
                 .orElseThrow(NotFoundException::new);
 
         return research;
     }
 
+    @Transactional
     @Override
-    public void delete(UUID id) {
-        try {
-            researchRepository.deleteById(id.toString());
-        } catch (EmptyResultDataAccessException e) {
+    public void delete(UUID id, String tenant) {
+        if (researchRepository.deleteByIdAndTenant(id.toString(), tenant) == 0) {
             throw new NotFoundException();
         }
     }

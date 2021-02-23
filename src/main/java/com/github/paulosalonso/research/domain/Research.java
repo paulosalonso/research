@@ -16,6 +16,8 @@ public class Research {
 
     private UUID id;
 
+    private final String tenant;
+
     @NonNull
     private final String title;
 

@@ -13,12 +13,12 @@ public class ResearchRead {
 
     private final ResearchPort researchPort;
 
-    public Research read(UUID id, boolean fillQuestions) {
+    public Research read(UUID id, String tenant, boolean fillQuestions) {
         if (fillQuestions) {
-            return researchPort.readFetchingQuestions(id);
+            return researchPort.readFetchingQuestions(id, tenant);
         }
 
-        return researchPort.read(id);
+        return researchPort.read(id, tenant);
     }
 
     public List<Research> search(ResearchCriteria criteria) {

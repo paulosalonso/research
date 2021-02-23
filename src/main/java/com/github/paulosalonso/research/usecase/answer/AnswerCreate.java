@@ -18,8 +18,8 @@ public class AnswerCreate {
     private final OptionPort optionPort;
     private final NotifierPort notifierPort;
 
-    public void create(UUID researchId, List<Answer> answers) {
-        validator.validate(researchId, answers);
+    public void create(UUID researchId, String tenant, List<Answer> answers) {
+        validator.validate(researchId, tenant, answers);
 
         answers.stream()
                 .peek(answer -> answer.setDate(OffsetDateTime.now()))

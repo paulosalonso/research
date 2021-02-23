@@ -18,6 +18,9 @@ public class ResearchSpecificationFactory {
     public Specification<ResearchEntity> findByResearchCriteria(ResearchCriteria researchCriteria) {
         List<Specification<ResearchEntity>> specifications = new ArrayList<>();
 
+        ofNullable(researchCriteria.getTenant())
+                .ifPresent(tenant -> specifications.add(findByTenant(researchCriteria.getTenant())));
+
         ofNullable(researchCriteria.getTitle())
                 .ifPresent(title -> specifications.add(findByTitleLike(researchCriteria.getTitle())));
 
@@ -37,6 +40,16 @@ public class ResearchSpecificationFactory {
                 .ifPresent(endsOn -> specifications.add(findByEndsOnTo(endsOn)));
 
         return specifications.stream().reduce(findWithoutFilter(), Specification::and);
+    }
+
+    public Specification<ResearchEntity> findById(String id) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(ResearchEntity.Fields.id), id);
+    }
+
+    public Specification<ResearchEntity> findByTenant(String tenant) {
+        return (root, criteriaQuery, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get(ResearchEntity.Fields.tenant), tenant);
     }
 
     public Specification<ResearchEntity> findByTitleLike(String title) {

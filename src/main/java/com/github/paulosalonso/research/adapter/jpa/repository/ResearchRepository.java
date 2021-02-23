@@ -10,6 +10,8 @@ import java.util.Optional;
 public interface ResearchRepository extends
         JpaRepository<ResearchEntity, String>, JpaSpecificationExecutor<ResearchEntity> {
 
+    int deleteByIdAndTenant(String id, String tenant);
+
     @Query("SELECT MAX(q.sequence) FROM Question q WHERE q.research.id = :researchId")
     Optional<Integer> findLastQuestionSequence(String researchId);
 }

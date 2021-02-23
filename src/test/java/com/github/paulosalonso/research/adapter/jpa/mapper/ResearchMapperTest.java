@@ -20,6 +20,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 @ExtendWith(MockitoExtension.class)
 public class ResearchMapperTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private ResearchMapper researchMapper;
 
@@ -30,6 +32,7 @@ public class ResearchMapperTest {
     public void givenAResearchWhenMapThenReturnEntity() {
         var research = Research.builder()
                 .id(UUID.randomUUID())
+                .tenant(TENANT)
                 .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
@@ -39,6 +42,7 @@ public class ResearchMapperTest {
         var entity = researchMapper.toEntity(research);
 
         assertThat(entity.getId()).isEqualTo(research.getId().toString());
+        assertThat(entity.getTenant()).isEqualTo(research.getTenant());
         assertThat(entity.getTitle()).isEqualTo(research.getTitle());
         assertThat(entity.getDescription()).isEqualTo(research.getDescription());
         assertThat(entity.getStartsOn()).isEqualTo(research.getStartsOn());
@@ -48,6 +52,7 @@ public class ResearchMapperTest {
     @Test
     public void givenAResearchWithoutIdWhenMapThenReturnEntity() {
         var research = Research.builder()
+                .tenant(TENANT)
                 .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
@@ -57,6 +62,7 @@ public class ResearchMapperTest {
         var entity = researchMapper.toEntity(research);
 
         assertThat(entity.getId()).isNull();
+        assertThat(entity.getTenant()).isEqualTo(research.getTenant());
         assertThat(entity.getTitle()).isEqualTo(research.getTitle());
         assertThat(entity.getDescription()).isEqualTo(research.getDescription());
         assertThat(entity.getStartsOn()).isEqualTo(research.getStartsOn());
@@ -67,6 +73,7 @@ public class ResearchMapperTest {
     public void givenAResearchEntityWhenMapWithoutQuestionsThenReturnDomain() {
         var entity = ResearchEntity.builder()
                 .id(UUID.randomUUID().toString())
+                .tenant(TENANT)
                 .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
@@ -76,6 +83,7 @@ public class ResearchMapperTest {
         var research = researchMapper.toDomain(entity, false);
 
         assertThat(research.getId()).isEqualTo(UUID.fromString(entity.getId()));
+        assertThat(research.getTenant()).isEqualTo(entity.getTenant());
         assertThat(research.getTitle()).isEqualTo(entity.getTitle());
         assertThat(research.getDescription()).isEqualTo(entity.getDescription());
         assertThat(research.getStartsOn()).isEqualTo(entity.getStartsOn());
@@ -89,6 +97,7 @@ public class ResearchMapperTest {
         var question = QuestionEntity.builder().build();
         var entity = ResearchEntity.builder()
                 .id(UUID.randomUUID().toString())
+                .tenant(TENANT)
                 .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
@@ -99,6 +108,7 @@ public class ResearchMapperTest {
         var research = researchMapper.toDomain(entity, true);
 
         assertThat(research.getId()).isEqualTo(UUID.fromString(entity.getId()));
+        assertThat(research.getTenant()).isEqualTo(entity.getTenant());
         assertThat(research.getTitle()).isEqualTo(entity.getTitle());
         assertThat(research.getDescription()).isEqualTo(entity.getDescription());
         assertThat(research.getStartsOn()).isEqualTo(entity.getStartsOn());
@@ -111,6 +121,7 @@ public class ResearchMapperTest {
     @Test
     public void givenAResearchEntityWithoutIdWhenMapThenReturnDomain() {
         var entity = ResearchEntity.builder()
+                .tenant(TENANT)
                 .title("title")
                 .description("description")
                 .startsOn(OffsetDateTime.now())
@@ -120,6 +131,7 @@ public class ResearchMapperTest {
         var research = researchMapper.toDomain(entity, false);
 
         assertThat(research.getId()).isNull();
+        assertThat(research.getTenant()).isEqualTo(entity.getTenant());
         assertThat(research.getTitle()).isEqualTo(entity.getTitle());
         assertThat(research.getDescription()).isEqualTo(entity.getDescription());
         assertThat(research.getStartsOn()).isEqualTo(entity.getStartsOn());

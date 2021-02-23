@@ -10,7 +10,7 @@ public class ResearchDelete {
 
     private final ResearchPort researchPort;
 
-    public void delete(UUID id) {
-        researchPort.delete(id);
+    public void delete(UUID id, String tenant) {
+        researchPort.delete(id, tenant);
     }
 }

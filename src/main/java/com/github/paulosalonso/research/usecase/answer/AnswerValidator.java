@@ -26,8 +26,8 @@ public class AnswerValidator {
     private final QuestionPort questionPort;
     private final OptionPort optionPort;
 
-    public void validate(UUID researchId, List<Answer> answers) {
-        validate(researchPort.read(researchId), answers);
+    public void validate(UUID researchId, String tenant, List<Answer> answers) {
+        validate(researchPort.read(researchId, tenant), answers);
     }
 
     private void validate(Research research, List<Answer> answers) {

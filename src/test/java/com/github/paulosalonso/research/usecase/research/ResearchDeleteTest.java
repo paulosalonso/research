@@ -14,6 +14,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class ResearchDeleteTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private ResearchDelete researchDelete;
 
@@ -24,8 +26,8 @@ public class ResearchDeleteTest {
     public void givenAResearchWhenCreateThenCallPort() {
         var id = UUID.randomUUID();
 
-        researchDelete.delete(id);
+        researchDelete.delete(id, TENANT);
 
-        verify(port).delete(id);
+        verify(port).delete(id, TENANT);
     }
 }

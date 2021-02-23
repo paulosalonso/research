@@ -23,6 +23,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class AnswerCreateTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private AnswerCreate answerCreate;
 
@@ -50,7 +52,7 @@ public class AnswerCreateTest {
 
         when(optionPort.shouldNotify(toSave.getOptionId())).thenReturn(false);
 
-        answerCreate.create(toSave.getResearchId(), List.of(toSave));
+        answerCreate.create(toSave.getResearchId(), TENANT, List.of(toSave));
 
         ArgumentCaptor<Answer> answerCaptor = ArgumentCaptor.forClass(Answer.class);
         verify(answerPort).create(answerCaptor.capture());
@@ -61,7 +63,7 @@ public class AnswerCreateTest {
         assertThat(saved.getQuestionId()).isEqualTo(toSave.getQuestionId());
         assertThat(saved.getOptionId()).isEqualTo(toSave.getOptionId());
 
-        verify(validator).validate(toSave.getResearchId(), List.of(toSave));
+        verify(validator).validate(toSave.getResearchId(), TENANT, List.of(toSave));
         verify(optionPort).shouldNotify(toSave.getOptionId());
         verifyNoInteractions(notifierPort);
     }
@@ -74,12 +76,12 @@ public class AnswerCreateTest {
 
         var exception = new InvalidAnswerException("test exception");
 
-        doThrow(exception).when(validator).validate(answer.getResearchId(), List.of(answer));
+        doThrow(exception).when(validator).validate(answer.getResearchId(), TENANT, List.of(answer));
 
-        assertThatThrownBy(() -> answerCreate.create(answer.getResearchId(), List.of(answer)))
+        assertThatThrownBy(() -> answerCreate.create(answer.getResearchId(), TENANT, List.of(answer)))
                 .isSameAs(exception);
 
-        verify(validator).validate(answer.getResearchId(), List.of(answer));
+        verify(validator).validate(answer.getResearchId(), TENANT, List.of(answer));
         verifyNoInteractions(optionPort);
         verifyNoInteractions(notifierPort);
     }
@@ -94,7 +96,7 @@ public class AnswerCreateTest {
 
         when(optionPort.shouldNotify(answer.getOptionId())).thenReturn(true);
 
-        answerCreate.create(answer.getResearchId(), List.of(answer));
+        answerCreate.create(answer.getResearchId(), TENANT, List.of(answer));
 
         verify(optionPort).shouldNotify(answer.getOptionId());
         verify(notifierPort).notifyAnswer(answer);

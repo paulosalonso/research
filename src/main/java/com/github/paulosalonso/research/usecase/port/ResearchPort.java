@@ -9,10 +9,10 @@ import java.util.UUID;
 public interface ResearchPort {
 
     Research create(Research research);
-    Research read(UUID id);
-    Research readFetchingQuestions(UUID id);
+    Research read(UUID id, String tenant);
+    Research readFetchingQuestions(UUID id, String tenant);
     List<Research> search(ResearchCriteria criteria);
     Research update(Research research);
-    void delete(UUID id);
+    void delete(UUID id, String tenant);
     Integer getNextQuestionSequence(UUID researchId);
 }

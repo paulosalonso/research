@@ -20,6 +20,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ResearchReadTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private ResearchRead researchRead;
 
@@ -35,12 +37,12 @@ public class ResearchReadTest {
                 .startsOn(OffsetDateTime.now())
                 .build();
 
-        when(port.read(id)).thenReturn(toRead);
+        when(port.read(id, TENANT)).thenReturn(toRead);
 
-        var result = researchRead.read(id, false);
+        var result = researchRead.read(id, TENANT, false);
 
         assertThat(result).isSameAs(toRead);
-        verify(port).read(id);
+        verify(port).read(id, TENANT);
     }
 
     @Test
@@ -52,12 +54,12 @@ public class ResearchReadTest {
                 .startsOn(OffsetDateTime.now())
                 .build();
 
-        when(port.readFetchingQuestions(id)).thenReturn(toRead);
+        when(port.readFetchingQuestions(id, TENANT)).thenReturn(toRead);
 
-        var result = researchRead.read(id, true);
+        var result = researchRead.read(id, TENANT, true);
 
         assertThat(result).isSameAs(toRead);
-        verify(port).readFetchingQuestions(id);
+        verify(port).readFetchingQuestions(id, TENANT);
     }
 
     @Test

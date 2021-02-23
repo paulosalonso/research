@@ -26,6 +26,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith({MockitoExtension.class})
 public class AnswerValidatorTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private AnswerValidator validator;
 
@@ -43,12 +45,12 @@ public class AnswerValidatorTest {
         var research = buildResearch();
         var answer = buildAnswer(research);
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
 
-        assertThatCode(() -> validator.validate(research.getId(), List.of(answer)))
+        assertThatCode(() -> validator.validate(research.getId(), TENANT, List.of(answer)))
                 .doesNotThrowAnyException();
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verify(questionPort).read(answer.getResearchId(), answer.getQuestionId());
         verify(optionPort).read(answer.getQuestionId(), answer.getOptionId());
     }
@@ -60,12 +62,12 @@ public class AnswerValidatorTest {
                 .build();
         var answer = buildAnswer(research);
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
 
-        assertThatCode(() -> validator.validate(research.getId(), List.of(answer)))
+        assertThatCode(() -> validator.validate(research.getId(), TENANT, List.of(answer)))
                 .doesNotThrowAnyException();
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verify(questionPort).read(answer.getResearchId(), answer.getQuestionId());
         verify(optionPort).read(answer.getQuestionId(), answer.getOptionId());
     }
@@ -75,12 +77,12 @@ public class AnswerValidatorTest {
         var research = buildResearch();
         var answer = buildAnswer(research);
 
-        when(researchPort.read(answer.getResearchId())).thenThrow(NotFoundException.class);
+        when(researchPort.read(answer.getResearchId(), TENANT)).thenThrow(NotFoundException.class);
 
-        assertThatThrownBy(() -> validator.validate(answer.getResearchId(), List.of(answer)))
+        assertThatThrownBy(() -> validator.validate(answer.getResearchId(), TENANT, List.of(answer)))
                 .isExactlyInstanceOf(NotFoundException.class);
 
-        verify(researchPort).read(answer.getResearchId());
+        verify(researchPort).read(answer.getResearchId(), TENANT);
         verifyNoInteractions(questionPort);
         verifyNoInteractions(optionPort);
     }
@@ -95,13 +97,13 @@ public class AnswerValidatorTest {
 
         var answer = buildAnswer(research);
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
 
-        assertThatThrownBy(() -> validator.validate(research.getId(), List.of(answer)))
+        assertThatThrownBy(() -> validator.validate(research.getId(), TENANT, List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("Research is not started");
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verifyNoInteractions(questionPort);
         verifyNoInteractions(optionPort);
     }
@@ -117,13 +119,13 @@ public class AnswerValidatorTest {
 
         var answer = buildAnswer(research);
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
 
-        assertThatThrownBy(() -> validator.validate(research.getId(), List.of(answer)))
+        assertThatThrownBy(() -> validator.validate(research.getId(), TENANT, List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("Research is finalized");
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verifyNoInteractions(questionPort);
         verifyNoInteractions(optionPort);
     }
@@ -133,14 +135,14 @@ public class AnswerValidatorTest {
         var research = buildResearch();
         var answer = buildAnswer(research);
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
         when(questionPort.read(answer.getResearchId(), answer.getQuestionId())).thenThrow(NotFoundException.class);
 
-        assertThatThrownBy(() -> validator.validate(research.getId(), List.of(answer)))
+        assertThatThrownBy(() -> validator.validate(research.getId(), TENANT, List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("Question not found: " + answer.getQuestionId());
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verify(questionPort).read(answer.getResearchId(), answer.getQuestionId());
         verifyNoInteractions(optionPort);
     }
@@ -150,14 +152,14 @@ public class AnswerValidatorTest {
         var research = buildResearch();
         var answer = buildAnswer(research);
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
         when(optionPort.read(answer.getQuestionId(), answer.getOptionId())).thenThrow(NotFoundException.class);
 
-        assertThatThrownBy(() -> validator.validate(research.getId(), List.of(answer)))
+        assertThatThrownBy(() -> validator.validate(research.getId(), TENANT, List.of(answer)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("Option not found: " + answer.getOptionId());
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verify(questionPort).read(answer.getResearchId(), answer.getQuestionId());
         verify(optionPort).read(answer.getQuestionId(), answer.getOptionId());
     }
@@ -186,13 +188,13 @@ public class AnswerValidatorTest {
                 .multiSelect(true)
                 .build();
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
         when(questionPort.search(eq(research.getId()), any(QuestionCriteria.class))).thenReturn(List.of(question));
 
-        assertThatCode(() -> validator.validate(research.getId(), List.of(answerA, answerB)))
+        assertThatCode(() -> validator.validate(research.getId(), TENANT, List.of(answerA, answerB)))
                 .doesNotThrowAnyException();
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verify(questionPort).search(eq(research.getId()), any(QuestionCriteria.class));
         verify(questionPort, times(2)).read(research.getId(), questionId);
         verify(optionPort).read(questionId, answerA.getOptionId());
@@ -223,13 +225,13 @@ public class AnswerValidatorTest {
                 .multiSelect(false)
                 .build();
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
         when(questionPort.search(eq(research.getId()), any(QuestionCriteria.class))).thenReturn(List.of(question));
 
-        assertThatCode(() -> validator.validate(research.getId(), List.of(answerA, answerB)))
+        assertThatCode(() -> validator.validate(research.getId(), TENANT, List.of(answerA, answerB)))
                 .doesNotThrowAnyException();
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verify(questionPort).search(eq(research.getId()), any(QuestionCriteria.class));
         verify(questionPort).read(research.getId(), questionId);
         verify(optionPort).read(answerA.getQuestionId(), answerA.getOptionId());
@@ -260,14 +262,14 @@ public class AnswerValidatorTest {
                 .multiSelect(false)
                 .build();
 
-        when(researchPort.read(research.getId())).thenReturn(research);
+        when(researchPort.read(research.getId(), TENANT)).thenReturn(research);
         when(questionPort.search(eq(research.getId()), any(QuestionCriteria.class))).thenReturn(List.of(question));
 
-        assertThatThrownBy(() -> validator.validate(research.getId(), List.of(answerA, answerB)))
+        assertThatThrownBy(() -> validator.validate(research.getId(), TENANT, List.of(answerA, answerB)))
                 .isExactlyInstanceOf(InvalidAnswerException.class)
                 .hasMessage("The question does not allow the selection of various options: " + questionId);
 
-        verify(researchPort).read(research.getId());
+        verify(researchPort).read(research.getId(), TENANT);
         verify(questionPort).search(eq(research.getId()), any(QuestionCriteria.class));
         verify(questionPort, times(2)).read(research.getId(), questionId);
         verify(optionPort).read(questionId, answerA.getOptionId());

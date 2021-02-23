@@ -29,6 +29,7 @@ public class ResearchMapper {
 
         var builder = Research.builder()
                 .id(id)
+                .tenant(researchEntity.getTenant())
                 .title(researchEntity.getTitle())
                 .description(researchEntity.getDescription())
                 .startsOn(researchEntity.getStartsOn())
@@ -48,6 +49,7 @@ public class ResearchMapper {
 
         return ResearchEntity.builder()
                 .id(id)
+                .tenant(research.getTenant())
                 .title(research.getTitle())
                 .description(research.getDescription())
                 .startsOn(research.getStartsOn())

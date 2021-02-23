@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 @Builder
 public class ResearchCriteria {
 
+    private final String tenant;
     private final String title;
     private final String description;
     private final OffsetDateTime startsOnFrom;

@@ -4,6 +4,7 @@ import com.github.paulosalonso.research.adapter.controller.dto.AnswerCriteriaDTO
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchAnswerInputDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.ResearchSummaryDTO;
 import com.github.paulosalonso.research.adapter.controller.mapper.AnswerDTOMapper;
+import com.github.paulosalonso.research.application.security.SecurityInfo;
 import com.github.paulosalonso.research.usecase.answer.AnswerCreate;
 import com.github.paulosalonso.research.usecase.answer.AnswerRead;
 import com.github.paulosalonso.research.usecase.exception.InvalidAnswerException;
@@ -25,6 +26,7 @@ public class AnswerController {
     private final AnswerCreate answerCreate;
     private final AnswerRead answerRead;
     private final AnswerDTOMapper mapper;
+    private final SecurityInfo securityInfo;
 
     @GetMapping
     public ResearchSummaryDTO search(@PathVariable UUID researchId, AnswerCriteriaDTO answerCriteriaDTO) {
@@ -37,7 +39,7 @@ public class AnswerController {
     public void create(@PathVariable UUID researchId, @RequestBody @Valid ResearchAnswerInputDTO researchAnswerInputDTO) {
         try {
             var answers = mapper.toDomain(researchId, researchAnswerInputDTO);
-            answerCreate.create(researchId, answers);
+            answerCreate.create(researchId, securityInfo.getTenant(), answers);
         } catch (InvalidAnswerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }

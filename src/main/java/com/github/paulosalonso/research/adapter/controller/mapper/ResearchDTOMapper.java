@@ -33,8 +33,9 @@ public class ResearchDTOMapper {
         return builder.build();
     }
 
-    public ResearchCriteria toDomain(ResearchCriteriaDTO dto) {
+    public ResearchCriteria toDomain(ResearchCriteriaDTO dto, String tenant) {
         return ResearchCriteria.builder()
+                .tenant(tenant)
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .startsOnFrom(dto.getStartsOnFrom())
@@ -44,8 +45,9 @@ public class ResearchDTOMapper {
                 .build();
     }
 
-    public Research toDomain(ResearchInputDTO dto) {
+    public Research toDomain(ResearchInputDTO dto, String tenant) {
         return Research.builder()
+                .tenant(tenant)
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .startsOn(dto.getStartsOn())
