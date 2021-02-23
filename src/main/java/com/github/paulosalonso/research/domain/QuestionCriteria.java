@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class QuestionCriteria {
 
+    private final String tenant;
     private final String description;
     private final Boolean multiSelect;
 }

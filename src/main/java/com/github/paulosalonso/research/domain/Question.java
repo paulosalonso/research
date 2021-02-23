@@ -13,6 +13,8 @@ public class Question {
 
     private UUID id;
 
+    private String tenant;
+
     private Integer sequence;
 
     @NonNull
