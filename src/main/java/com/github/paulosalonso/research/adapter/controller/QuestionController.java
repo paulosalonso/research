@@ -4,6 +4,7 @@ import com.github.paulosalonso.research.adapter.controller.dto.QuestionCriteriaD
 import com.github.paulosalonso.research.adapter.controller.dto.QuestionDTO;
 import com.github.paulosalonso.research.adapter.controller.dto.QuestionInputDTO;
 import com.github.paulosalonso.research.adapter.controller.mapper.QuestionDTOMapper;
+import com.github.paulosalonso.research.application.security.SecurityInfo;
 import com.github.paulosalonso.research.usecase.question.QuestionCreate;
 import com.github.paulosalonso.research.usecase.question.QuestionDelete;
 import com.github.paulosalonso.research.usecase.question.QuestionRead;
@@ -32,6 +33,7 @@ public class QuestionController {
     private final QuestionUpdate questionUpdate;
     private final QuestionDelete questionDelete;
     private final QuestionDTOMapper mapper;
+    private final SecurityInfo securityInfo;
 
     @GetMapping("/{questionId}")
     public QuestionDTO get(@PathVariable UUID researchId,
@@ -50,7 +52,7 @@ public class QuestionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public QuestionDTO create(@PathVariable UUID researchId, @RequestBody @Valid QuestionInputDTO questionInputDTO) {
-        var created = questionCreate.create(researchId, mapper.toDomain(questionInputDTO));
+        var created = questionCreate.create(researchId, securityInfo.getTenant(), mapper.toDomain(questionInputDTO));
         return mapper.toDTO(created, false);
     }
 

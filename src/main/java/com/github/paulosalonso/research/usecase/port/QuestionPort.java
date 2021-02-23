@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface QuestionPort {
 
-    Question create(UUID researchId, Question question);
+    Question create(UUID researchId, String tenant, Question question);
     Question read(UUID researchId, UUID questionId);
     Question readFetchingOptions(UUID researchId, UUID questionId);
     List<Question> search(UUID researchId, QuestionCriteria criteria);

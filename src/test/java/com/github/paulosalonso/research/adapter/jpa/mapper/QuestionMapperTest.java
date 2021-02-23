@@ -19,6 +19,8 @@ import static org.mockito.Mockito.verifyNoInteractions;
 @ExtendWith(MockitoExtension.class)
 public class QuestionMapperTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private QuestionMapper questionMapper;
 
@@ -29,6 +31,7 @@ public class QuestionMapperTest {
     public void givenAQuestionWhenMapWithoutOptionsThenReturnEntity() {
         var question = Question.builder()
                 .id(UUID.randomUUID())
+                .tenant(TENANT)
                 .description("description")
                 .multiSelect(true)
                 .build();
@@ -36,6 +39,7 @@ public class QuestionMapperTest {
         var entity = questionMapper.toEntity(question);
 
         assertThat(entity.getId()).isEqualTo(question.getId().toString());
+        assertThat(entity.getTenant()).isEqualTo(question.getTenant());
         assertThat(entity.getDescription()).isEqualTo(question.getDescription());
         assertThat(entity.getMultiSelect()).isEqualTo(question.getMultiSelect());
 
@@ -45,6 +49,7 @@ public class QuestionMapperTest {
     @Test
     public void givenAQuestionWithoutIdWhenMapThenReturnEntity() {
         var question = Question.builder()
+                .tenant(TENANT)
                 .description("description")
                 .multiSelect(true)
                 .build();
@@ -52,6 +57,7 @@ public class QuestionMapperTest {
         var entity = questionMapper.toEntity(question);
 
         assertThat(entity.getId()).isNull();
+        assertThat(entity.getTenant()).isEqualTo(question.getTenant());
         assertThat(entity.getDescription()).isEqualTo(question.getDescription());
         assertThat(entity.getMultiSelect()).isEqualTo(question.getMultiSelect());
     }
@@ -60,6 +66,7 @@ public class QuestionMapperTest {
     public void givenAQuestionEntityWhenMapThenReturnDomain() {
         var entity = QuestionEntity.builder()
                 .id(UUID.randomUUID().toString())
+                .tenant(TENANT)
                 .description("description")
                 .multiSelect(true)
                 .build();
@@ -67,6 +74,7 @@ public class QuestionMapperTest {
         var question = questionMapper.toDomain(entity, false);
 
         assertThat(question.getId()).isEqualTo(UUID.fromString(entity.getId()));
+        assertThat(question.getTenant()).isEqualTo(entity.getTenant());
         assertThat(question.getDescription()).isEqualTo(entity.getDescription());
         assertThat(question.getMultiSelect()).isEqualTo(entity.getMultiSelect());
 
@@ -76,6 +84,7 @@ public class QuestionMapperTest {
     @Test
     public void givenAQuestionEntityWithoutIdWhenMapWithoutOptionsThenReturnDomain() {
         var entity = QuestionEntity.builder()
+                .tenant(TENANT)
                 .description("description")
                 .multiSelect(true)
                 .build();
@@ -83,6 +92,7 @@ public class QuestionMapperTest {
         var question = questionMapper.toDomain(entity, false);
 
         assertThat(question.getId()).isNull();
+        assertThat(question.getTenant()).isEqualTo(entity.getTenant());
         assertThat(question.getDescription()).isEqualTo(entity.getDescription());
         assertThat(question.getMultiSelect()).isEqualTo(entity.getMultiSelect());
 
@@ -93,6 +103,7 @@ public class QuestionMapperTest {
     public void givenAQuestionEntityWithoutIdWhenMapWithOptionsThenReturnDomain() {
         var option = OptionEntity.builder().build();
         var entity = QuestionEntity.builder()
+                .tenant(TENANT)
                 .description("description")
                 .multiSelect(true)
                 .options(List.of(option))
@@ -101,6 +112,7 @@ public class QuestionMapperTest {
         var question = questionMapper.toDomain(entity, true);
 
         assertThat(question.getId()).isNull();
+        assertThat(question.getTenant()).isEqualTo(entity.getTenant());
         assertThat(question.getDescription()).isEqualTo(entity.getDescription());
         assertThat(question.getMultiSelect()).isEqualTo(entity.getMultiSelect());
         assertThat(question.getOptions()).hasSize(1);

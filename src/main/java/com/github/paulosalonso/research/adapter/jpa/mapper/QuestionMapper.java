@@ -27,6 +27,7 @@ public class QuestionMapper {
 
         var builder = Question.builder()
                 .id(id)
+                .tenant(questionEntity.getTenant())
                 .sequence(questionEntity.getSequence())
                 .description(questionEntity.getDescription())
                 .multiSelect(questionEntity.getMultiSelect());
@@ -45,6 +46,7 @@ public class QuestionMapper {
 
         return QuestionEntity.builder()
                 .id(id)
+                .tenant(question.getTenant())
                 .sequence(question.getSequence())
                 .description(question.getDescription())
                 .multiSelect(question.getMultiSelect())

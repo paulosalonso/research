@@ -13,12 +13,13 @@ public class QuestionCreate {
     private final QuestionPort questionPort;
     private final ResearchPort researchPort;
 
-    public Question create(UUID researchId, Question question) {
+    public Question create(UUID researchId, String tenant, Question question) {
         question = question.toBuilder()
                 .id(UUID.randomUUID())
+                .tenant(tenant)
                 .sequence(researchPort.getNextQuestionSequence(researchId))
                 .build();
 
-        return questionPort.create(researchId, question);
+        return questionPort.create(researchId, tenant, question);
     }
 }

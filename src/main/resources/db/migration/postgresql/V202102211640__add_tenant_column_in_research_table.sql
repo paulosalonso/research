@@ -1,1 +1,1 @@
-alter table research add column tenant varchar(255);
+alter table question add column tenant varchar(255) not null;

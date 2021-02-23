@@ -6,8 +6,10 @@ import org.springframework.http.HttpStatus;
 
 import java.util.UUID;
 
+import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static io.restassured.http.ContentType.JSON;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 public class QuestionControllerSecurityIT extends BaseIT {
 
@@ -90,5 +92,24 @@ public class QuestionControllerSecurityIT extends BaseIT {
                 .delete("/researches/{researchId}/questions/{questionId}", UUID.randomUUID(), UUID.randomUUID())
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    public void givenAnAdminTokenWithoutTenantClaimWhenAttemptToCreateQuestionThenReturnForbidden() {
+        var body = QuestionInputDTO.builder()
+                .description("description")
+                .multiSelect(false)
+                .build();
+
+        given()
+                .contentType(JSON)
+                .auth().oauth2(ADMIN_TOKEN_WITHOUT_TENANT_CLAIM)
+                .body(body)
+                .when()
+                .post("/researches/{researchId}/questions", UUID.randomUUID())
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("status", equalTo(HttpStatus.FORBIDDEN.value()))
+                .body("message", equalTo("The JWT does not contain the tenant claim"));
     }
 }

@@ -5,6 +5,7 @@ import com.github.paulosalonso.research.adapter.jpa.model.QuestionEntity;
 import com.github.paulosalonso.research.adapter.jpa.repository.QuestionRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.ResearchRepository;
 import com.github.paulosalonso.research.adapter.jpa.repository.specification.QuestionSpecificationFactory;
+import com.github.paulosalonso.research.adapter.jpa.repository.specification.ResearchSpecificationFactory;
 import com.github.paulosalonso.research.domain.Question;
 import com.github.paulosalonso.research.domain.QuestionCriteria;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
@@ -25,13 +26,15 @@ public class QuestionGateway implements QuestionPort {
 
     private final ResearchRepository researchRepository;
     private final QuestionRepository questionRepository;
-    private final QuestionSpecificationFactory specificationFactory;
+    private final QuestionSpecificationFactory questionSpecificationFactory;
+    private final ResearchSpecificationFactory researchSpecificationFactory;
     private final QuestionMapper mapper;
 
     @Transactional
     @Override
-    public Question create(UUID researchId, Question question) {
-        var research = researchRepository.findById(researchId.toString())
+    public Question create(UUID researchId, String tenant, Question question) {
+        var research = researchRepository.findOne(researchSpecificationFactory.findById(researchId.toString())
+                .and(researchSpecificationFactory.findByTenant(tenant)))
                 .orElseThrow(NotFoundException::new);
 
         var entity = mapper.toEntity(question);
@@ -44,9 +47,9 @@ public class QuestionGateway implements QuestionPort {
 
     @Override
     public Question read(UUID researchId, UUID questionId) {
-        var specification = specificationFactory
+        var specification = questionSpecificationFactory
                 .findByResearchId(researchId.toString())
-                .and(specificationFactory.findById(questionId.toString()));
+                .and(questionSpecificationFactory.findById(questionId.toString()));
 
         return questionRepository.findOne(specification)
                 .map(question -> mapper.toDomain(question, false))
@@ -55,10 +58,10 @@ public class QuestionGateway implements QuestionPort {
 
     @Override
     public Question readFetchingOptions(UUID researchId, UUID questionId) {
-        var specification = specificationFactory
+        var specification = questionSpecificationFactory
                 .findByResearchId(researchId.toString())
-                .and(specificationFactory.findById(questionId.toString()))
-                .and(specificationFactory.findFetchingOptions());
+                .and(questionSpecificationFactory.findById(questionId.toString()))
+                .and(questionSpecificationFactory.findFetchingOptions());
 
         return questionRepository.findOne(specification)
                 .map(question -> mapper.toDomain(question, true))
@@ -67,8 +70,8 @@ public class QuestionGateway implements QuestionPort {
 
     @Override
     public List<Question> search(UUID researchId, QuestionCriteria criteria) {
-        var specification = specificationFactory.findByResearchId(researchId.toString())
-                .and(specificationFactory.findByQuestionCriteria(criteria))
+        var specification = questionSpecificationFactory.findByResearchId(researchId.toString())
+                .and(questionSpecificationFactory.findByQuestionCriteria(criteria))
                 .and(orderByAsc(QuestionEntity.Fields.sequence));
 
         return questionRepository.findAll(specification)
@@ -80,9 +83,9 @@ public class QuestionGateway implements QuestionPort {
     @Transactional
     @Override
     public Question update(UUID researchId, Question question) {
-        var specification = specificationFactory
+        var specification = questionSpecificationFactory
                 .findByResearchId(researchId.toString())
-                .and(specificationFactory.findById(question.getId().toString()));
+                .and(questionSpecificationFactory.findById(question.getId().toString()));
 
         questionRepository.findOne(specification)
                 .map(entity -> mapper.copy(question, entity))
@@ -93,9 +96,9 @@ public class QuestionGateway implements QuestionPort {
 
     @Override
     public void delete(UUID researchId, UUID questionId) {
-        var specification = specificationFactory
+        var specification = questionSpecificationFactory
                 .findByResearchId(researchId.toString())
-                .and(specificationFactory.findById(questionId.toString()));
+                .and(questionSpecificationFactory.findById(questionId.toString()));
 
         var question = questionRepository.findOne(specification)
                 .orElseThrow(NotFoundException::new);

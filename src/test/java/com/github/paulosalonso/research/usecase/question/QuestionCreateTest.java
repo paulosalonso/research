@@ -20,6 +20,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class QuestionCreateTest {
 
+    private static final String TENANT = "tenant";
+
     @InjectMocks
     private QuestionCreate questionCreate;
 
@@ -41,10 +43,10 @@ public class QuestionCreateTest {
         when(researchPort.getNextQuestionSequence(id)).thenReturn(1);
 
         ArgumentCaptor<Question> questionCaptor = ArgumentCaptor.forClass(Question.class);
-        questionCreate.create(id, toSave);
+        questionCreate.create(id, TENANT, toSave);
 
         verify(researchPort).getNextQuestionSequence(id);
-        verify(questionPort).create(eq(id), questionCaptor.capture());
+        verify(questionPort).create(eq(id), eq(TENANT), questionCaptor.capture());
 
         var saved = questionCaptor.getValue();
         assertThat(saved.getId()).isNotNull();
