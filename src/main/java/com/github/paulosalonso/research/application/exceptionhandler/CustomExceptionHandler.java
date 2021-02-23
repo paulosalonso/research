@@ -3,6 +3,7 @@ package com.github.paulosalonso.research.application.exceptionhandler;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.github.paulosalonso.research.application.exceptionhandler.Error.Field;
+import com.github.paulosalonso.research.application.security.TenantNotProvidedException;
 import com.github.paulosalonso.research.usecase.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,18 @@ import static java.util.stream.Collectors.toList;
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final MessageSource messageSource;
+
+    @ExceptionHandler(TenantNotProvidedException.class)
+    public ResponseEntity handleTenantNotProvidedException(TenantNotProvidedException e, WebRequest request) {
+        var status = HttpStatus.FORBIDDEN;
+
+        var error = Error.builder()
+                .status(status.value())
+                .message(e.getMessage())
+                .build();
+
+        return handleExceptionInternal(e, error, new HttpHeaders(), status, request);
+    }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity handleNotFoundException(NotFoundException e, WebRequest request) {

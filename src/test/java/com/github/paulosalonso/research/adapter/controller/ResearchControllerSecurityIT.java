@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static io.restassured.http.ContentType.JSON;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 public class ResearchControllerSecurityIT extends BaseIT {
 
@@ -91,5 +93,56 @@ public class ResearchControllerSecurityIT extends BaseIT {
                 .delete("/researches/{researchId}", UUID.randomUUID())
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    public void givenAnAdminTokenWithoutTenantClaimWhenAttemptToCreateResearchThenReturnForbidden() {
+        var body = ResearchInputDTO.builder()
+                .title("title")
+                .startsOn(OffsetDateTime.now())
+                .build();
+
+        given()
+                .contentType(JSON)
+                .auth().oauth2(ADMIN_TOKEN_WITHOUT_TENANT_CLAIM)
+                .body(body)
+                .when()
+                .post("/researches")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("status", equalTo(HttpStatus.FORBIDDEN.value()))
+                .body("message", equalTo("The JWT does not contain the tenant claim"));
+    }
+
+    @Test
+    public void givenAnAdminTokenWithoutTenantClaimWhenAttemptToUpdateResearchThenReturnForbidden() {
+        var body = ResearchInputDTO.builder()
+                .title("title")
+                .startsOn(OffsetDateTime.now())
+                .build();
+
+        given()
+                .contentType(JSON)
+                .auth().oauth2(ADMIN_TOKEN_WITHOUT_TENANT_CLAIM)
+                .body(body)
+                .when()
+                .put("/researches/{researchId}", UUID.randomUUID())
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("status", equalTo(HttpStatus.FORBIDDEN.value()))
+                .body("message", equalTo("The JWT does not contain the tenant claim"));
+    }
+
+    @Test
+    public void givenAnAdminTokenWithoutTenantClaimWhenAttemptToDeleteResearchThenReturnForbidden() {
+        given()
+                .contentType(JSON)
+                .auth().oauth2(ADMIN_TOKEN_WITHOUT_TENANT_CLAIM)
+                .when()
+                .delete("/researches/{researchId}", UUID.randomUUID())
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .body("status", equalTo(HttpStatus.FORBIDDEN.value()))
+                .body("message", equalTo("The JWT does not contain the tenant claim"));
     }
 }
