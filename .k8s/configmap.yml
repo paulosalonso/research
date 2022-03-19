@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: research-configmap
+data:
+  profile: "postgresql,jwk"
+  notifier.url: "http://localhost:8080"
+  postgres.url: "jdbc:postgresql://postgresql.default.svc.cluster.local:5432/research"
+  postgres.username: "postgres"
+  postgres.password: "Ea0fOyV1Xf"
+  idm.jwk.uri: "http://keycloak.default.svc.cluster.local:8080/auth/realms/research/protocol/openid-connect/certs"
+  pgadmin.email: "paulo_alonso_@hotmail.com"
+  pgadmin.password: "123"

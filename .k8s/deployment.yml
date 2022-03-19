@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: research-api-deployment
+  labels:
+    app: research-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: research-api
+  template:
+    metadata:
+      labels:
+        app: research-api
+    spec:
+      containers:
+        - name: research-api
+          image: paulosalonso/research:local
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: research-configmap
+                  key: profile
+            - name: NOTIFIER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: research-configmap
+                  key: notifier.url
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: research-configmap
+                  key: postgres.url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: research-configmap
+                  key: postgres.username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: research-configmap
+                  key: postgres.password
+            - name: SECURITY_JWT_SIGNATURE_JWK-SET-URI
+              valueFrom:
+                configMapKeyRef:
+                  name: research-configmap
+                  key: idm.jwk.uri
